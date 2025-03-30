@@ -1,9 +1,7 @@
 "use client";
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
-import { CameraControls, PerspectiveCamera } from "@react-three/drei";
-import { Canvas, useThree } from "@react-three/fiber";
-import { Suspense, useEffect, useRef } from "react";
-import type * as THREE from "three";
+import { Canvas } from "@react-three/fiber";
+import { Suspense } from "react";
 import MyCamera from "./MyCamera";
 
 export default function Scene() {
