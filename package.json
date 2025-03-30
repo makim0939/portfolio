@@ -1,33 +1,35 @@
 {
-  "name": "portfolio",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "check": "biome check --write --no-errors-on-unmatched"
-  },
-  "dependencies": {
-    "next": "15.2.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.5.0",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  },
-  "lint-staged": {
-		"*.{js,jsx,ts,tsx}": [
-			"biome check --write --no-errors-on-unmatched"
-		]
+	"name": "portfolio",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev --turbopack",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"check": "biome check --write --no-errors-on-unmatched"
+	},
+	"dependencies": {
+		"@react-three/drei": "^10.0.5",
+		"@react-three/fiber": "^9.1.0",
+		"next": "15.2.4",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"three": "^0.175.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@tailwindcss/postcss": "^4",
+		"@types/node": "^20",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"@types/three": "^0.175.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^15.5.0",
+		"tailwindcss": "^4",
+		"typescript": "^5"
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx}": ["biome check --write --no-errors-on-unmatched"]
 	}
 }
