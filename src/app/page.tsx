@@ -13,19 +13,25 @@ export default function Home() {
 					</h1>
 					<p>まきむらのポートフォリオサイト。</p>
 				</header>
-				<nav className=" w-full fixed bottom-0 left-0 z-10 p-4 border-t border-t-gray-200 backdrop-blur-md md:static md:p-0 md:border-none md:text-lg md:backdrop-blur-none ">
-					<ul className="flex justify-around md:flex-col">
-						<Link href="/" className="md:mb-8 md:text-2xl hover:text-gray-600">
-							Home
-						</Link>
-						<Link
-							href="/about"
-							className="md:mb-8 md:text-2xl hover:text-gray-600"
-						>
-							About
-						</Link>
-					</ul>
-				</nav>
+				<main>
+					<section>
+						<p>
+							このサイトは現在制作中です。
+							<br />
+							5月末までに、初期リリース版を公開予定です。
+							<br />
+							<a
+								href="https://makimura-portfolio.com"
+								className="text-blue-500  "
+							>
+								<span className=" hover:underline ">
+									現行のポートフォリオサイトを見る
+								</span>
+								→
+							</a>
+						</p>
+					</section>
+				</main>
 			</section>
 			<Scene />
 		</div>

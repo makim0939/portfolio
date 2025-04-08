@@ -24,7 +24,7 @@ body {
 	color: var(--foreground);
 	font-family: Arial, Helvetica, sans-serif;
 	height: 100svh;
-	@apply text-lg tracking-wide md:text-xl md:tracking-wider;
+	@apply text-lg tracking-wide leading-loose md:text-xl md:tracking-wider;
 }
 h1 {
 	@apply tracking-[.16em];
