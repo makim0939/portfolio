@@ -1,45 +1,65 @@
 import Text from "@/components/ui/Text";
 import Link from "next/link";
+import React from "react";
+import { div } from "three/tsl";
 import Scene from "../components/3d/Scene";
 
 export default function Home() {
 	return (
-		<div className="flex flex-col w-full h-full">
-			<div className="px-8 pt-16 md:w-2xl md:p-16">
-				<header className=" md:mb-12 [&>p]:ml-1 [&>p]:md:ml-1.5">
-					<Text variant="h1" className=" my-4">
-						まきむら<span className=" text-lg md:text-4xl">の</span>
-						<br />
-						ポートフォリオ
-					</Text>
-					<Text>
-						<span className=" md:text-3xl tracking-[.21em]">
-							こんにちは。まきむらです！
-						</span>
-					</Text>
-				</header>
-				<main>
+		<div className="wrapper">
+			<div>
+				<div className=" md:w-2xl">
+					<header className="">
+						<Text variant="h1" className=" mb-4">
+							まきむら<span className=" text-lg md:text-4xl">の</span>
+							<br />
+							ポートフォリオ
+						</Text>
+						<Text>
+							<span className=" text-lg md:text-3xl tracking-[.21em]">
+								こんにちは。まきむらです！
+							</span>
+						</Text>
+					</header>
+				</div>
+				<Scene />
+			</div>
+			<main>
+				<article>
 					<section>
 						<Text>
+							このサイトを訪れていただきまして、ありがとうございます。
 							<br />
-							このサイトは現在制作中です。
+							Web開発、CG制作などクリエイティブな活動をしています。詳しくは、
+							<Link href={"/about"}>
+								<u>制作物</u>
+							</Link>
+							をご覧ください。
 							<br />
-							5月末までに、初期リリース版を公開予定です。
+							お仕事としての実績をつむため、Web制作などのご依頼を安価に引きけております。
 							<br />
-							<a
-								href="https://makimura-portfolio.com"
-								className="text-blue-500  "
-							>
-								<span className=" hover:underline ">
-									現行のポートフォリオサイトを見る
-								</span>
-								→
-							</a>
+							チャット、メール、DMからお気軽にご連絡ください。
 						</Text>
 					</section>
-				</main>
-			</div>
-			<Scene />
+					<section>
+						<Text variant="h2">制作物</Text>
+					</section>
+					<section>
+						<Text variant="h2">ブログ</Text>
+					</section>
+					<section>
+						<Text variant="h2">コンタクト</Text>
+					</section>
+					<section>
+						<Text>
+							最後までご覧いただきまして、
+							<br />
+							ありがとうございます。
+						</Text>
+						<Text variant="small">©️ 2025 Soma Makimura</Text>
+					</section>
+				</article>
+			</main>
 		</div>
 	);
 }
