@@ -3,9 +3,12 @@
 
 :root {
 	--background: #ffffff;
-	--foreground: #171717;
+	--foreground: #252528;
 }
-
+p {
+	margin: 0;
+}
+/* 
 @theme inline {
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
@@ -39,4 +42,4 @@ h1 {
 .dot-text2 {
 	-webkit-text-emphasis: circle orange;
 	text-emphasis: circle orange;
-}
+} */
