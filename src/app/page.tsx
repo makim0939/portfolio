@@ -1,8 +1,11 @@
 import StyledLink from "@/components/ui/StyledLink";
 import Text from "@/components/ui/Text";
-import Link from "next/link";
+import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
+} from "@/components/ui/shadcnui/avatar";
 import React from "react";
-import { div } from "three/tsl";
 import Scene from "../components/3d/Scene";
 
 export default function Home() {
@@ -28,6 +31,21 @@ export default function Home() {
 			<main>
 				<article>
 					<section>
+						<hgroup className=" flex">
+							<Avatar className=" w-14 h-14">
+								<AvatarImage src="https://github.com/shadcn.png" />
+								<AvatarFallback>
+									<b>M</b>
+								</AvatarFallback>
+							</Avatar>
+							<div>
+								<Text variant="h2">まきむら</Text>
+								<Text variant="small" className=" ml-1.5">
+									ソフトウェアとCGのクリエイター
+								</Text>
+							</div>
+						</hgroup>
+
 						<Text>
 							このサイトを訪れていただきまして、ありがとうございます。
 							<br />
