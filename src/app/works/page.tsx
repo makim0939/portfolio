@@ -1,4 +1,4 @@
-export default function About() {
+export default function WorksPage() {
 	return (
 		<main className="min-h-screen p-8">
 			<h1 className="text-4xl font-bold mb-4">制作物</h1>

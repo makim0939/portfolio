@@ -8,7 +8,7 @@ import {
 import React from "react";
 import Scene from "../components/3d/Scene";
 
-export default function Home() {
+export default function HomePage() {
 	return (
 		<div className="wrapper">
 			<div>
