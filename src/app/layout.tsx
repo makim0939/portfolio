@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="ja">
-			<body className={notoSansJP.className}>
+			<body className={`${notoSansJP.className} p-8 md:p-16 pt-16 md:pt-24 `}>
 				{children}
 				<GlobalNav />
 			</body>

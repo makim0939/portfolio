@@ -6,7 +6,7 @@ import MyCamera from "./MyCamera";
 
 export default function Scene() {
 	return (
-		<div className=" w-screen h-[360px] md:h-[540px]">
+		<div className=" w-full h-[360px] md:h-[540px]">
 			<Canvas shadows>
 				<Suspense fallback={null}>
 					<MyCamera />

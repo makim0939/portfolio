@@ -14,8 +14,8 @@ export default function HomePage() {
 		<div className="wrapper">
 			<div>
 				<div className=" md:w-2xl">
-					<header className="">
-						<Text variant="h1" className=" mb-4">
+					<header>
+						<Text variant="h1" className=" mb-4 md:mb-8 ">
 							まきむら<span className=" text-lg md:text-4xl">の</span>
 							<br />
 							ポートフォリオ
@@ -31,9 +31,9 @@ export default function HomePage() {
 			</div>
 			<main>
 				<article>
-					<section>
-						<hgroup className=" flex">
-							<Avatar className=" w-14 h-14">
+					<section className=" my-16 md:my-24 ">
+						<hgroup className=" flex my-6">
+							<Avatar className=" mr-2 w-14 h-14">
 								<AvatarImage src="https://github.com/shadcn.png" />
 								<AvatarFallback>
 									<b>M</b>
@@ -62,12 +62,12 @@ export default function HomePage() {
 						</Text>
 					</section>
 
-					<section className=" p-6">
+					<section className=" flex flex-col gap-6 my-16 md:my-24">
 						<Text variant="h2">制作物</Text>
 						<Card className="md:w-5xl ">
 							<CardCover src={"/dummy_image.png"} />
 							<CardContents className="md:flex flex-col gap-4">
-								<Text variant="h3" className="flex-1/">
+								<Text variant="h3">
 									<StyledLink
 										href={""}
 										className=" text-maki-black md:text-maki-black "
@@ -75,7 +75,6 @@ export default function HomePage() {
 										ポートフォリオサイト（旧）
 									</StyledLink>
 								</Text>
-
 								<Text variant="p" className="flex-3/5">
 									2024/02から2025/03まで運用していたWebサイトです。
 									「自分を知ってもらう場」として、名刺をモチーフにデザイン
@@ -84,33 +83,53 @@ export default function HomePage() {
 									背景のポイントグリッドやテキストアニメーションをはじめ、
 									アニメーションにもこだわっています。
 								</Text>
-								<StyledLink
-									href={"product"}
-									className=" hidden md:block flex-1/5 w-full text-right "
+								<Text
+									variant="small"
+									className=" hidden md:block flex-1/5 w-full text-right"
 								>
-									<u>詳しく見る</u>→
-								</StyledLink>
+									<StyledLink href={"product"} className="  ">
+										<u>詳しく見る</u>→
+									</StyledLink>
+								</Text>
 							</CardContents>
 						</Card>
-						<Text variant="small">
+						<Text variant="small" className=" w-full text-right">
 							<StyledLink href="">
 								<u>全ての制作物を見る</u>→
 							</StyledLink>
 						</Text>
 					</section>
-					<section>
-						<Text variant="h2">ブログ</Text>
+
+					<section className=" my-16 md:my-24 ">
+						<Text variant="h2" className="my-6">
+							ブログ
+						</Text>
+						<Card className="md:w-xl">
+							<CardCover src={"/dummy_image.png"} />
+							<CardContents className="w-full">
+								<Text variant="h3">
+									<StyledLink
+										href={""}
+										className=" text-maki-black md:text-maki-black "
+									>
+										ブログ記事
+									</StyledLink>
+								</Text>
+							</CardContents>
+						</Card>
 					</section>
-					<section>
+
+					<section className=" my-16 md:my-24 ">
 						<Text variant="h2">コンタクト</Text>
 					</section>
-					<section>
+
+					<section className=" my-16 md:my-24 ">
 						<Text>
 							最後までご覧いただきまして、
 							<br />
 							ありがとうございます。
 						</Text>
-						<Text variant="small" className=" text-maki-gray">
+						<Text variant="small" className=" text-center text-maki-gray">
 							© 2025 Soma Makimura
 						</Text>
 					</section>
