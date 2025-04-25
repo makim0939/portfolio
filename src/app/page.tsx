@@ -1,3 +1,4 @@
+import { Card, CardContents, CardCover } from "@/components/ui/Card";
 import StyledLink from "@/components/ui/StyledLink";
 import Text from "@/components/ui/Text";
 import {
@@ -61,8 +62,36 @@ export default function HomePage() {
 						</Text>
 					</section>
 
-					<section>
+					<section className=" p-6">
 						<Text variant="h2">制作物</Text>
+						<Card className="md:w-5xl ">
+							<CardCover src={"/dummy_image.png"} />
+							<CardContents className="md:flex flex-col gap-4">
+								<Text variant="h3" className="flex-1/">
+									<StyledLink
+										href={""}
+										className=" text-maki-black md:text-maki-black "
+									>
+										ポートフォリオサイト（旧）
+									</StyledLink>
+								</Text>
+
+								<Text variant="p" className="flex-3/5">
+									2024/02から2025/03まで運用していたWebサイトです。
+									「自分を知ってもらう場」として、名刺をモチーフにデザイン
+									しました。
+									<br />
+									背景のポイントグリッドやテキストアニメーションをはじめ、
+									アニメーションにもこだわっています。
+								</Text>
+								<StyledLink
+									href={"product"}
+									className=" hidden md:block flex-1/5 w-full text-right "
+								>
+									<u>詳しく見る</u>→
+								</StyledLink>
+							</CardContents>
+						</Card>
 						<Text variant="small">
 							<StyledLink href="">
 								<u>全ての制作物を見る</u>→
