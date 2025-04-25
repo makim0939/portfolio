@@ -16,7 +16,7 @@ const text = tv({
 			h1: " text-3xl md:text-5xl 2xl:text-[64px] font-bold",
 			h2: " text-2xl md:text-4xl font-semibold",
 			h3: " text-xl md:text-3xl font-semibold",
-			p: " text-base md:text-lg leading-8 md:leading-12",
+			p: " text-base md:text-lg leading-8 md:leading-10",
 			small: " text-sm md:text-base text-maki-gray  ",
 		},
 	},
