@@ -28,7 +28,7 @@ type CardCoverProps = {
 
 function CardCover({ src }: CardCoverProps) {
 	return (
-		<div className=" md:w-2/5 ">
+		<div className=" @2xl:flex-row ">
 			<Image
 				src={src}
 				width={512}
@@ -46,7 +46,7 @@ type CardContentsProps = {
 };
 
 function CardContents({ children, className }: CardContentsProps) {
-	return <div className={twMerge(" md:w-3/5 ", className)}>{children}</div>;
+	return <div className={twMerge(" @2xl:w-3/5 ", className)}>{children}</div>;
 }
 
 export { Card, CardCover, CardContents };
