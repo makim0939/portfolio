@@ -1,4 +1,5 @@
 import { Card, CardContents, CardCover } from "@/components/ui/Card";
+import SNSLink from "@/components/ui/SNSLink";
 import StyledLink from "@/components/ui/StyledLink";
 import Text from "@/components/ui/Text";
 import {
@@ -11,7 +12,7 @@ import Scene from "../components/3d/Scene";
 
 export default function HomePage() {
 	return (
-		<div className="wrapper">
+		<>
 			<div>
 				<div className=" md:w-2xl">
 					<header>
@@ -31,8 +32,8 @@ export default function HomePage() {
 			</div>
 			<main>
 				<article>
-					<section className=" my-16 md:my-24 ">
-						<hgroup className=" flex my-6">
+					<section className=" flex flex-col gap-6">
+						<hgroup className=" flex ">
 							<Avatar className=" mr-2 w-14 h-14">
 								<AvatarImage src="https://github.com/shadcn.png" />
 								<AvatarFallback>
@@ -46,7 +47,33 @@ export default function HomePage() {
 								</Text>
 							</div>
 						</hgroup>
-
+						<ul className=" flex items-center gap-2 md:gap-4 ">
+							<li>
+								<SNSLink
+									snsName="x"
+									svgAttr={{ fill: "#757578", width: 28, height: 28 }}
+								/>
+							</li>
+							<li>
+								<SNSLink
+									snsName="github"
+									svgAttr={{ fill: "#757578", width: 28, height: 28 }}
+								/>
+							</li>
+							<li>
+								<SNSLink
+									snsName="artstation"
+									svgAttr={{ fill: "#757578", width: 28, height: 28 }}
+								/>
+							</li>
+							<li className="ml-2 text-right">
+								<Text variant="small" className="">
+									<StyledLink href="">
+										<u>他のリンクを見る</u>→
+									</StyledLink>
+								</Text>
+							</li>
+						</ul>
 						<Text>
 							このサイトを訪れていただきまして、ありがとうございます。
 							<br />
@@ -135,6 +162,6 @@ export default function HomePage() {
 					</section>
 				</article>
 			</main>
-		</div>
+		</>
 	);
 }
