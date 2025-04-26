@@ -1,6 +1,6 @@
-type AboutIconProps = React.SVGAttributes<SVGElement>;
+type NavIconProps = React.SVGAttributes<SVGElement>;
 
-const AboutIcon = ({ ...props }: AboutIconProps) => {
+const AboutIcon = ({ ...props }: NavIconProps) => {
 	return (
 		<svg
 			width="32"

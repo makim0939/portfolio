@@ -1,6 +1,6 @@
-type WorksIconProps = React.SVGAttributes<SVGElement>;
+type NavIconProps = React.SVGAttributes<SVGElement>;
 
-const WorksIcon = ({ ...props }: WorksIconProps) => {
+const WorksIcon = ({ ...props }: NavIconProps) => {
 	return (
 		<svg
 			width="32"
