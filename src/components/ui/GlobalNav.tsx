@@ -17,25 +17,25 @@ function GlobalNav() {
 					</GlobalNavItem>
 				</li>
 				<li>
-					<GlobalNavItem href={"about"}>
+					<GlobalNavItem href={"/about"}>
 						<AboutIcon />
 						<Text variant="small">プロフィール</Text>
 					</GlobalNavItem>
 				</li>
 				<li>
-					<GlobalNavItem href={"works"}>
+					<GlobalNavItem href={"/works"}>
 						<WorksIcon />
 						<Text variant="small">制作物</Text>
 					</GlobalNavItem>
 				</li>
 				<li>
-					<GlobalNavItem href={"blog"}>
+					<GlobalNavItem href={"/blog"}>
 						<BlogIcon />
 						<Text variant="small">ブログ</Text>
 					</GlobalNavItem>
 				</li>
 				<li>
-					<GlobalNavItem href={"contact"}>
+					<GlobalNavItem href={"/contact"}>
 						<ContactIcon />
 						<Text variant="small">コンタクト</Text>
 					</GlobalNavItem>

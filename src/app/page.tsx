@@ -1,20 +1,23 @@
+import Scene from "@/components/3d/Scene";
 import { Card, CardContents, CardCover } from "@/components/ui/Card";
 import SNSLink from "@/components/ui/SNSLink";
 import StyledLink from "@/components/ui/StyledLink";
 import Text from "@/components/ui/Text";
+import { WorkCard } from "@/components/ui/WorkCard";
 import {
 	Avatar,
 	AvatarFallback,
 	AvatarImage,
 } from "@/components/ui/shadcnui/avatar";
+import { getAllWorks } from "@/lib/works";
 import React from "react";
-import Scene from "../components/3d/Scene";
 
-export default function HomePage() {
+export default async function HomePage() {
+	const works = await getAllWorks();
 	return (
 		<>
 			<div>
-				<div className=" md:w-2xl">
+				<div className="">
 					<header>
 						<Text variant="h1" className=" mb-4 md:mb-8 ">
 							まきむら<span className=" text-lg md:text-4xl">の</span>
@@ -91,35 +94,7 @@ export default function HomePage() {
 
 					<section className=" flex flex-col gap-6 my-16 md:my-24">
 						<Text variant="h2">制作物</Text>
-						<Card className="md:w-5xl ">
-							<CardCover src={"/dummy_image.png"} />
-							<CardContents className="md:flex flex-col gap-4">
-								<Text variant="h3">
-									<StyledLink
-										href={""}
-										className=" text-maki-black md:text-maki-black "
-									>
-										ポートフォリオサイト（旧）
-									</StyledLink>
-								</Text>
-								<Text variant="p" className="flex-3/5">
-									2024/02から2025/03まで運用していたWebサイトです。
-									「自分を知ってもらう場」として、名刺をモチーフにデザイン
-									しました。
-									<br />
-									背景のポイントグリッドやテキストアニメーションをはじめ、
-									アニメーションにもこだわっています。
-								</Text>
-								<Text
-									variant="small"
-									className=" hidden md:block flex-1/5 w-full text-right"
-								>
-									<StyledLink href={"product"} className="  ">
-										<u>詳しく見る</u>→
-									</StyledLink>
-								</Text>
-							</CardContents>
-						</Card>
+						{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
 						<Text variant="small" className=" w-full text-right">
 							<StyledLink href="">
 								<u>全ての制作物を見る</u>→

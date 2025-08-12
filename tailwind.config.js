@@ -1,7 +1,7 @@
 const { extend } = require("@react-three/fiber");
 
 module.exports = {
-	content: ["./src/**/*.{ts,tsx}"],
+	content: ["./src/**/*.{ts,tsx}", "./content/**/*.{md,mdx}"],
 	theme: {
 		extend: {
 			colors: {
@@ -12,4 +12,5 @@ module.exports = {
 			},
 		},
 	},
+	plugins: [require("@tailwindcss/typography")],
 };
