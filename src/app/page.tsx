@@ -1,6 +1,6 @@
 import Scene from "@/components/3d/Scene";
 import { Card, CardContents, CardCover } from "@/components/ui/Card";
-import SNSLink from "@/components/ui/SNSLink";
+import SocialLinkIcon from "@/components/ui/SocialLinkIcon";
 import StyledLink from "@/components/ui/StyledLink";
 import Text from "@/components/ui/Text";
 import { WorkCard } from "@/components/ui/WorkCard";
@@ -9,6 +9,7 @@ import {
 	AvatarFallback,
 	AvatarImage,
 } from "@/components/ui/shadcnui/avatar";
+import { socialLinks } from "@/lib/socialLinks";
 import { getAllWorks } from "@/lib/works";
 import React from "react";
 
@@ -16,6 +17,7 @@ export default async function HomePage() {
 	const works = await getAllWorks();
 	return (
 		<>
+			{/* トップ */}
 			<div>
 				<div className="">
 					<header>
@@ -34,6 +36,7 @@ export default async function HomePage() {
 				<Scene />
 			</div>
 			<main>
+				{/* プロフィール */}
 				<article>
 					<section className=" flex flex-col gap-6">
 						<hgroup className=" flex ">
@@ -51,24 +54,14 @@ export default async function HomePage() {
 							</div>
 						</hgroup>
 						<ul className=" flex items-center gap-2 md:gap-4 ">
-							<li>
-								<SNSLink
-									snsName="x"
-									svgAttr={{ fill: "#757578", width: 28, height: 28 }}
-								/>
-							</li>
-							<li>
-								<SNSLink
-									snsName="github"
-									svgAttr={{ fill: "#757578", width: 28, height: 28 }}
-								/>
-							</li>
-							<li>
-								<SNSLink
-									snsName="artstation"
-									svgAttr={{ fill: "#757578", width: 28, height: 28 }}
-								/>
-							</li>
+							{socialLinks.map((socialLink) => (
+								<li key={socialLink.name}>
+									<SocialLinkIcon
+										socialLinkData={socialLink}
+										svgAttr={{ fill: "#757578", width: 28, height: 28 }}
+									/>
+								</li>
+							))}
 							<li className="ml-2 text-right">
 								<Text variant="small" className="">
 									<StyledLink href="">
@@ -92,6 +85,7 @@ export default async function HomePage() {
 						</Text>
 					</section>
 
+					{/* 成果物 */}
 					<section className=" flex flex-col gap-6 my-16 md:my-24">
 						<Text variant="h2">制作物</Text>
 						{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
@@ -102,6 +96,7 @@ export default async function HomePage() {
 						</Text>
 					</section>
 
+					{/* ブログ */}
 					<section className=" my-16 md:my-24 ">
 						<Text variant="h2" className="my-6">
 							ブログ
@@ -121,10 +116,12 @@ export default async function HomePage() {
 						</Card>
 					</section>
 
+					{/* コンタクト */}
 					<section className=" my-16 md:my-24 ">
 						<Text variant="h2">コンタクト</Text>
 					</section>
 
+					{/* むすび */}
 					<section className=" my-16 md:my-24 ">
 						<Text>
 							最後までご覧いただきまして、

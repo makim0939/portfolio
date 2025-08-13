@@ -1,5 +1,6 @@
-type SNSLogoProps = React.SVGAttributes<SVGElement>;
-function GithubLogo({ fill, ...props }: SNSLogoProps) {
+import type { SocialLogoProps } from "@/lib/socialLinks";
+
+function GithubLogo({ fill, ...props }: SocialLogoProps) {
 	return (
 		<svg
 			width="32"

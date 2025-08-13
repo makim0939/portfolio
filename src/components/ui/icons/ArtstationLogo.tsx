@@ -1,5 +1,6 @@
-type SNSLogoProps = React.SVGAttributes<SVGElement>;
-function ArtstationLogo({ fill, ...props }: SNSLogoProps) {
+import type { SocialLogoProps } from "@/lib/socialLinks";
+
+function ArtstationLogo({ fill, ...props }: SocialLogoProps) {
 	return (
 		<svg
 			width="32"
