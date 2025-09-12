@@ -1,4 +1,5 @@
 import { MDXContent } from "@/components/ui/MdxContent";
+import Text from "@/components/ui/Text";
 import { getAllWorks, getWorkBySlug } from "@/lib/works";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -27,7 +28,7 @@ export default async function BlogPostPage({
 	const work = await getWorkBySlug(slug);
 	if (!work) return notFound();
 	return (
-		<article>
+		<main>
 			<header className=" relative -m-8 md:-m-16 -mt-16 md:-mt-24 mb-8 h-[50vh] ">
 				<Image
 					src={`/works/${work.coverImage}`}
@@ -37,15 +38,19 @@ export default async function BlogPostPage({
 					className=" absolute w-full h-full object-cover  brightness-50"
 				/>
 				<div className=" absolute top-1/2 -translate-y-1/2 left-8 text-neutral-50">
-					<h1 className="text-3xl font-bold tracking-tight">{work.title}</h1>
-					{work.description && <p>{work.description}</p>}
-					<p className="mt-2 text-sm">
+					<Text variant="h1" className="text-neutral-50">
+						{work.title}
+					</Text>
+					{work.description && (
+						<Text className="text-neutral-50">{work.description}</Text>
+					)}
+					<Text variant="small" className="text-neutral-50">
 						<time dateTime={work.date}>{work.date}</time>
 						{work.tags?.length ? ` ・ ${work.tags.join(", ")}` : null}
-					</p>
+					</Text>
 				</div>
 			</header>
 			<MDXContent source={work.body} />
-		</article>
+		</main>
 	);
 }

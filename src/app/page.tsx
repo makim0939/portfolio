@@ -90,14 +90,14 @@ export default async function HomePage() {
 						<Text variant="h2">制作物</Text>
 						{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
 						<Text variant="small" className=" w-full text-right">
-							<StyledLink href="">
+							<StyledLink href="/works">
 								<u>全ての制作物を見る</u>→
 							</StyledLink>
 						</Text>
 					</section>
 
 					{/* ブログ */}
-					<section className=" my-16 md:my-24 ">
+					{/* <section className=" my-16 md:my-24 ">
 						<Text variant="h2" className="my-6">
 							ブログ
 						</Text>
@@ -114,7 +114,7 @@ export default async function HomePage() {
 								</Text>
 							</CardContents>
 						</Card>
-					</section>
+					</section> */}
 
 					{/* コンタクト */}
 					<section className=" my-16 md:my-24 ">

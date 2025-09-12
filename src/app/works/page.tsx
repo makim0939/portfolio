@@ -1,3 +1,4 @@
+import Text from "@/components/ui/Text";
 import { WorkCard } from "@/components/ui/WorkCard";
 import { getAllWorks, getWorkBySlug } from "@/lib/works";
 
@@ -17,7 +18,7 @@ export default async function WorksPage() {
 	return (
 		<main className="">
 			<header>
-				<h1 className="text-3xl font-bold ">制作物</h1>
+				<Text variant="h1">制作物</Text>
 			</header>
 			<hr className="my-8" />
 			<div

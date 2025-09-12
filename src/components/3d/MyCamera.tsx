@@ -7,7 +7,7 @@ export default function MyCamera() {
 	const { camera } = useThree();
 	useEffect(() => {
 		camera.position.set(-3, 3, 3);
-		camera.lookAt(0, 1, 0);
+		camera.lookAt(0, 10, 0);
 	}, [camera]);
-	return <OrthographicCamera makeDefault zoom={120} />;
+	return <PerspectiveCamera makeDefault />;
 }
