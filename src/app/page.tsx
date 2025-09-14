@@ -19,20 +19,18 @@ export default async function HomePage() {
 		<>
 			{/* トップ */}
 			<div>
-				<div className="">
-					<header>
-						<Text variant="h1" className=" mb-4 md:mb-8 ">
-							まきむら<span className=" text-lg md:text-4xl">の</span>
-							<br />
-							ポートフォリオ
-						</Text>
-						<Text>
-							<span className=" text-lg md:text-3xl tracking-[.21em] ">
-								こんにちは。まきむらです！
-							</span>
-						</Text>
-					</header>
-				</div>
+				<header className=" absolute z-10 md:relative">
+					<Text variant="h1" className=" mb-4 md:mb-8 ">
+						まきむら<span className=" text-lg md:text-4xl">の</span>
+						<br />
+						ポートフォリオ
+					</Text>
+					<Text>
+						<span className=" text-lg md:text-3xl tracking-[.21em] ">
+							こんにちは。まきむらです！
+						</span>
+					</Text>
+				</header>
 				<Scene />
 			</div>
 			<main>
