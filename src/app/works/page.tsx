@@ -1,17 +1,6 @@
 import Text from "@/components/ui/Text";
 import { WorkCard } from "@/components/ui/WorkCard";
-import { getAllWorks, getWorkBySlug } from "@/lib/works";
-
-export async function generateMetadata({
-	params,
-}: { params: { slug: string } }) {
-	const work = await getWorkBySlug(params.slug);
-	if (!work) return {};
-	return {
-		title: `${work.title} – Works`,
-		description: work.description ?? "制作物の詳細",
-	};
-}
+import { getAllWorks } from "@/lib/works";
 
 export default async function WorksPage() {
 	const works = await getAllWorks();
