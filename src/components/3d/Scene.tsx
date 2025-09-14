@@ -1,12 +1,12 @@
 "use client";
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
+import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
+import useDeviceType from "@/hooks/useDeviceType";
+import { useDoePermission } from "@/hooks/useDoePermission";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import MyCamera from "./MyCamera";
 import { RoomPrototype } from "./RoomPrototype";
-import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
-import { useDoePermission } from "@/hooks/useDoePermission";
-import useDeviceType from "@/hooks/useDeviceType";
 
 export default function Scene() {
 	const deviceType = useDeviceType();
@@ -36,9 +36,11 @@ export default function Scene() {
 					type="button"
 					onClick={() => checkDoePermission()}
 					disabled={doePermission ?? false}
-					className=""
+					className=" mx-8 -mt-16 p-2 bg-neutral-50 border border-blue-400 rounded-2xl "
 				>
-					🎮ジャイロセンサを有効にしてみる...?
+					{doePermission
+						? "✅ たのしいね"
+						: "🎮 ジャイロセンサを有効にしてみる...?"}
 				</button>
 			)}
 		</div>
