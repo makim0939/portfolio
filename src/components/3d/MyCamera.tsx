@@ -6,8 +6,8 @@ import React, { useEffect } from "react";
 export default function MyCamera() {
 	const { camera } = useThree();
 	useEffect(() => {
-		camera.position.set(-3, 3, 3);
-		camera.lookAt(0, 10, 0);
+		camera.position.set(-5, 3, 5);
+		camera.lookAt(0, 1, 0);
 	}, [camera]);
-	return <PerspectiveCamera makeDefault />;
+	return <PerspectiveCamera makeDefault zoom={1.2} />;
 }

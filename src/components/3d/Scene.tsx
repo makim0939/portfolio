@@ -1,25 +1,46 @@
 "use client";
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
-import { OrbitControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import MyCamera from "./MyCamera";
 import { RoomPrototype } from "./RoomPrototype";
+import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
+import { useDoePermission } from "@/hooks/useDoePermission";
+import useDeviceType from "@/hooks/useDeviceType";
 
 export default function Scene() {
+	const deviceType = useDeviceType();
+	const { doePermission, checkDoePermission } = useDoePermission();
+	const orientation = useDeviceOrientation();
 	return (
-		<div className=" w-full h-[480px] md:h-screen">
+		<div className=" w-[100vw] h-[480px] -m-8 md:-m-16 mb-16 ">
 			<Canvas shadows orthographic>
 				<Suspense fallback={null}>
 					<MyCamera />
 					<ambientLight position={[0, 5, 0]} intensity={1} />
 					<pointLight position={[0, 5, 1]} intensity={10} />
-					<AvatarPrototype />
-					<RoomPrototype />
+					<group
+						rotation={[
+							Math.PI * (((orientation.beta - 30) / 90) * 0.075),
+							Math.PI * ((orientation.gamma / 90) * 0.25),
+							Math.PI * (((orientation.beta - 30) / 90) * 0.075),
+						]}
+					>
+						<AvatarPrototype />
+						<RoomPrototype />
+					</group>
 				</Suspense>
-				<OrbitControls />
-				<Stats />
 			</Canvas>
+			{deviceType === "iosOver13" && (
+				<button
+					type="button"
+					onClick={() => checkDoePermission()}
+					disabled={doePermission ?? false}
+					className=""
+				>
+					🎮ジャイロセンサを有効にしてみる...?
+				</button>
+			)}
 		</div>
 	);
 }

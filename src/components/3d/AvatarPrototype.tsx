@@ -55,18 +55,22 @@ export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 		};
 	}, [actions]);
 
-	const rotationSpeed = React.useMemo(() => 1, []);
+	// const rotationSpeed = React.useMemo(() => 1, []);
 
-	useFrame((_state, delta) => {
-		if (group.current) {
-			group.current.rotation.y += delta * rotationSpeed;
-		}
-	});
+	// useFrame((_state, delta) => {
+	// 	if (group.current) {
+	// 		group.current.rotation.y += delta * rotationSpeed;
+	// 	}
+	// });
 
 	return (
 		<group ref={group} {...props} dispose={null}>
 			<group name="Scene">
-				<group name="Armature" rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
+				<group
+					name="Armature"
+					rotation={[Math.PI / 2, 0, Math.PI / 4]}
+					scale={0.01}
+				>
 					<primitive object={nodes.mixamorigHips} />
 					<group name="Body">
 						<skinnedMesh
