@@ -4,7 +4,9 @@ export function useDoePermission() {
 	const [doePermission, setDoePermission] = useState(false);
 
 	const checkDoePermission = useCallback(() => {
-		const DOE = DeviceOrientationEvent as any;
+		const DOE = DeviceOrientationEvent as typeof DeviceOrientationEvent & {
+			requestPermission: () => Promise<"granted" | "denied" | "default">;
+		};
 		DOE.requestPermission().then(async (val: string) => {
 			if (val === "granted") {
 				setDoePermission(true);
@@ -20,7 +22,11 @@ export function useDoePermission() {
 	}, [checkDoePermission]);
 
 	// requestPermissionが使えない場合は、nullを返す
-	if (!Object.hasOwn(DeviceOrientationEvent, "requestPermission")) {
+	if (
+		typeof window === "undefined" ||
+		!("DeviceOrientationEvent" in window) ||
+		!Object.hasOwn(window.DeviceOrientationEvent, "requestPermission")
+	) {
 		return {
 			doePermission: null,
 			checkDoePermission: () => {
