@@ -1,5 +1,6 @@
 import Scene from "@/components/3d/Scene";
 import { Card, CardContents, CardCover } from "@/components/ui/Card";
+import OgpCard from "@/components/ui/OgpCard";
 import SocialLinkIcon from "@/components/ui/SocialLinkIcon";
 import StyledLink from "@/components/ui/StyledLink";
 import Text from "@/components/ui/Text";
@@ -11,9 +12,11 @@ import {
 } from "@/components/ui/shadcnui/avatar";
 import { socialLinks } from "@/lib/socialLinks";
 import { getAllWorks } from "@/lib/works";
-import React from "react";
+import { getAllArticleOgps } from "@/lib/zenn";
+import React, { Suspense } from "react";
 
 export default async function HomePage() {
+	const ogps = await getAllArticleOgps();
 	const works = await getAllWorks();
 	return (
 		<>
@@ -95,24 +98,19 @@ export default async function HomePage() {
 					</section>
 
 					{/* ブログ */}
-					{/* <section className=" my-16 md:my-24 ">
-						<Text variant="h2" className="my-6">
-							ブログ
+					<section className=" flex flex-col gap-6 my-16 md:my-24">
+						<Text variant="h2">ブログ</Text>
+						<Suspense fallback={<div>Loading...</div>}>
+							{ogps.map(
+								(ogp, index) => index < 3 && <OgpCard key={ogp.url} {...ogp} />,
+							)}
+						</Suspense>
+						<Text variant="small" className=" w-full text-right">
+							<StyledLink href="/blog">
+								<u>全てのブログを見る</u>→
+							</StyledLink>
 						</Text>
-						<Card className="md:w-xl">
-							<CardCover src={"/dummy_image.png"} />
-							<CardContents className="w-full">
-								<Text variant="h3">
-									<StyledLink
-										href={""}
-										className=" text-maki-black md:text-maki-black "
-									>
-										ブログ記事
-									</StyledLink>
-								</Text>
-							</CardContents>
-						</Card>
-					</section> */}
+					</section>
 
 					{/* コンタクト */}
 					<section className=" my-16 md:my-24 ">
