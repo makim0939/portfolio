@@ -102,7 +102,8 @@ export default async function HomePage() {
 						<Text variant="h2">ブログ</Text>
 						<Suspense fallback={<div>Loading...</div>}>
 							{ogps.map(
-								(ogp, index) => index < 3 && <OgpCard key={ogp.url} {...ogp} />,
+								(ogp, index) =>
+									index < 3 && <OgpCard key={ogp.url} ogp={ogp} />,
 							)}
 						</Suspense>
 						<Text variant="small" className=" w-full text-right">
