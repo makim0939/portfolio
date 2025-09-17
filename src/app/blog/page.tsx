@@ -1,8 +1,31 @@
-export default function BlogPage() {
+import OgpCard from "@/components/ui/OgpCard";
+import Text from "@/components/ui/Text";
+import { getAllArticleOgps } from "@/lib/zenn";
+import { Suspense } from "react";
+
+export default async function BlogPage() {
+	const ogps = await getAllArticleOgps();
 	return (
-		<main className="min-h-screen">
-			<h1 className="text-3xl font-bold mb-4">ブログ</h1>
-			<p className="text-lg">このページではブログ記事を紹介します。</p>
+		<main className="">
+			<header>
+				<Text variant="h1">ブログ</Text>
+			</header>
+			<hr className="my-8" />
+			<div
+				className=" 
+                    grid gap-4 md:gap-8
+					lg:max-w-7xl m-auto
+                    [grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
+                    sm:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
+                    lg:[grid-template-columns:repeat(auto-fill,minmax(300spx,1fr))]
+                "
+			>
+				<Suspense fallback={<div>Loading...</div>}>
+					{ogps.map((o) => (
+						<OgpCard key={o.url} ogp={o} />
+					))}
+				</Suspense>
+			</div>
 		</main>
 	);
 }
