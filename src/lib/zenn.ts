@@ -5,6 +5,7 @@ export type OgpData = {
 	description?: string;
 	image: string;
 	lastUpdate: string;
+	likedCount?: number;
 	url: string;
 };
 
@@ -47,14 +48,22 @@ export async function getAllArticles(): Promise<OgpData[]> {
 
 	const data = await res.json();
 
-	return data.articles.map((article: ZennArticle) => ({
-		title: article.title,
-		emoji: article.emoji,
-		description: null,
-		image: "",
-		lastUpdate: article.body_updated_at,
-		url: `https://zenn.dev/${article.user.username}/articles/${article.slug}`,
-	}));
+	return data.articles.map((article: ZennArticle) => {
+		const updateDate = new Date(article.body_updated_at);
+		const yyyy = updateDate.getFullYear();
+		const mm = (updateDate.getMonth() + 1).toString().padStart(2, "0");
+		const dd = updateDate.getDate().toString().padStart(2, "0");
+
+		return {
+			title: article.title,
+			emoji: article.emoji,
+			description: null,
+			image: "",
+			lastUpdate: `${yyyy}-${mm}-${dd}`,
+			likedCount: article.liked_count,
+			url: `https://zenn.dev/${article.user.username}/articles/${article.slug}`,
+		};
+	});
 }
 
 function getMetaContent(html: string, property: string): string {
