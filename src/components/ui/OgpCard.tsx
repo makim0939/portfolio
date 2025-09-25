@@ -6,7 +6,7 @@ import FavoriteFillIcon from "./icons/FavoriteFillIcon";
 
 export default function OgpCard({ ogp }: { ogp: OgpData }) {
 	return (
-		<article className=" max-w-96 space-y-2 rounded-2xl border p-5 hover:shadow-sm transition shadow-xl">
+		<article className="min-w-44 max-w-96 space-y-2 rounded-2xl border p-5 hover:shadow-sm transition shadow-xl">
 			<div>
 				<Link href={ogp.url} target="_blank" rel="noopener noreferrer">
 					<Image
@@ -19,7 +19,7 @@ export default function OgpCard({ ogp }: { ogp: OgpData }) {
 				</Link>
 			</div>
 
-			<h3 className="text-lg font-semibold">
+			<h3 className="text-base font-semibold">
 				<Link
 					href={ogp.url}
 					target="_blank"

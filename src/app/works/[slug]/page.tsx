@@ -32,12 +32,12 @@ export default async function BlogPostPage({
 			<header className=" relative -m-8 md:-m-16 -mt-16 md:-mt-24 mb-8 h-[50vh] ">
 				<Image
 					src={`/works/${work.coverImage}`}
-					width={100}
-					height={100}
+					width={1920}
+					height={1080}
 					alt={work.title}
 					className=" absolute w-full h-full object-cover  brightness-50"
 				/>
-				<div className=" absolute top-1/2 -translate-y-1/2 left-8 text-neutral-50">
+				<div className=" absolute top-1/2 left-8 -translate-y-1/2 text-neutral-50 ">
 					<Text variant="h1" className="text-neutral-50">
 						{work.title}
 					</Text>

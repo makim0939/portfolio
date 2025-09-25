@@ -64,7 +64,7 @@ export default async function HomePage() {
 								</li>
 							))}
 							<li className="ml-2 text-right">
-								<Text variant="small" className="">
+								<Text variant="p" className=" text-sm text-maki-gray ">
 									<StyledLink href="">
 										<u>他のリンクを見る</u>→
 									</StyledLink>
@@ -73,24 +73,43 @@ export default async function HomePage() {
 						</ul>
 						<Text>
 							このサイトを訪れていただきまして、ありがとうございます。
-							<br />
-							Web開発、CG制作などクリエイティブな活動をしています。詳しくは、
-							<StyledLink href="">
+						</Text>
+						<Text>
+							クリエイティブなことが楽しくて、Web・CG・音楽などをしています。
+							詳しくは、
+							<StyledLink href="/works">
 								<u>制作物</u>
 							</StyledLink>
 							をご覧ください。
-							<br />
-							お仕事としての実績をつむため、Web制作などのご依頼を安価に引きけております。
-							<br />
-							チャット、メール、DMからお気軽にご連絡ください。
+						</Text>
+						<Text>
+							自分の中でぶれない軸を置くような
+							創作活動の拠点となる場が欲しくて、このサイトを作りました。
+						</Text>
+						<Text>
+							私のこと、このサイトのこと、その他なんでもDM・メールから気軽に話かけてください。
+						</Text>
+						<Text variant="p" className=" text-sm text-maki-gray text-right ">
+							<StyledLink href="/about">
+								<u>私について詳しく見る</u>→
+							</StyledLink>
 						</Text>
 					</section>
 
 					{/* 成果物 */}
-					<section className=" flex flex-col gap-6 my-16 md:my-24">
+					<section className=" w-full my-16 md:my-24">
 						<Text variant="h2">制作物</Text>
-						{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
-						<Text variant="small" className=" w-full text-right">
+						<div
+							className=" 
+								grid gap-6 my-8
+								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
+								sm:[grid-template-columns:repeat(auto-fill,minmax(230px,1fr))]
+								lg:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]
+							"
+						>
+							{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
+						</div>
+						<Text variant="p" className=" text-sm text-maki-gray text-right ">
 							<StyledLink href="/works">
 								<u>全ての制作物を見る</u>→
 							</StyledLink>
@@ -98,15 +117,24 @@ export default async function HomePage() {
 					</section>
 
 					{/* ブログ */}
-					<section className=" flex flex-col gap-6 my-16 md:my-24">
+					<section className=" my-16 md:my-24">
 						<Text variant="h2">ブログ</Text>
 						<Suspense fallback={<div>Loading...</div>}>
-							{ogps.map(
-								(ogp, index) =>
-									index < 3 && <OgpCard key={ogp.url} ogp={ogp} />,
-							)}
+							<div
+								className=" 
+								grid gap-6 my-8 
+								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
+								sm:[grid-template-columns:repeat(auto-fill,minmax(230px,1fr))]
+								lg:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]
+							"
+							>
+								{ogps.map(
+									(ogp, index) =>
+										index < 3 && <OgpCard key={ogp.url} ogp={ogp} />,
+								)}
+							</div>
 						</Suspense>
-						<Text variant="small" className=" w-full text-right">
+						<Text variant="p" className=" text-sm text-maki-gray text-right ">
 							<StyledLink href="/blog">
 								<u>全てのブログを見る</u>→
 							</StyledLink>
@@ -125,11 +153,11 @@ export default async function HomePage() {
 							<br />
 							ありがとうございます。
 						</Text>
-						<Text variant="small" className=" text-center text-maki-gray">
-							© 2025 Soma Makimura
-						</Text>
 					</section>
 				</article>
+				<Text variant="small" className=" text-center text-maki-gray">
+					© 2025 Soma Makimura
+				</Text>
 			</main>
 		</>
 	);

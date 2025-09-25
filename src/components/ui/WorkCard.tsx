@@ -11,8 +11,8 @@ export function WorkCard({ work }: { work: Work }) {
 						src={`/works/${work.coverImage}`}
 						alt={work.title}
 						className=" w-full rounded-md"
-						width={100}
-						height={100}
+						width={1920}
+						height={1080}
 					/>
 				</Link>
 			</div>
