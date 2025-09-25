@@ -73,16 +73,26 @@ export default async function HomePage() {
 						</ul>
 						<Text>
 							このサイトを訪れていただきまして、ありがとうございます。
-							<br />
-							Web開発、CG制作などクリエイティブな活動をしています。詳しくは、
-							<StyledLink href="">
+						</Text>
+						<Text>
+							クリエイティブなことが楽しくて、Web・CG・音楽などをしています。
+							詳しくは、
+							<StyledLink href="/works">
 								<u>制作物</u>
 							</StyledLink>
 							をご覧ください。
-							<br />
-							お仕事としての実績をつむため、Web制作などのご依頼を安価に引きけております。
-							<br />
-							チャット、メール、DMからお気軽にご連絡ください。
+						</Text>
+						<Text>
+							自分の中でぶれない軸を置くような
+							創作活動の拠点となる場が欲しくて、このサイトを作りました。
+						</Text>
+						<Text>
+							私のこと、このサイトのこと、その他なんでもDM・メールから気軽に話かけてください。
+						</Text>
+						<Text variant="p" className=" text-sm text-maki-gray text-right ">
+							<StyledLink href="/about">
+								<u>私について詳しく見る</u>→
+							</StyledLink>
 						</Text>
 					</section>
 

@@ -39,7 +39,7 @@ export default function Scene() {
 					className=" mx-8 -mt-16 p-2 bg-neutral-50 border border-blue-400 rounded-2xl "
 				>
 					{doePermission
-						? "✅ たのしいね"
+						? "✅ スマホを動かしてみよう"
 						: "🎮 ジャイロセンサを有効にしてみる...?"}
 				</button>
 			)}
