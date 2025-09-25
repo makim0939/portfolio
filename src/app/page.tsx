@@ -144,6 +144,9 @@ export default async function HomePage() {
 					{/* コンタクト */}
 					<section className=" my-16 md:my-24 ">
 						<Text variant="h2">コンタクト</Text>
+						<Text className=" my-2 ">
+							メールもしくは各種SNSのDMからご連絡ください。
+						</Text>
 					</section>
 
 					{/* むすび */}

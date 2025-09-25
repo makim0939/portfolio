@@ -34,12 +34,12 @@ function GlobalNav() {
 						<Text variant="small">ブログ</Text>
 					</GlobalNavItem>
 				</li>
-				<li>
+				{/* <li>
 					<GlobalNavItem href={"/contact"}>
 						<ContactIcon />
 						<Text variant="small">コンタクト</Text>
 					</GlobalNavItem>
-				</li>
+				</li> */}
 			</ul>
 		</nav>
 	);
