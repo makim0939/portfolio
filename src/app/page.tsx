@@ -97,10 +97,18 @@ export default async function HomePage() {
 					</section>
 
 					{/* 成果物 */}
-					<section className=" flex flex-col gap-6 my-16 md:my-24">
+					<section className=" w-full my-16 md:my-24">
 						<Text variant="h2">制作物</Text>
-						{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
-						<Text variant="small" className=" w-full text-right">
+						<div
+							className=" 
+								grid gap-6 my-8
+								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
+								sm:[grid-template-columns:repeat(auto-fill,minmax(230px,1fr))]
+								lg:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]
+							"
+						>
+							{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
+						</div>
 							<StyledLink href="/works">
 								<u>全ての制作物を見る</u>→
 							</StyledLink>
@@ -108,13 +116,22 @@ export default async function HomePage() {
 					</section>
 
 					{/* ブログ */}
-					<section className=" flex flex-col gap-6 my-16 md:my-24">
+					<section className=" my-16 md:my-24">
 						<Text variant="h2">ブログ</Text>
 						<Suspense fallback={<div>Loading...</div>}>
-							{ogps.map(
-								(ogp, index) =>
-									index < 3 && <OgpCard key={ogp.url} ogp={ogp} />,
-							)}
+							<div
+								className=" 
+								grid gap-6 my-8 
+								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
+								sm:[grid-template-columns:repeat(auto-fill,minmax(230px,1fr))]
+								lg:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]
+							"
+							>
+								{ogps.map(
+									(ogp, index) =>
+										index < 3 && <OgpCard key={ogp.url} ogp={ogp} />,
+								)}
+							</div>
 						</Suspense>
 						<Text variant="small" className=" w-full text-right">
 							<StyledLink href="/blog">
