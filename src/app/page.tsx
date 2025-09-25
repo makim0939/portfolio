@@ -64,7 +64,7 @@ export default async function HomePage() {
 								</li>
 							))}
 							<li className="ml-2 text-right">
-								<Text variant="small" className="">
+								<Text variant="p" className=" text-sm text-maki-gray ">
 									<StyledLink href="">
 										<u>他のリンクを見る</u>→
 									</StyledLink>
@@ -109,6 +109,7 @@ export default async function HomePage() {
 						>
 							{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
 						</div>
+						<Text variant="p" className=" text-sm text-maki-gray text-right ">
 							<StyledLink href="/works">
 								<u>全ての制作物を見る</u>→
 							</StyledLink>
@@ -133,7 +134,7 @@ export default async function HomePage() {
 								)}
 							</div>
 						</Suspense>
-						<Text variant="small" className=" w-full text-right">
+						<Text variant="p" className=" text-sm text-maki-gray text-right ">
 							<StyledLink href="/blog">
 								<u>全てのブログを見る</u>→
 							</StyledLink>
@@ -152,11 +153,11 @@ export default async function HomePage() {
 							<br />
 							ありがとうございます。
 						</Text>
-						<Text variant="small" className=" text-center text-maki-gray">
-							© 2025 Soma Makimura
-						</Text>
 					</section>
 				</article>
+				<Text variant="small" className=" text-center text-maki-gray">
+					© 2025 Soma Makimura
+				</Text>
 			</main>
 		</>
 	);
