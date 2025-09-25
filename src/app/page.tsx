@@ -63,13 +63,13 @@ export default async function HomePage() {
 									/>
 								</li>
 							))}
-							<li className="ml-2 text-right">
+							{/* <li className="ml-2 text-right">
 								<Text variant="p" className=" text-sm text-maki-gray ">
 									<StyledLink href="">
 										<u>他のリンクを見る</u>→
 									</StyledLink>
 								</Text>
-							</li>
+							</li> */}
 						</ul>
 						<Text>
 							このサイトを訪れていただきまして、ありがとうございます。
