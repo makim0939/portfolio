@@ -6,7 +6,7 @@ import { useDoePermission } from "@/hooks/useDoePermission";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import MyCamera from "./MyCamera";
-import { RoomPrototype } from "./RoomPrototype";
+import { Room } from "./Room";
 
 export default function Scene() {
 	const deviceType = useDeviceType();
@@ -27,7 +27,7 @@ export default function Scene() {
 						]}
 					>
 						<AvatarPrototype />
-						<RoomPrototype />
+						<Room />
 					</group>
 				</Suspense>
 			</Canvas>
