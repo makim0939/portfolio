@@ -21,12 +21,12 @@ export function FadeInContainer({
 	useEffect(() => {
 		const observer = new IntersectionObserver(
 			(entries) => {
-				entries.forEach((entry) => {
+				for (const entry of entries) {
 					const index = Number(entry.target.getAttribute("data-index"));
 					if (entry.isIntersecting) {
 						setVisibleIndexes((prev) => new Set(prev).add(index));
 					}
-				});
+				}
 			},
 			{ threshold: 0.2 },
 		);
@@ -54,7 +54,8 @@ export function FadeInContainer({
 		<div ref={containerRef} {...props}>
 			{childArray.map((child, index) => (
 				<div
-					key={index}
+					//biome-ignore lint/suspicious/noArrayIndexKey:
+					key={index} // 順番が固定かつid等の要素がないためkeyにindexを設定することを許す
 					style={{
 						opacity: visibleIndexes.has(index) ? 100 : 0,
 						transform: visibleIndexes.has(index)
