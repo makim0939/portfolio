@@ -1,6 +1,6 @@
 import type { SocialLogoProps } from "@/lib/socialLinks";
 
-const ZennLogo = ({ fill, style, ...props }: SocialLogoProps) => {
+export function ZennLogo({ fill, style, ...props }: SocialLogoProps) {
 	return (
 		<svg
 			width="32"
@@ -28,6 +28,4 @@ const ZennLogo = ({ fill, style, ...props }: SocialLogoProps) => {
 			</g>
 		</svg>
 	);
-};
-
-export default ZennLogo;
+}

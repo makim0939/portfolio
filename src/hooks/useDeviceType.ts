@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 type DeviceType = "android" | "iosUnder13" | "iosOver13" | "other";
 
-const useDeviceType = () => {
+export function useDeviceType() {
 	const [deviceType, setDeviceType] = useState<DeviceType>("other");
 	useEffect(() => {
 		const getDeviceType = (): "android" | "iosUnder13" | "iosOver13" | "other" => {
@@ -18,6 +18,4 @@ const useDeviceType = () => {
 		setDeviceType(deviceType);
 	}, []);
 	return deviceType;
-};
-
-export default useDeviceType;
+}

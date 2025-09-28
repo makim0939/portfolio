@@ -1,7 +1,7 @@
-import OgpCard from "@/components/ui/OgpCard";
-import Text from "@/components/ui/Text";
-import { getAllArticleOgps } from "@/lib/zenn";
 import { Suspense } from "react";
+import { OgpCard } from "@/components/ui/OgpCard";
+import { Text } from "@/components/ui/Text";
+import { getAllArticleOgps } from "@/lib/zenn";
 
 export default async function BlogPage() {
 	const ogps = await getAllArticleOgps();

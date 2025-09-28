@@ -1,8 +1,8 @@
-import { MDXContent } from "@/components/ui/MdxContent";
-import Text from "@/components/ui/Text";
-import { getAllWorks, getWorkBySlug } from "@/lib/works";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { MDXContent } from "@/components/ui/MdxContent";
+import { Text } from "@/components/ui/Text";
+import { getAllWorks, getWorkBySlug } from "@/lib/works";
 
 export async function generateStaticParams() {
 	const works = await getAllWorks();

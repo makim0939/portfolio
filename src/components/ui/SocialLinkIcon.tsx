@@ -5,7 +5,7 @@ type SocialLinkIconProps = {
 	socialLinkData: SocialLinkData;
 	svgAttr?: React.SVGAttributes<SVGElement>;
 };
-function SocialLinkIcon({ socialLinkData, svgAttr }: SocialLinkIconProps) {
+export function SocialLinkIcon({ socialLinkData, svgAttr }: SocialLinkIconProps) {
 	return (
 		<button type="button" className=" rounded-sm border-2 border-neutral-300">
 			<Link href={socialLinkData.url} target="_blank" className=" block p-2 w-full h-full">
@@ -14,5 +14,3 @@ function SocialLinkIcon({ socialLinkData, svgAttr }: SocialLinkIconProps) {
 		</button>
 	);
 }
-
-export default SocialLinkIcon;

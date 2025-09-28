@@ -4,7 +4,7 @@ import type { OgpData } from "@/lib/zenn";
 import Link from "next/link";
 import FavoriteFillIcon from "./icons/FavoriteFillIcon";
 
-export default function OgpCard({ ogp }: { ogp: OgpData }) {
+export function OgpCard({ ogp }: { ogp: OgpData }) {
 	return (
 		<article className="min-w-44 max-w-96 space-y-2 rounded-2xl border p-5 hover:shadow-sm transition shadow-xl">
 			<div>

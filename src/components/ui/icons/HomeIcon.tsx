@@ -1,6 +1,6 @@
 type NavIconProps = React.SVGAttributes<SVGElement>;
 
-const HomeIcon = ({ ...props }: NavIconProps) => {
+export function HomeIcon({ ...props }: NavIconProps) {
 	return (
 		<svg
 			width="32"
@@ -20,6 +20,4 @@ const HomeIcon = ({ ...props }: NavIconProps) => {
 			/>
 		</svg>
 	);
-};
-
-export default HomeIcon;
+}

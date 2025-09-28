@@ -6,7 +6,7 @@ type StyledLinkProps = {
 	children: React.ReactNode;
 } & LinkProps;
 
-function StyledLink({ children, className, ...props }: StyledLinkProps) {
+export function StyledLink({ children, className, ...props }: StyledLinkProps) {
 	return (
 		<Link
 			{...props}
@@ -19,5 +19,3 @@ function StyledLink({ children, className, ...props }: StyledLinkProps) {
 		</Link>
 	);
 }
-
-export default StyledLink;

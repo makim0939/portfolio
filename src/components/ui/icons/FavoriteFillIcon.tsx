@@ -1,6 +1,6 @@
 type FavoriteFillIconProps = React.SVGAttributes<SVGElement>;
 
-const FavoriteFillIcon = ({ ...props }: FavoriteFillIconProps) => {
+function FavoriteFillIcon({ ...props }: FavoriteFillIconProps) {
 	return (
 		<svg
 			width="24"
@@ -20,6 +20,6 @@ const FavoriteFillIcon = ({ ...props }: FavoriteFillIconProps) => {
 			</g>
 		</svg>
 	);
-};
+}
 
 export default FavoriteFillIcon;

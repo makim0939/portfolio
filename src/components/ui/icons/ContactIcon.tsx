@@ -1,6 +1,6 @@
 type NavIconProps = React.SVGAttributes<SVGElement>;
 
-const ContactIcon = ({ ...props }: NavIconProps) => {
+export function ContactIcon({ ...props }: NavIconProps) {
 	return (
 		<svg
 			width="32"
@@ -20,6 +20,4 @@ const ContactIcon = ({ ...props }: NavIconProps) => {
 			/>
 		</svg>
 	);
-};
-
-export default ContactIcon;
+}

@@ -4,10 +4,10 @@ import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
 import { useDoePermission } from "@/hooks/useDoePermission";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
-import MyCamera from "./MyCamera";
+import { MyCamera } from "./MyCamera";
 import { Room } from "./Room";
 
-export default function Scene() {
+export function Scene() {
 	const { doePermission, checkDoePermission } = useDoePermission();
 	const orientation = useDeviceOrientation();
 	return (

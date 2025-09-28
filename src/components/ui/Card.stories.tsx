@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { Card, CardContents, CardCover } from "./Card";
-import Text from "./Text";
+import { Text } from "./Text";
 
 const meta: Meta<typeof Card> = {
 	component: Card,

@@ -1,15 +1,15 @@
-import Scene from "@/components/3d/Scene";
-import { FadeInContainer } from "@/components/ui/FadeInContainer";
-import OgpCard from "@/components/ui/OgpCard";
-import SocialLinkIcon from "@/components/ui/SocialLinkIcon";
-import StyledLink from "@/components/ui/StyledLink";
-import Text from "@/components/ui/Text";
-import { WorkCard } from "@/components/ui/WorkCard";
+import React, { Suspense } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcnui/avatar";
+import { Scene } from "@/components/3d/Scene";
+import { FadeInContainer } from "@/components/ui/FadeInContainer";
+import { OgpCard } from "@/components/ui/OgpCard";
+import { SocialLinkIcon } from "@/components/ui/SocialLinkIcon";
+import { StyledLink } from "@/components/ui/StyledLink";
+import { Text } from "@/components/ui/Text";
+import { WorkCard } from "@/components/ui/WorkCard";
 import { socialLinks } from "@/lib/socialLinks";
 import { getAllWorks } from "@/lib/works";
 import { getAllArticleOgps } from "@/lib/zenn";
-import React, { Suspense } from "react";
 
 export default async function HomePage() {
 	const ogps = await getAllArticleOgps();

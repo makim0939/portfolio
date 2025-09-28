@@ -32,7 +32,7 @@ const text = tv({
 	},
 });
 
-function Text({ variant = "p", children, className, ...props }: TextProps) {
+export function Text({ variant = "p", children, className, ...props }: TextProps) {
 	const Tag = variant;
 
 	return (
@@ -41,5 +41,3 @@ function Text({ variant = "p", children, className, ...props }: TextProps) {
 		</Tag>
 	);
 }
-
-export default Text;

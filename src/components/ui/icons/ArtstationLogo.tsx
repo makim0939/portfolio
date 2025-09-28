@@ -1,6 +1,6 @@
 import type { SocialLogoProps } from "@/lib/socialLinks";
 
-function ArtstationLogo({ fill, ...props }: SocialLogoProps) {
+export function ArtstationLogo({ fill, ...props }: SocialLogoProps) {
 	return (
 		<svg
 			width="32"
@@ -24,5 +24,3 @@ function ArtstationLogo({ fill, ...props }: SocialLogoProps) {
 		</svg>
 	);
 }
-
-export default ArtstationLogo;
