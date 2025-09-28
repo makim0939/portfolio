@@ -1,5 +1,6 @@
 import Scene from "@/components/3d/Scene";
 import { Card, CardContents, CardCover } from "@/components/ui/Card";
+import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import OgpCard from "@/components/ui/OgpCard";
 import SocialLinkIcon from "@/components/ui/SocialLinkIcon";
 import StyledLink from "@/components/ui/StyledLink";
@@ -71,35 +72,42 @@ export default async function HomePage() {
 								</Text>
 							</li> */}
 						</ul>
-						<Text>
-							このサイトを訪れていただきまして、ありがとうございます。
-						</Text>
-						<Text>
-							クリエイティブなことが楽しくて、Web・CG・音楽などをしています。
-							詳しくは、
-							<StyledLink href="/works">
-								<u>制作物</u>
-							</StyledLink>
-							をご覧ください。
-						</Text>
-						<Text>
-							自分の中でぶれない軸を置くような
-							創作活動の拠点となる場が欲しくて、このサイトを作りました。
-						</Text>
-						<Text>
-							私のこと、このサイトのこと、その他なんでもDM・メールから気軽に話かけてください。
-						</Text>
-						<Text variant="p" className=" text-sm text-maki-gray text-right ">
-							<StyledLink href="/about">
-								<u>私について詳しく見る</u>→
-							</StyledLink>
-						</Text>
+						<FadeInContainer>
+							<div className=" [&>*]:mb-6 ">
+								<Text>
+									このサイトを訪れていただきまして、ありがとうございます。
+								</Text>
+								<Text>
+									クリエイティブなことが楽しくて、Web・CG・音楽などをしています。
+									詳しくは、
+									<StyledLink href="/works">
+										<u>制作物</u>
+									</StyledLink>
+									をご覧ください。
+								</Text>
+								<Text>
+									自分の中でぶれない軸を置くような
+									創作活動の拠点となる場が欲しくて、このサイトを作りました。
+								</Text>
+								<Text>
+									私のこと、このサイトのこと、その他なんでもDM・メールから気軽に話かけてください。
+								</Text>
+								<Text
+									variant="p"
+									className=" text-sm text-maki-gray text-right "
+								>
+									<StyledLink href="/about">
+										<u>私について詳しく見る</u>→
+									</StyledLink>
+								</Text>
+							</div>
+						</FadeInContainer>
 					</section>
 
 					{/* 成果物 */}
 					<section className=" w-full my-16 md:my-24">
 						<Text variant="h2">制作物</Text>
-						<div
+						<FadeInContainer
 							className=" 
 								grid gap-6 my-8
 								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
@@ -108,7 +116,7 @@ export default async function HomePage() {
 							"
 						>
 							{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
-						</div>
+						</FadeInContainer>
 						<Text variant="p" className=" text-sm text-maki-gray text-right ">
 							<StyledLink href="/works">
 								<u>全ての制作物を見る</u>→
@@ -120,7 +128,7 @@ export default async function HomePage() {
 					<section className=" my-16 md:my-24">
 						<Text variant="h2">ブログ</Text>
 						<Suspense fallback={<div>Loading...</div>}>
-							<div
+							<FadeInContainer
 								className=" 
 								grid gap-6 my-8 
 								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
@@ -132,7 +140,7 @@ export default async function HomePage() {
 									(ogp, index) =>
 										index < 3 && <OgpCard key={ogp.url} ogp={ogp} />,
 								)}
-							</div>
+							</FadeInContainer>
 						</Suspense>
 						<Text variant="p" className=" text-sm text-maki-gray text-right ">
 							<StyledLink href="/blog">
