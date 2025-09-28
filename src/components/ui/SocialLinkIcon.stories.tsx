@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import SocialLinkIcon from "./SocialLinkIcon";
 import GithubLogo from "./icons/GithubLogo";
 
