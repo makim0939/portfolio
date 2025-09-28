@@ -1,10 +1,24 @@
+import Text from "@/components/ui/Text";
+
 export default function AboutPage() {
 	return (
 		<main className="min-h-screen">
 			<h1 className="text-3xl font-bold mb-4">プロフィール</h1>
-			<p className="text-lg">
-				このページでは私についての情報を紹介しています。
-			</p>
+			<Text className=" my-8 md:my-0 ">
+				まきむらです。名古屋のソフト開発を主軸とする会社に勤めています。
+			</Text>
+			<Text className=" my-8 md:my-0 ">
+				プログラミングで何か作ったり、3DCGをこねたり、絵を描いたり、楽器を弾いたりしています。
+				それらを組み合わせたコンテンツで価値を生み出せるようになりたいです。
+			</Text>
+
+			<Text className=" my-8 md:my-0 ">
+				それぞれの分野に憧れの人がいて、「かっこいいな」「こうなりたいな」というのが私の原動力になっています。
+			</Text>
+
+			<Text className=" my-8 md:my-0 ">
+				私のこと、このサイトのこと、その他なんでもDM・メールから気軽に話かけてください。
+			</Text>
 		</main>
 	);
 }
