@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import SocialLinkIcon from "./SocialLinkIcon";
-import GithubLogo from "./icons/GithubLogo";
+import { SocialLinkIcon } from "./SocialLinkIcon";
+import { GithubLogo } from "./icons/GithubLogo";
 
 const meta: Meta<typeof SocialLinkIcon> = {
 	component: SocialLinkIcon,

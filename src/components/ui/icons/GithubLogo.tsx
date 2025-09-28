@@ -1,6 +1,6 @@
 import type { SocialLogoProps } from "@/lib/socialLinks";
 
-function GithubLogo({ fill, ...props }: SocialLogoProps) {
+export function GithubLogo({ fill, ...props }: SocialLogoProps) {
 	return (
 		<svg
 			width="32"
@@ -21,5 +21,3 @@ function GithubLogo({ fill, ...props }: SocialLogoProps) {
 		</svg>
 	);
 }
-
-export default GithubLogo;

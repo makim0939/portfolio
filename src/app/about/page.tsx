@@ -1,14 +1,12 @@
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
-import Text from "@/components/ui/Text";
+import { Text } from "@/components/ui/Text";
 
 export default function AboutPage() {
 	return (
 		<main className="min-h-screen">
 			<h1 className="text-3xl font-bold mb-4">プロフィール</h1>
 			<FadeInContainer className="[&>*]:my-8 [&>div]:md:my-0">
-				<Text>
-					まきむらです。名古屋のソフト開発を主軸とする会社に勤めています。
-				</Text>
+				<Text>まきむらです。名古屋のソフト開発を主軸とする会社に勤めています。</Text>
 				<Text>
 					プログラミングで何か作ったり、3DCGをこねたり、絵を描いたり、楽器を弾いたりしています。
 					それらを組み合わせたコンテンツで価値を生み出せるようになりたいです。

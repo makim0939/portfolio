@@ -41,9 +41,7 @@ export function FadeInContainer({
 
 		return () => {
 			if (childrenElements) {
-				Array.from(childrenElements).forEach((child, _) =>
-					observer.unobserve(child),
-				);
+				Array.from(childrenElements).forEach((child, _) => observer.unobserve(child));
 			}
 		};
 	}, []);
@@ -58,9 +56,7 @@ export function FadeInContainer({
 					key={index} // 順番が固定かつid等の要素がないためkeyにindexを設定することを許す
 					style={{
 						opacity: visibleIndexes.has(index) ? 100 : 0,
-						transform: visibleIndexes.has(index)
-							? "translateY(0)"
-							: `translateY(${distance}px)`,
+						transform: visibleIndexes.has(index) ? "translateY(0)" : `translateY(${distance}px)`,
 						transitionDelay: `${index * childrenDelay}ms`,
 						transitionDuration: `${duration}ms`,
 						transitionTimingFunction: "ease-out",

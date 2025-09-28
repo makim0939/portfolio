@@ -1,5 +1,5 @@
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
-import Text from "@/components/ui/Text";
+import { Text } from "@/components/ui/Text";
 import { WorkCard } from "@/components/ui/WorkCard";
 import { getAllWorks } from "@/lib/works";
 

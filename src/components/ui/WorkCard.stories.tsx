@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import Text from "./Text";
+import { Text } from "./Text";
 import { WorkCard } from "./WorkCard";
 
 const meta: Meta<typeof WorkCard> = {

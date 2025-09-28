@@ -1,14 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 
-export type PermissionResultType =
-	| "granted"
-	| "denied"
-	| "default"
-	| "notSupported";
+export type PermissionResultType = "granted" | "denied" | "default" | "notSupported";
 
 export function useDoePermission() {
-	const [doePermission, setDoePermission] =
-		useState<PermissionResultType | null>(null);
+	const [doePermission, setDoePermission] = useState<PermissionResultType | null>(null);
 
 	const checkDoePermission = useCallback(() => {
 		const DOE = DeviceOrientationEvent as typeof DeviceOrientationEvent & {

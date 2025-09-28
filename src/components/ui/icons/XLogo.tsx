@@ -1,6 +1,6 @@
 import type { SocialLogoProps } from "@/lib/socialLinks";
 
-function XLogo({ fill, ...props }: SocialLogoProps) {
+export function XLogo({ fill, ...props }: SocialLogoProps) {
 	return (
 		<svg
 			width="32"
@@ -19,5 +19,3 @@ function XLogo({ fill, ...props }: SocialLogoProps) {
 		</svg>
 	);
 }
-
-export default XLogo;

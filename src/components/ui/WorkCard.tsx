@@ -18,17 +18,12 @@ export function WorkCard({ work }: { work: Work }) {
 			</div>
 
 			<h3 className="text-lg font-semibold">
-				<Link
-					href={`/works/${work.slug}`}
-					className="hover:underline text-blue-600"
-				>
+				<Link href={`/works/${work.slug}`} className="hover:underline text-blue-600">
 					{work.title}
 				</Link>
 			</h3>
 			<div>
-				{work.description && (
-					<p className="text-sm text-neutral-600">{work.description}</p>
-				)}
+				{work.description && <p className="text-sm text-neutral-600">{work.description}</p>}
 			</div>
 
 			<div className="flex items-center gap-2 text-xs text-neutral-500">

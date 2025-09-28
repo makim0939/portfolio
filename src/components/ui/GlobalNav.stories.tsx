@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import GlobalNav from "./GlobalNav";
+import { GlobalNav } from "./GlobalNav";
 
 const meta: Meta<typeof GlobalNav> = {
 	component: GlobalNav,

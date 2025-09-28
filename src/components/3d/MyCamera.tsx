@@ -1,9 +1,9 @@
 "use client";
-import { OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
+import { PerspectiveCamera } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import React, { useEffect } from "react";
 
-export default function MyCamera() {
+export function MyCamera() {
 	const { camera } = useThree();
 	useEffect(() => {
 		camera.position.set(-5, 3, 5);

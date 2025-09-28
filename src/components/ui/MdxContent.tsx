@@ -10,10 +10,7 @@ export function MDXContent({ source }: { source: string }) {
 				options={{
 					mdxOptions: {
 						remarkPlugins: [],
-						rehypePlugins: [
-							[rehypeSlug],
-							[rehypeAutolinkHeadings, { behavior: "append" }],
-						],
+						rehypePlugins: [[rehypeSlug], [rehypeAutolinkHeadings, { behavior: "append" }]],
 					},
 				}}
 				components={{}}

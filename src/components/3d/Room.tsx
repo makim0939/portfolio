@@ -63,9 +63,7 @@ type GLTFResult = GLTF & {
 };
 
 export function Room(props: JSX.IntrinsicElements["group"]) {
-	const { nodes, materials } = useGLTF(
-		"/portfolio_room_1_1.glb",
-	) as unknown as GLTFResult;
+	const { nodes, materials } = useGLTF("/portfolio_room_1_1.glb") as unknown as GLTFResult;
 	return (
 		<group {...props} dispose={null}>
 			<mesh
@@ -182,11 +180,7 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
 				/>
 			</group>
 			<group position={[-1.328, 0.198, -1.198]}>
-				<group
-					position={[0, 0.153, 0]}
-					rotation={[-3.11, 0.365, -3.096]}
-					scale={0.258}
-				>
+				<group position={[0, 0.153, 0]} rotation={[-3.11, 0.365, -3.096]} scale={0.258}>
 					<mesh
 						castShadow
 						receiveShadow

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import Text from "./Text";
+import { Text } from "./Text";
 import { FadeInContainer } from "./FadeInContainer";
 
 const meta: Meta<typeof FadeInContainer> = {

@@ -1,6 +1,6 @@
 import type { SocialLogoProps } from "@/lib/socialLinks";
 
-function ArtstationLogo({ fill, ...props }: SocialLogoProps) {
+export function ArtstationLogo({ fill, ...props }: SocialLogoProps) {
 	return (
 		<svg
 			width="32"
@@ -20,12 +20,7 @@ function ArtstationLogo({ fill, ...props }: SocialLogoProps) {
 				d="M28.9998 21.8055C28.9998 21.2854 28.8523 20.7901 28.582 20.3691L20.03 5.41156C19.5877 4.56958 18.7275 4 17.72 4H13.1982L26.3948 27.0307L28.4837 23.3904C28.8769 22.697 28.9998 22.3998 28.9998 21.8055Z"
 				fill={fill}
 			/>
-			<path
-				d="M16.9334 18.0164L11.06 7.73926L5.16211 18.0164H16.9334Z"
-				fill={fill}
-			/>
+			<path d="M16.9334 18.0164L11.06 7.73926L5.16211 18.0164H16.9334Z" fill={fill} />
 		</svg>
 	);
 }
-
-export default ArtstationLogo;

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import OgpCard from "./OgpCard";
+import { OgpCard } from "./OgpCard";
 
 const meta: Meta<typeof OgpCard> = {
 	component: OgpCard,

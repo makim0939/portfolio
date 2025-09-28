@@ -1,7 +1,7 @@
-import ArtstationLogo from "@/components/ui/icons/ArtstationLogo";
-import GithubLogo from "@/components/ui/icons/GithubLogo";
-import XLogo from "@/components/ui/icons/XLogo";
-import ZennLogo from "@/components/ui/icons/ZennLogo";
+import { ArtstationLogo } from "@/components/ui/icons/ArtstationLogo";
+import { GithubLogo } from "@/components/ui/icons/GithubLogo";
+import { XLogo } from "@/components/ui/icons/XLogo";
+import { ZennLogo } from "@/components/ui/icons/ZennLogo";
 import type { JSX } from "react";
 
 export type SocialLogoProps = React.SVGAttributes<SVGElement>;

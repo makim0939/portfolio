@@ -1,19 +1,15 @@
-import Scene from "@/components/3d/Scene";
+import React, { Suspense } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcnui/avatar";
+import { Scene } from "@/components/3d/Scene";
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
-import OgpCard from "@/components/ui/OgpCard";
-import SocialLinkIcon from "@/components/ui/SocialLinkIcon";
-import StyledLink from "@/components/ui/StyledLink";
-import Text from "@/components/ui/Text";
+import { OgpCard } from "@/components/ui/OgpCard";
+import { SocialLinkIcon } from "@/components/ui/SocialLinkIcon";
+import { StyledLink } from "@/components/ui/StyledLink";
+import { Text } from "@/components/ui/Text";
 import { WorkCard } from "@/components/ui/WorkCard";
-import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-} from "@/components/ui/shadcnui/avatar";
 import { socialLinks } from "@/lib/socialLinks";
 import { getAllWorks } from "@/lib/works";
 import { getAllArticleOgps } from "@/lib/zenn";
-import React, { Suspense } from "react";
 
 export default async function HomePage() {
 	const ogps = await getAllArticleOgps();
@@ -73,12 +69,9 @@ export default async function HomePage() {
 						</ul>
 						<FadeInContainer>
 							<div className=" [&>*]:mb-6 ">
+								<Text>このサイトを訪れていただきまして、ありがとうございます。</Text>
 								<Text>
-									このサイトを訪れていただきまして、ありがとうございます。
-								</Text>
-								<Text>
-									クリエイティブなことが楽しくて、Web・CG・音楽などをしています。
-									詳しくは、
+									クリエイティブなことが楽しくて、Web・CG・音楽などをしています。 詳しくは、
 									<StyledLink href="/works">
 										<u>制作物</u>
 									</StyledLink>
@@ -91,10 +84,7 @@ export default async function HomePage() {
 								<Text>
 									私のこと、このサイトのこと、その他なんでもDM・メールから気軽に話かけてください。
 								</Text>
-								<Text
-									variant="p"
-									className=" text-sm text-maki-gray text-right "
-								>
+								<Text variant="p" className=" text-sm text-maki-gray text-right ">
 									<StyledLink href="/about">
 										<u>私について詳しく見る</u>→
 									</StyledLink>
@@ -135,10 +125,7 @@ export default async function HomePage() {
 								lg:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]
 							"
 							>
-								{ogps.map(
-									(ogp, index) =>
-										index < 3 && <OgpCard key={ogp.url} ogp={ogp} />,
-								)}
+								{ogps.map((ogp, index) => index < 3 && <OgpCard key={ogp.url} ogp={ogp} />)}
 							</FadeInContainer>
 						</Suspense>
 						<Text variant="p" className=" text-sm text-maki-gray text-right ">
@@ -151,9 +138,7 @@ export default async function HomePage() {
 					{/* コンタクト */}
 					<section className=" my-16 md:my-24 ">
 						<Text variant="h2">コンタクト</Text>
-						<Text className=" my-2 ">
-							メールもしくは各種SNSのDMからご連絡ください。
-						</Text>
+						<Text className=" my-2 ">メールもしくは各種SNSのDMからご連絡ください。</Text>
 					</section>
 
 					{/* むすび */}
