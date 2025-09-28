@@ -1,5 +1,4 @@
 import Scene from "@/components/3d/Scene";
-import { Card, CardContents, CardCover } from "@/components/ui/Card";
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import OgpCard from "@/components/ui/OgpCard";
 import SocialLinkIcon from "@/components/ui/SocialLinkIcon";
