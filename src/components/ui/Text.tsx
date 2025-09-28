@@ -33,11 +33,15 @@ const text = tv({
 });
 
 export function Text({ variant = "p", children, className, ...props }: TextProps) {
-	const Tag = variant;
+	const Tag = variant === "small" ? "p" : variant;
 
 	return (
 		<Tag className={twMerge(text({ variant }), className)} {...props}>
-			{children}
+			{variant === "small" ? (
+				<small className={twMerge(text({ variant }), className)}>{children}</small>
+			) : (
+				children
+			)}
 		</Tag>
 	);
 }
