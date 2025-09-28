@@ -12,14 +12,7 @@ const FavoriteFillIcon = ({ ...props }: FavoriteFillIconProps) => {
 			aria-label="favorite"
 			{...props}
 		>
-			<mask
-				id="mask0_31_45"
-				maskUnits="userSpaceOnUse"
-				x="0"
-				y="0"
-				width="24"
-				height="24"
-			>
+			<mask id="mask0_31_45" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
 				<rect width="24" height="24" fill="#D9D9D9" />
 			</mask>
 			<g mask="url(#mask0_31_45)">

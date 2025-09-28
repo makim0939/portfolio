@@ -9,9 +9,7 @@ export async function generateStaticParams() {
 	return works.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({
-	params,
-}: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
 	const { slug } = await params;
 	const work = await getWorkBySlug(slug);
 	if (!work) return {};
@@ -21,9 +19,7 @@ export async function generateMetadata({
 	};
 }
 
-export default async function BlogPostPage({
-	params,
-}: { params: Promise<{ slug: string }> }) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
 	const { slug } = await params;
 	const work = await getWorkBySlug(slug);
 	if (!work) return notFound();
@@ -41,9 +37,7 @@ export default async function BlogPostPage({
 					<Text variant="h1" className="text-neutral-50">
 						{work.title}
 					</Text>
-					{work.description && (
-						<Text className="text-neutral-50">{work.description}</Text>
-					)}
+					{work.description && <Text className="text-neutral-50">{work.description}</Text>}
 					<Text variant="small" className="text-neutral-50">
 						<time dateTime={work.date}>{work.date}</time>
 						{work.tags?.length ? ` ・ ${work.tags.join(", ")}` : null}

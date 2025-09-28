@@ -1,7 +1,6 @@
 "use client";
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
 import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
-import useDeviceType from "@/hooks/useDeviceType";
 import { useDoePermission } from "@/hooks/useDoePermission";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
@@ -45,11 +44,9 @@ export default function Scene() {
 						transitionDelay: "5000ms",
 					}}
 				>
-					{doePermission === "default" &&
-						"🎮 ジャイロセンサを有効にしてみる...?"}
+					{doePermission === "default" && "🎮 ジャイロセンサを有効にしてみる...?"}
 					{doePermission === "granted" && "✅ スマホを動かしてみよう"}
-					{doePermission === "denied" &&
-						"🚫 ジャイロセンサを使うにはブラウザを再起動してください"}
+					{doePermission === "denied" && "🚫 ジャイロセンサを使うにはブラウザを再起動してください"}
 				</button>
 			)}
 		</div>

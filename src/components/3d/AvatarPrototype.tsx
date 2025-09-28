@@ -4,7 +4,7 @@ Command: npx gltfjsx@6.5.3 avatar_prototype.glb -t
 */
 "use client";
 import { useAnimations, useGLTF } from "@react-three/drei";
-import { useFrame, useGraph } from "@react-three/fiber";
+import { useGraph } from "@react-three/fiber";
 import React, { type JSX, useEffect } from "react";
 import type * as THREE from "three";
 import { type GLTF, SkeletonUtils } from "three/examples/jsm/Addons.js";
@@ -66,11 +66,7 @@ export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 	return (
 		<group ref={group} {...props} dispose={null}>
 			<group name="Scene">
-				<group
-					name="Armature"
-					rotation={[Math.PI / 2, 0, Math.PI / 4]}
-					scale={0.01}
-				>
+				<group name="Armature" rotation={[Math.PI / 2, 0, Math.PI / 4]} scale={0.01}>
 					<primitive object={nodes.mixamorigHips} />
 					<group name="Body">
 						<skinnedMesh

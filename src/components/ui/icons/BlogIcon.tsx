@@ -12,10 +12,7 @@ const BlogIcon = ({ ...props }: NavIconProps) => {
 			aria-label="blog"
 			{...props}
 		>
-			<path
-				d="M5.08789 6.41169L7.20554 3.70581V23.2352H5.08789V6.41169Z"
-				fill="#252528"
-			/>
+			<path d="M5.08789 6.41169L7.20554 3.70581V23.2352H5.08789V6.41169Z" fill="#252528" />
 			<path
 				fillRule="evenodd"
 				clipRule="evenodd"

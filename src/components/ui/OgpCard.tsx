@@ -29,11 +29,7 @@ export default function OgpCard({ ogp }: { ogp: OgpData }) {
 					{ogp.emoji && `${ogp.emoji} `} {ogp.title}
 				</Link>
 			</h3>
-			<div>
-				{ogp.description && (
-					<p className="text-sm text-neutral-600">{ogp.description}</p>
-				)}
-			</div>
+			<div>{ogp.description && <p className="text-sm text-neutral-600">{ogp.description}</p>}</div>
 
 			<div className="flex items-center gap-2 text-sm text-neutral-500">
 				<time dateTime={ogp.lastUpdate}>{ogp.lastUpdate}</time>
@@ -44,9 +40,7 @@ export default function OgpCard({ ogp }: { ogp: OgpData }) {
 						height={20}
 						fill="#dd5522"
 					/>
-					<p className=" inline align-middle text-sm text-neutral-500">
-						{ogp.likedCount ?? ""}
-					</p>
+					<p className=" inline align-middle text-sm text-neutral-500">{ogp.likedCount ?? ""}</p>
 				</div>
 				{/* <ul className="flex gap-1 flex-wrap">
 					{work.tags?.map((s) => (

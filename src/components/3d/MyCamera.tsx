@@ -1,5 +1,5 @@
 "use client";
-import { OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
+import { PerspectiveCamera } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import React, { useEffect } from "react";
 

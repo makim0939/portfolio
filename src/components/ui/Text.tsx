@@ -4,10 +4,7 @@ import { tv } from "tailwind-variants";
 type TextProps = {
 	variant?: "h1" | "h2" | "h3" | "p" | "small";
 	children: React.ReactNode;
-} & (
-	| React.HTMLAttributes<HTMLHeadingElement>
-	| React.HTMLAttributes<HTMLParagraphElement>
-);
+} & (React.HTMLAttributes<HTMLHeadingElement> | React.HTMLAttributes<HTMLParagraphElement>);
 
 const text = tv({
 	base: " text-maki-black ",
