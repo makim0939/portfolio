@@ -78,15 +78,13 @@ function getMetaContent(html: string, property: string): string {
 export async function getAllArticleOgps(): Promise<OgpData[]> {
 	const articles = await getAllArticles();
 
-	const promiseOgps = articles.map<Promise<OgpData>>(
-		async (article): Promise<OgpData> => {
-			const html = await fetch(article.url, {
-				next: { revalidate: 3600 },
-			}).then((res) => res.text());
-			article.image = getMetaContent(html, "og:image");
-			return article;
-		},
-	);
+	const promiseOgps = articles.map<Promise<OgpData>>(async (article): Promise<OgpData> => {
+		const html = await fetch(article.url, {
+			next: { revalidate: 3600 },
+		}).then((res) => res.text());
+		article.image = getMetaContent(html, "og:image");
+		return article;
+	});
 
 	const resolvedOgps = await Promise.all(promiseOgps);
 
@@ -96,7 +94,6 @@ export async function getAllArticleOgps(): Promise<OgpData[]> {
 export async function fetchZennOgp(url: string): Promise<OgpData | null> {
 	try {
 		const html = await fetch(url).then((res) => res.text());
-		console.log(html);
 
 		return {
 			title: getMetaContent(html, "og:title"),
