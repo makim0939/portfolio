@@ -7,6 +7,7 @@ export type WorkFront = {
 	description?: string;
 	slug: string;
 	date: string; // YYYY-MM-DD
+	thumbnail: string;
 	coverImage: string;
 	tags?: string[];
 	published?: boolean;

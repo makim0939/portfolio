@@ -16,6 +16,7 @@ export const Default: Story = {
 			description: "StorybookでWorkカードコンポーネントの動作テスト",
 			slug: "storybook-workcard-test",
 			date: "2025-09-01", // YYYY-MM-DD
+			thumbnail: "/test-work.png",
 			coverImage: "/test-work.png",
 			tags: ["storybook", "typescript", "react"],
 			published: false,

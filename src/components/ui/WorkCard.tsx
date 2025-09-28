@@ -8,7 +8,7 @@ export function WorkCard({ work }: { work: Work }) {
 			<div>
 				<Link href={`/works/${work.slug}`}>
 					<Image
-						src={`/works/${work.coverImage}`}
+						src={`/works/${work.thumbnail}`}
 						alt={work.title}
 						className=" w-full rounded-md"
 						width={1920}
