@@ -166,7 +166,7 @@ export default async function HomePage() {
 					</section>
 				</article>
 				<Text variant="small" className=" text-center text-maki-gray">
-					© 2025 Soma Makimura
+					© 2025 Makimura Soma
 				</Text>
 			</main>
 		</>
