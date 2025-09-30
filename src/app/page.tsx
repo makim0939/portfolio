@@ -35,17 +35,17 @@ export default async function HomePage() {
 			<main>
 				{/* プロフィール */}
 				<article>
-					<section className=" flex flex-col gap-6">
-						<hgroup className=" flex ">
-							<Avatar className=" mr-2 w-14 h-14">
-								<AvatarImage src="https://github.com/shadcn.png" />
+					<section className=" flex flex-col gap-6 ">
+						<hgroup className=" flex items-center ">
+							<Avatar className=" mr-2 w-16 h-16 border-2 box-content border-neutral-300 ">
+								<AvatarImage src="/AvatarIcon.jpg" />
 								<AvatarFallback>
 									<b>M</b>
 								</AvatarFallback>
 							</Avatar>
 							<div>
 								<Text variant="h2">まきむら</Text>
-								<Text variant="small" className=" ml-1.5">
+								<Text variant="small" className=" ml-0.5 ">
 									ソフトウェアとCGのクリエイター
 								</Text>
 							</div>
