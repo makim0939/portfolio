@@ -10,7 +10,7 @@ export function WorkCard({ work }: { work: Work }) {
 					<Image
 						src={`/works/${work.thumbnail}`}
 						alt={work.title}
-						className=" w-full rounded-md"
+						className=" w-full rounded-md bg-neutral-200"
 						width={1920}
 						height={1080}
 					/>
