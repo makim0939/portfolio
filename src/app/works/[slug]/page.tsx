@@ -38,7 +38,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 						loop
 						playsInline
 						controls={false}
-						className=" absolute w-full h-full object-cover brightness-50"
+						className=" absolute w-full h-full object-cover brightness-50 bg-neutral-200"
 					/>
 				) : (
 					<Image

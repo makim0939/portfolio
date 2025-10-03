@@ -12,7 +12,7 @@ export function OgpCard({ ogp }: { ogp: OgpData }) {
 					<Image
 						src={ogp.image}
 						alt={ogp.title}
-						className=" w-full rounded-md"
+						className=" w-full rounded-md bg-neutral-200"
 						width={1200}
 						height={630}
 					/>
