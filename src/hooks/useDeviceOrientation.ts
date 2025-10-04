@@ -1,3 +1,4 @@
+import { makeSmooth } from "@/lib/animationTools";
 import { useEffect, useState } from "react";
 
 type DeviceOrientation = {
@@ -14,9 +15,6 @@ export function useDeviceOrientation() {
 	});
 
 	useEffect(() => {
-		const makeSmooth = (prev: number, current: number, factor: number) => {
-			return prev + (current - prev) * factor;
-		};
 		const handleOrientation = (event: DeviceOrientationEvent) => {
 			const orientation = {
 				alpha: event.alpha ?? 0,
