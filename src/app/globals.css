@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@theme {
+	--breakpoint-3xl: 120rem;
+}
 
 html,
 body {

@@ -10,10 +10,10 @@ const text = tv({
 	base: " text-maki-black ",
 	variants: {
 		variant: {
-			h1: " text-3xl md:text-5xl 2xl:text-[64px] font-bold",
-			h2: " text-2xl md:text-4xl font-semibold",
-			h3: " text-xl md:text-3xl font-semibold",
-			p: " text-base md:text-lg leading-8 md:leading-10",
+			h1: " text-3xl md:text-4xl 3xl:text-5xl font-bold",
+			h2: " text-2xl md:text-3xl 3xl:text-4xl  font-semibold",
+			h3: " text-xl md:text-2xl 3xl:text-3xl font-semibold",
+			p: " text-base md:text-lg 3xl:text-xl leading-8 md:leading-10",
 			small: " text-sm md:text-base text-maki-gray  ",
 		},
 	},
