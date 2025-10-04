@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcnui/avatar";
-import { Scene } from "@/components/3d/Scene";
+import { DoePermissionButton, Scene } from "@/components/3d/Scene";
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { OgpCard } from "@/components/ui/OgpCard";
 import { SocialLinkIcon } from "@/components/ui/SocialLinkIcon";
@@ -17,22 +17,23 @@ export default async function HomePage() {
 	return (
 		<>
 			{/* トップ */}
-			<div>
-				<header className=" absolute z-10 md:relative">
-					<Text variant="h1" className=" mb-4 md:mb-8 ">
-						まきむら<span className=" text-lg md:text-4xl">の</span>
+			<div className=" ">
+				<header className="relative z-10">
+					<Text variant="h1" className=" mb-4 lg:mb-8 ">
+						まきむら<span className=" text-lg lg:text-4xl">の</span>
 						<br />
 						ポートフォリオ
 					</Text>
 					<Text>
-						<span className=" text-lg md:text-3xl tracking-[.21em] ">
+						<span className=" text-lg lg:text-3xl tracking-[.21em] ">
 							こんにちは。まきむらです！
 						</span>
 					</Text>
 				</header>
 				<Scene />
 			</div>
-			<main>
+			<DoePermissionButton />
+			<main className="lg:w-[50vw]">
 				{/* プロフィール */}
 				<article>
 					<section className=" flex flex-col gap-6 ">
@@ -50,7 +51,7 @@ export default async function HomePage() {
 								</Text>
 							</div>
 						</hgroup>
-						<ul className=" flex items-center gap-2 md:gap-4 ">
+						<ul className=" flex items-center gap-2 lg:gap-4 ">
 							{socialLinks.map((socialLink) => (
 								<li key={socialLink.name}>
 									<SocialLinkIcon
@@ -94,7 +95,7 @@ export default async function HomePage() {
 					</section>
 
 					{/* 成果物 */}
-					<section className=" w-full my-16 md:my-24">
+					<section className=" w-full my-16 lg:my-24">
 						<Text variant="h2">制作物</Text>
 						<FadeInContainer
 							className=" 
@@ -114,7 +115,7 @@ export default async function HomePage() {
 					</section>
 
 					{/* ブログ */}
-					<section className=" my-16 md:my-24">
+					<section className=" my-16 lg:my-24">
 						<Text variant="h2">ブログ</Text>
 						<Suspense fallback={<div>Loading...</div>}>
 							<FadeInContainer
@@ -136,13 +137,13 @@ export default async function HomePage() {
 					</section>
 
 					{/* コンタクト */}
-					<section className=" my-16 md:my-24 ">
+					<section className=" my-16 lg:my-24 ">
 						<Text variant="h2">コンタクト</Text>
 						<Text className=" my-2 ">メールもしくは各種SNSのDMからご連絡ください。</Text>
 					</section>
 
 					{/* むすび */}
-					<section className=" my-16 md:my-24 ">
+					<section className=" my-16 lg:my-24 ">
 						<Text>
 							最後までご覧いただきまして、
 							<br />

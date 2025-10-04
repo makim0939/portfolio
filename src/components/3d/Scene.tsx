@@ -6,13 +6,13 @@ import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import { MyCamera } from "./MyCamera";
 import { Room } from "./Room";
+import { useResponsiveBreakpoint } from "@/hooks/useResponsiveBreakpoint";
 
 export function Scene() {
-	const { doePermission, checkDoePermission } = useDoePermission();
 	const orientation = useDeviceOrientation();
 	return (
-		<div className=" -m-8 ">
-			<div className=" w-[100vw] h-[480px] ">
+		<div className="relative w-[100vw] h-[100vw] -mt-16 ">
+			<div className=" absolute w-full h-full -top-4 left-0 -z-10 -mx-8  ">
 				<Canvas shadows orthographic>
 					<Suspense fallback={null}>
 						<MyCamera />
@@ -31,14 +31,22 @@ export function Scene() {
 					</Suspense>
 				</Canvas>
 			</div>
+		</div>
+	);
+}
 
+export function DoePermissionButton() {
+	const { doePermission, checkDoePermission } = useDoePermission();
+	return (
+		<>
 			{doePermission && doePermission !== "notSupported" && (
 				<button
 					type="button"
 					onClick={() => checkDoePermission()}
-					className=" mx-8 -mt-16 p-2 text-left bg-neutral-50 border border-blue-400 rounded-2xl "
+					className=" p-2 z-10 text-left bg-neutral-50 border border-blue-400 rounded-2xl "
 					style={{
-						marginBottom: doePermission === "granted" ? 0 : 64,
+						marginTop: doePermission === "granted" ? -64 : 0,
+						marginBottom: doePermission === "granted" ? -64 : 16,
 						opacity: doePermission === "granted" ? 0 : 100,
 						transitionDuration: "250ms",
 						transitionDelay: "5000ms",
@@ -49,6 +57,6 @@ export function Scene() {
 					{doePermission === "denied" && "🚫 ジャイロセンサを使うにはブラウザを再起動してください"}
 				</button>
 			)}
-		</div>
+		</>
 	);
 }

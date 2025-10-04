@@ -9,5 +9,5 @@ export function MyCamera() {
 		camera.position.set(-5, 3, 5);
 		camera.lookAt(0, 1, 0);
 	}, [camera]);
-	return <PerspectiveCamera makeDefault zoom={1.2} />;
+	return <PerspectiveCamera makeDefault zoom={1.5} />;
 }
