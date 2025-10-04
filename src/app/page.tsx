@@ -18,24 +18,24 @@ export default async function HomePage() {
 		<>
 			{/* トップ */}
 			<div>
-				<header className=" absolute z-10 md:relative">
-					<Text variant="h1" className=" mb-4 md:mb-8 ">
-						まきむら<span className=" text-lg md:text-4xl">の</span>
+				<header className="relative z-10 lg:mb-24 ">
+					<Text variant="h1" className=" mb-4 lg:mb-8 md:text-5xl xl:text-[54px] 3xl:text-6xl">
+						まきむら<span className=" text-lg lg:text-4xl">の</span>
 						<br />
 						ポートフォリオ
 					</Text>
 					<Text>
-						<span className=" text-lg md:text-3xl tracking-[.21em] ">
+						<span className=" text-lg lg:text-3xl tracking-[.21em] ">
 							こんにちは。まきむらです！
 						</span>
 					</Text>
 				</header>
 				<Scene />
 			</div>
-			<main>
+			<main className="lg:w-[40vw] lg:pr-16 ">
 				{/* プロフィール */}
 				<article>
-					<section className=" flex flex-col gap-6 ">
+					<section className=" flex flex-col gap-6 my-4 lg:my-16 ">
 						<hgroup className=" flex items-center ">
 							<Avatar className=" mr-2 w-16 h-16 border-2 box-content border-neutral-300 ">
 								<AvatarImage src="/AvatarIcon.jpg" />
@@ -50,7 +50,7 @@ export default async function HomePage() {
 								</Text>
 							</div>
 						</hgroup>
-						<ul className=" flex items-center gap-2 md:gap-4 ">
+						<ul className=" flex items-center gap-2 lg:gap-4 ">
 							{socialLinks.map((socialLink) => (
 								<li key={socialLink.name}>
 									<SocialLinkIcon
@@ -94,14 +94,15 @@ export default async function HomePage() {
 					</section>
 
 					{/* 成果物 */}
-					<section className=" w-full my-16 md:my-24">
+					<section className=" w-full my-16">
 						<Text variant="h2">制作物</Text>
 						<FadeInContainer
 							className=" 
-								grid gap-6 my-8
+								grid gap-6 mt-8 mb-4
 								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
-								sm:[grid-template-columns:repeat(auto-fill,minmax(230px,1fr))]
-								lg:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]
+								sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
+								md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
+								lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
 							"
 						>
 							{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
@@ -114,15 +115,16 @@ export default async function HomePage() {
 					</section>
 
 					{/* ブログ */}
-					<section className=" my-16 md:my-24">
+					<section className=" my-16">
 						<Text variant="h2">ブログ</Text>
 						<Suspense fallback={<div>Loading...</div>}>
 							<FadeInContainer
 								className=" 
-								grid gap-6 my-8 
+								grid gap-6 mt-8 mb-4
 								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
-								sm:[grid-template-columns:repeat(auto-fill,minmax(230px,1fr))]
-								lg:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]
+								sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
+								md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
+								lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
 							"
 							>
 								{ogps.map((ogp, index) => index < 3 && <OgpCard key={ogp.url} ogp={ogp} />)}
@@ -136,13 +138,15 @@ export default async function HomePage() {
 					</section>
 
 					{/* コンタクト */}
-					<section className=" my-16 md:my-24 ">
-						<Text variant="h2">コンタクト</Text>
+					<section className=" my-16 ">
+						<Text variant="h2" className="mt-8 mb-4">
+							コンタクト
+						</Text>
 						<Text className=" my-2 ">メールもしくは各種SNSのDMからご連絡ください。</Text>
 					</section>
 
 					{/* むすび */}
-					<section className=" my-16 md:my-24 ">
+					<section className=" my-16 ">
 						<Text>
 							最後までご覧いただきまして、
 							<br />
