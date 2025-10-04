@@ -6,7 +6,7 @@ import { getAllArticleOgps } from "@/lib/zenn";
 export default async function BlogPage() {
 	const ogps = await getAllArticleOgps();
 	return (
-		<main className="">
+		<main className=" lg:max-w-6xl lg:m-auto ">
 			<header>
 				<Text variant="h1">ブログ</Text>
 			</header>
@@ -14,10 +14,10 @@ export default async function BlogPage() {
 			<div
 				className=" 
                     grid gap-4 md:gap-8
-					lg:max-w-7xl m-auto
-                    [grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
-                    sm:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
-                    lg:[grid-template-columns:repeat(auto-fill,minmax(300spx,1fr))]
+					
+                    sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
+					md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
+					lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
                 "
 			>
 				<Suspense fallback={<div>Loading...</div>}>

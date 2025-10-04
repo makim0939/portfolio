@@ -3,9 +3,11 @@ import { Text } from "@/components/ui/Text";
 
 export default function AboutPage() {
 	return (
-		<main className="min-h-screen">
-			<h1 className="text-3xl font-bold mb-4">プロフィール</h1>
-			<FadeInContainer className="[&>*]:my-8 [&>div]:md:my-0">
+		<main className=" min-h-screen lg:w-[40vw] ">
+			<Text variant="h1" className="mb-8">
+				プロフィール
+			</Text>
+			<FadeInContainer className="[&>*]:my-8 [&>div]:md:my-4">
 				<Text>まきむらです。名古屋のソフト開発を主軸とする会社に勤めています。</Text>
 				<Text>
 					プログラミングで何か作ったり、3DCGをこねたり、絵を描いたり、楽器を弾いたりしています。

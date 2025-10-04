@@ -6,7 +6,7 @@ import { getAllWorks } from "@/lib/works";
 export default async function WorksPage() {
 	const works = await getAllWorks();
 	return (
-		<main className="">
+		<main className=" lg:max-w-6xl lg:m-auto ">
 			<header>
 				<Text variant="h1">制作物</Text>
 			</header>
@@ -14,10 +14,10 @@ export default async function WorksPage() {
 			<FadeInContainer>
 				<div
 					className=" 
-                    grid gap-4
-                    [grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
-                    sm:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
-                    lg:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]
+                    grid gap-4 md:gap-8
+                    sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
+					md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
+					lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
                 "
 				>
 					{works.map((w) => (

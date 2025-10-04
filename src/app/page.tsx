@@ -19,7 +19,7 @@ export default async function HomePage() {
 			{/* トップ */}
 			<div className=" ">
 				<header className="relative z-10">
-					<Text variant="h1" className=" mb-4 lg:mb-8 ">
+					<Text variant="h1" className=" mb-4 lg:mb-8 md:text-5xl xl:text-[54px] 3xl:text-6xl">
 						まきむら<span className=" text-lg lg:text-4xl">の</span>
 						<br />
 						ポートフォリオ
@@ -32,7 +32,7 @@ export default async function HomePage() {
 				</header>
 				<Scene />
 			</div>
-			<main className="lg:w-[50vw]">
+			<main className="lg:w-[40vw] lg:pr-16 ">
 				{/* プロフィール */}
 				<article>
 					<section className=" flex flex-col gap-6 ">
@@ -100,8 +100,9 @@ export default async function HomePage() {
 							className=" 
 								grid gap-6 my-8
 								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
-								sm:[grid-template-columns:repeat(auto-fill,minmax(230px,1fr))]
-								lg:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]
+								sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
+								md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
+								lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
 							"
 						>
 							{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
@@ -121,8 +122,9 @@ export default async function HomePage() {
 								className=" 
 								grid gap-6 my-8 
 								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
-								sm:[grid-template-columns:repeat(auto-fill,minmax(230px,1fr))]
-								lg:[grid-template-columns:repeat(auto-fill,minmax(260px,1fr))]
+								sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
+								md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
+								lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
 							"
 							>
 								{ogps.map((ogp, index) => index < 3 && <OgpCard key={ogp.url} ogp={ogp} />)}

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function WorkCard({ work }: { work: Work }) {
 	return (
-		<article className=" max-w-96 space-y-2 p-5 rounded-2xl border hover:shadow-sm transition shadow-lg md:shadow-2xl">
+		<article className=" max-w-96 space-y-2 p-5 rounded-2xl border hover:shadow-sm transition shadow-lg ">
 			<div>
 				<Link href={`/works/${work.slug}`}>
 					<Image
