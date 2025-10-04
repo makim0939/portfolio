@@ -7,9 +7,11 @@ import { Suspense } from "react";
 import { MyCamera } from "./MyCamera";
 import { Room } from "./Room";
 import { useResponsiveBreakpoint } from "@/hooks/useResponsiveBreakpoint";
+import { useMousePos } from "@/hooks/useMousePos";
 
 export function Scene() {
 	const orientation = useDeviceOrientation();
+	const mousePos = useMousePos();
 	const responsive = useResponsiveBreakpoint();
 
 	// PC版
@@ -23,9 +25,9 @@ export function Scene() {
 						<pointLight position={[0, 5, 1]} intensity={10} />
 						<group
 							rotation={[
-								Math.PI * (((orientation.beta - 30) / 90) * 0.075),
-								Math.PI * ((orientation.gamma / 90) * 0.25),
-								Math.PI * (((orientation.beta - 30) / 90) * 0.075),
+								Math.PI * (mousePos.y * 0.1),
+								Math.PI * (mousePos.x * 0.25),
+								Math.PI * (mousePos.y * 0.1),
 							]}
 						>
 							<AvatarPrototype />
