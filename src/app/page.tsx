@@ -35,7 +35,7 @@ export default async function HomePage() {
 			<main className="lg:w-[40vw] lg:pr-16 ">
 				{/* プロフィール */}
 				<article>
-					<section className=" flex flex-col gap-6 lg:my-16 ">
+					<section className=" flex flex-col gap-6 my-4 lg:my-16 ">
 						<hgroup className=" flex items-center ">
 							<Avatar className=" mr-2 w-16 h-16 border-2 box-content border-neutral-300 ">
 								<AvatarImage src="/AvatarIcon.jpg" />
@@ -98,7 +98,7 @@ export default async function HomePage() {
 						<Text variant="h2">制作物</Text>
 						<FadeInContainer
 							className=" 
-								grid gap-6 my-4
+								grid gap-6 mt-8 mb-4
 								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
 								sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
 								md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
@@ -120,7 +120,7 @@ export default async function HomePage() {
 						<Suspense fallback={<div>Loading...</div>}>
 							<FadeInContainer
 								className=" 
-								grid gap-6 my-4
+								grid gap-6 mt-8 mb-4
 								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
 								sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
 								md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
@@ -139,7 +139,9 @@ export default async function HomePage() {
 
 					{/* コンタクト */}
 					<section className=" my-16 ">
-						<Text variant="h2">コンタクト</Text>
+						<Text variant="h2" className="mt-8 mb-4">
+							コンタクト
+						</Text>
 						<Text className=" my-2 ">メールもしくは各種SNSのDMからご連絡ください。</Text>
 					</section>
 
