@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcnui/avatar";
-import { DoePermissionButton, Scene } from "@/components/3d/Scene";
+import { Scene } from "@/components/3d/Scene";
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { OgpCard } from "@/components/ui/OgpCard";
 import { SocialLinkIcon } from "@/components/ui/SocialLinkIcon";
@@ -32,7 +32,6 @@ export default async function HomePage() {
 				</header>
 				<Scene />
 			</div>
-			<DoePermissionButton />
 			<main className="lg:w-[50vw]">
 				{/* プロフィール */}
 				<article>
