@@ -10,8 +10,9 @@ import { useResponsiveBreakpoint } from "@/hooks/useResponsiveBreakpoint";
 import { useMousePos } from "@/hooks/useMousePos";
 
 export function Scene() {
+	const { doePermission, checkDoePermission } = useDoePermission();
 	const orientation = useDeviceOrientation();
-	const mousePos = useMousePos();
+	const mousePos = useMousePos(doePermission !== null && doePermission === "notSupported");
 	const responsive = useResponsiveBreakpoint();
 
 	// PC版
@@ -62,15 +63,6 @@ export function Scene() {
 					</Canvas>
 				</div>
 			</div>
-			<DoePermissionButton />
-		</>
-	);
-}
-
-export function DoePermissionButton() {
-	const { doePermission, checkDoePermission } = useDoePermission();
-	return (
-		<>
 			{doePermission && doePermission !== "notSupported" && (
 				<button
 					type="button"

@@ -1,15 +1,17 @@
 import { makeSmooth } from "@/lib/animationTools";
+import { is } from "@react-three/fiber/dist/declarations/src/core/utils";
 import { useEffect, useRef, useState } from "react";
 
 type MousePosition = {
 	x: number;
 	y: number;
 };
-export function useMousePos() {
+export function useMousePos(isEnabled: boolean) {
 	const targetPos = useRef<MousePosition>({ x: 0, y: 0 });
 	const [mousePos, setMousePos] = useState<MousePosition>({ x: 0, y: 0 });
 
 	useEffect(() => {
+		if (!isEnabled) return;
 		const onMouseMove = (e: MouseEvent) => {
 			const centerX = innerWidth / 2;
 			const centerY = innerHeight / 2;
@@ -37,7 +39,7 @@ export function useMousePos() {
 			window.removeEventListener("mousemove", onMouseMove);
 			cancelAnimationFrame(rafId);
 		};
-	}, []);
+	}, [isEnabled]);
 
 	return mousePos;
 }
