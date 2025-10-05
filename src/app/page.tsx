@@ -1,39 +1,160 @@
-import Link from "next/link";
-import Scene from "./components/Scene";
+import React, { Suspense } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcnui/avatar";
+import { Scene } from "@/components/3d/Scene";
+import { FadeInContainer } from "@/components/ui/FadeInContainer";
+import { OgpCard } from "@/components/ui/OgpCard";
+import { SocialLinkIcon } from "@/components/ui/SocialLinkIcon";
+import { StyledLink } from "@/components/ui/StyledLink";
+import { Text } from "@/components/ui/Text";
+import { WorkCard } from "@/components/ui/WorkCard";
+import { socialLinks } from "@/lib/socialLinks";
+import { getAllWorks } from "@/lib/works";
+import { getAllArticleOgps } from "@/lib/zenn";
 
-export default function Home() {
+export default async function HomePage() {
+	const ogps = await getAllArticleOgps();
+	const works = await getAllWorks();
 	return (
-		<div className="flex flex-col w-full h-full">
-			<section className="px-8 pt-16 md:w-2xl md:p-16">
-				<header className=" md:mb-12 [&>p]:ml-1 [&>p]:md:ml-1.5">
-					<h1 className="mb-1 text-4xl font-bold leading-relaxed md:text-5xl ">
-						まきむらは、
+		<>
+			{/* トップ */}
+			<div>
+				<header className="relative z-10 lg:mb-24 ">
+					<Text variant="h1" className=" mb-4 lg:mb-8 md:text-5xl xl:text-[54px] 3xl:text-6xl">
+						まきむら<span className=" text-lg lg:text-4xl">の</span>
 						<br />
-						<span className=" dot-text">制作</span>中...
-					</h1>
-					<p>まきむらのポートフォリオサイト。</p>
+						ポートフォリオ
+					</Text>
+					<Text>
+						<span className=" text-lg lg:text-3xl tracking-[.21em] ">
+							こんにちは。まきむらです！
+						</span>
+					</Text>
 				</header>
-				<main>
-					<section>
-						<p>
-							このサイトは現在制作中です。
-							<br />
-							5月末までに、初期リリース版を公開予定です。
-							<br />
-							<a
-								href="https://makimura-portfolio.com"
-								className="text-blue-500  "
-							>
-								<span className=" hover:underline ">
-									現行のポートフォリオサイトを見る
-								</span>
-								→
-							</a>
-						</p>
+				<Scene />
+			</div>
+			<main className="lg:w-[40vw] lg:pr-16 ">
+				{/* プロフィール */}
+				<article>
+					<section className=" flex flex-col gap-6 my-4 lg:my-16 ">
+						<hgroup className=" flex items-center ">
+							<Avatar className=" mr-2 w-16 h-16 border-2 box-content border-neutral-300 ">
+								<AvatarImage src="/AvatarIcon.jpg" />
+								<AvatarFallback>
+									<b>M</b>
+								</AvatarFallback>
+							</Avatar>
+							<div>
+								<Text variant="h2">まきむら</Text>
+								<Text variant="small" className=" ml-0.5 ">
+									ソフトウェアとCGのクリエイター
+								</Text>
+							</div>
+						</hgroup>
+						<ul className=" flex items-center gap-2 lg:gap-4 ">
+							{socialLinks.map((socialLink) => (
+								<li key={socialLink.name}>
+									<SocialLinkIcon
+										socialLinkData={socialLink}
+										svgAttr={{ fill: "#757578", width: 28, height: 28 }}
+									/>
+								</li>
+							))}
+							{/* <li className="ml-2 text-right">
+								<Text variant="p" className=" text-sm text-maki-gray ">
+									<StyledLink href="">
+										<u>他のリンクを見る</u>→
+									</StyledLink>
+								</Text>
+							</li> */}
+						</ul>
+						<FadeInContainer>
+							<div className=" [&>*]:mb-6 ">
+								<Text>このサイトを訪れていただきまして、ありがとうございます。</Text>
+								<Text>
+									クリエイティブなことが楽しくて、Web・CG・音楽などをしています。 詳しくは、
+									<StyledLink href="/works">
+										<u>制作物</u>
+									</StyledLink>
+									をご覧ください。
+								</Text>
+								<Text>
+									自分の中でぶれない軸を置くような
+									創作活動の拠点となる場が欲しくて、このサイトを作りました。
+								</Text>
+								<Text>
+									私のこと、このサイトのこと、その他なんでもDM・メールから気軽に話かけてください。
+								</Text>
+								<Text variant="p" className=" text-sm text-maki-gray text-right ">
+									<StyledLink href="/about">
+										<u>私について詳しく見る</u>→
+									</StyledLink>
+								</Text>
+							</div>
+						</FadeInContainer>
 					</section>
-				</main>
-			</section>
-			<Scene />
-		</div>
+
+					{/* 成果物 */}
+					<section className=" w-full my-16">
+						<Text variant="h2">制作物</Text>
+						<FadeInContainer
+							className=" 
+								grid gap-6 mt-8 mb-4
+								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
+								sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
+								md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
+								lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
+							"
+						>
+							{works.map((w, i) => i < 3 && <WorkCard key={w.slug} work={w} />)}
+						</FadeInContainer>
+						<Text variant="p" className=" text-sm text-maki-gray text-right ">
+							<StyledLink href="/works">
+								<u>全ての制作物を見る</u>→
+							</StyledLink>
+						</Text>
+					</section>
+
+					{/* ブログ */}
+					<section className=" my-16">
+						<Text variant="h2">ブログ</Text>
+						<Suspense fallback={<div>Loading...</div>}>
+							<FadeInContainer
+								className=" 
+								grid gap-6 mt-8 mb-4
+								[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
+								sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
+								md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
+								lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
+							"
+							>
+								{ogps.map((ogp, index) => index < 3 && <OgpCard key={ogp.url} ogp={ogp} />)}
+							</FadeInContainer>
+						</Suspense>
+						<Text variant="p" className=" text-sm text-maki-gray text-right ">
+							<StyledLink href="/blog">
+								<u>全てのブログを見る</u>→
+							</StyledLink>
+						</Text>
+					</section>
+
+					{/* コンタクト */}
+					<section className=" my-16 ">
+						<Text variant="h2" className="mt-8 mb-4">
+							コンタクト
+						</Text>
+						<Text className=" my-2 ">メールもしくは各種SNSのDMからご連絡ください。</Text>
+					</section>
+
+					{/* むすび */}
+					<section className=" my-16 ">
+						<Text>
+							最後までご覧いただきまして、
+							<br />
+							ありがとうございます。
+						</Text>
+					</section>
+				</article>
+			</main>
+		</>
 	);
 }

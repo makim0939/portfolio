@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Noto_Sans_JP } from "next/font/google";
+import { GlobalNav } from "@/components/ui/GlobalNav";
+import { Text } from "@/components/ui/Text";
 import "./globals.css";
-import Link from "next/link";
 
-const inter = Inter({ subsets: ["latin"] });
+const notoSansJP = Noto_Sans_JP({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
 	title: "まきむらのポートフォリオ",
@@ -17,7 +18,17 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="ja">
-			<body className={inter.className}>{children}</body>
+			<body className={notoSansJP.className}>
+				<div className=" p-8 pt-16 mb-16 md:pt-24 lg:p-16 lg:pt-28 lg:mb-0  ">
+					<>
+						{children}
+						<Text variant="small" className=" mt-16 text-center text-maki-gray">
+							© 2025 Makimura Soma
+						</Text>
+					</>
+				</div>
+				<GlobalNav />
+			</body>
 		</html>
 	);
 }
