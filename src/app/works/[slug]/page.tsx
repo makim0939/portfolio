@@ -29,7 +29,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 		<main>
 			<header
 				className=" relative -mx-8 -mt-16 mb-8 h-[50vh] 
-							lg:-mx-16 lg:-mt-20 lg:mb-16 lg:w-[100vw] lg:h-[100vh] 
+							lg:-mx-16 lg:-mt-28 lg:mb-16 lg:w-[100vw] lg:h-[100vh] 
 							3xl:-mx-20 "
 			>
 				{isCoverVideo ? (

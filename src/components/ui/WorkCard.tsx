@@ -22,20 +22,20 @@ export function WorkCard({ work }: { work: Work }) {
 					{work.title}
 				</Link>
 			</h3>
+			<p className=" text-xs text-neutral-500">
+				<time dateTime={work.date}>{work.date}</time>
+			</p>
 			<div>
 				{work.description && <p className="text-sm text-neutral-600">{work.description}</p>}
 			</div>
 
-			<div className="flex items-center gap-2 text-xs text-neutral-500">
-				<time dateTime={work.date}>{work.date}</time>
-				<ul className="flex gap-1 flex-wrap">
-					{work.tags?.map((s) => (
-						<li key={s} className="px-2 py-0.5 rounded-full border text-[11px]">
-							{s}
-						</li>
-					))}
-				</ul>
-			</div>
+			<ul className="flex gap-1 flex-wrap">
+				{work.tags?.map((s) => (
+					<li key={s} className="px-2 py-0.5 rounded-full border text-[11px] text-neutral-500">
+						{s}
+					</li>
+				))}
+			</ul>
 		</article>
 	);
 }
