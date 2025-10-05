@@ -3,10 +3,13 @@ import { Text } from "@/components/ui/Text";
 
 export default function AboutPage() {
 	return (
-		<main className=" lg:w-[40vw] ">
-			<Text variant="h1" className="mb-8">
-				プロフィール
-			</Text>
+		<main className=" min-h-[75vh] lg:max-w-6xl lg:m-auto ">
+			<header>
+				<Text variant="h1" className="mb-8">
+					プロフィール
+				</Text>
+				<hr className="my-8" />
+			</header>
 			<FadeInContainer className="[&>*]:my-8 [&>div]:md:my-4">
 				<Text>まきむらです。名古屋のソフト開発を主軸とする会社に勤めています。</Text>
 				<Text>
