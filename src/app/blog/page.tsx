@@ -6,7 +6,7 @@ import { getAllArticleOgps } from "@/lib/zenn";
 export default async function BlogPage() {
 	const ogps = await getAllArticleOgps();
 	return (
-		<main className=" lg:max-w-6xl lg:m-auto ">
+		<main className=" min-h-[75vh] lg:max-w-6xl lg:m-auto ">
 			<header>
 				<Text variant="h1">ブログ</Text>
 			</header>

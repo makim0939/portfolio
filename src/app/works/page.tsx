@@ -6,7 +6,7 @@ import { getAllWorks } from "@/lib/works";
 export default async function WorksPage() {
 	const works = await getAllWorks();
 	return (
-		<main className=" lg:max-w-6xl lg:m-auto ">
+		<main className=" min-h-[75vh] lg:max-w-6xl lg:m-auto ">
 			<header>
 				<Text variant="h1">制作物</Text>
 			</header>
