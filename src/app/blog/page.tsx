@@ -14,7 +14,6 @@ export default async function BlogPage() {
 			<div
 				className=" 
                     grid gap-4 md:gap-8
-					
                     sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
 					md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
 					lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
