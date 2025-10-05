@@ -3,7 +3,7 @@ import { Text } from "@/components/ui/Text";
 
 export default function AboutPage() {
 	return (
-		<main className=" min-h-screen lg:w-[40vw] ">
+		<main className=" lg:w-[40vw] ">
 			<Text variant="h1" className="mb-8">
 				プロフィール
 			</Text>
