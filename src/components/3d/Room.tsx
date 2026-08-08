@@ -66,14 +66,11 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
 	const { nodes, materials } = useGLTF("/portfolio_room_1_1.glb") as unknown as GLTFResult;
 	return (
 		<group {...props} dispose={null}>
-			<mesh
-				castShadow
-				receiveShadow
-				geometry={nodes.Wall.geometry}
-				material={materials.Wall}
-				rotation={[Math.PI, 0, Math.PI]}
-				scale={[0.8, 1, 0.8]}
-			/>
+			{/*
+				元の Wall メッシュはここで描画していたが、窓の開口と緑の壁面を持つ
+				RoomWalls コンポーネントに置き換えたため描画していない。
+				gltfjsx で本ファイルを再生成した場合は、この削除をやり直すこと。
+			*/}
 			<group position={[-0.401, 1.11, 1.3]}>
 				<mesh
 					castShadow
@@ -251,8 +248,8 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
 				receiveShadow
 				geometry={nodes.AcousticGuitar_1.geometry}
 				material={materials.AcousticGuitar}
-				position={[1.096, 0.267, 0.312]}
-				rotation={[-2.537, -0.811, -2.63]}
+				position={[0.95, 0.267, 0.312]}
+				rotation={[-2.0, -1.1, -2.0]}
 			/>
 		</group>
 	);
