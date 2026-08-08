@@ -2,12 +2,13 @@
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
 import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
 import { useDoePermission } from "@/hooks/useDoePermission";
+import { useMousePos } from "@/hooks/useMousePos";
+import { useResponsiveBreakpoint } from "@/hooks/useResponsiveBreakpoint";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import { MyCamera } from "./MyCamera";
 import { Room } from "./Room";
-import { useResponsiveBreakpoint } from "@/hooks/useResponsiveBreakpoint";
-import { useMousePos } from "@/hooks/useMousePos";
+import { WallClock } from "./WallClock";
 
 export function Scene() {
 	const { doePermission, checkDoePermission } = useDoePermission();
@@ -33,6 +34,7 @@ export function Scene() {
 						>
 							<AvatarPrototype />
 							<Room />
+							<WallClock />
 						</group>
 					</Suspense>
 				</Canvas>
@@ -58,6 +60,7 @@ export function Scene() {
 							>
 								<AvatarPrototype />
 								<Room />
+								<WallClock />
 							</group>
 						</Suspense>
 					</Canvas>
