@@ -21,11 +21,12 @@ type GLTFResult = GLTF & {
 };
 
 /**
- * ベッド上の壁（内側の面が z = -1.388）に掛ける位置。モデルは +z を向いている。
- * 壁の中央だと浮いて見えるため、部屋の角（x = 1.387 の壁との入隅）に寄せている。
- * 高さは、角に寄せるとアバターの頭と画面上で重なるため 1.95 まで上げた。
+ * 棚の上の壁（内側の面が z = -1.388）に掛ける位置。モデルは +z を向いている。
+ * 壁の中央だと掛ける必然性がなく浮いて見えるため、棚と観葉植物の真上に寄せて
+ * 家具のまとまりの一部として見えるようにしている。
+ * 棚の天板は y = 0.90、植物の先端は y = 1.33 なので、下端 y = 1.465 で干渉しない。
  */
-const WALL_POSITION: [number, number, number] = [1.18, 1.95, -1.36];
+const WALL_POSITION: [number, number, number] = [-0.9, 1.62, -1.36];
 
 export function WallClock(props: JSX.IntrinsicElements["group"]) {
 	const { nodes, materials } = useGLTF("/wall_clock.glb") as unknown as GLTFResult;
