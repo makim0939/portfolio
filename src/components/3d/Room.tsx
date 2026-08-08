@@ -248,8 +248,8 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
 				receiveShadow
 				geometry={nodes.AcousticGuitar_1.geometry}
 				material={materials.AcousticGuitar}
-				position={[0.85, 0.267, 0.312]}
-				rotation={[-2.537, -0.811, -2.63]}
+				position={[0.95, 0.267, 0.312]}
+				rotation={[-2.0, -1.1, -2.0]}
 			/>
 		</group>
 	);
