@@ -8,7 +8,46 @@ import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import { MyCamera } from "./MyCamera";
 import { Room } from "./Room";
+import { RoomWalls } from "./RoomWalls";
 import { WallClock } from "./WallClock";
+
+/**
+ * 部屋の中身と照明。PC版・モバイル版で傾け方だけが違うので、rotation を受け取る。
+ */
+function RoomScene({ rotation }: { rotation: [number, number, number] }) {
+	return (
+		<>
+			<ambientLight position={[0, 5, 0]} intensity={1} />
+			<pointLight position={[0, 5, 1]} intensity={10} />
+			<group rotation={rotation}>
+				{/*
+					窓から差し込む日光。回転グループの内側に置いてある。
+					グループは原点まわりに回り、ライトのターゲットは原点なので、
+					部屋を傾けても窓と光の位置関係が変わらない。
+				*/}
+				<directionalLight
+					position={[5.16, 2.88, -0.96]}
+					intensity={3}
+					color="#fff4e2"
+					castShadow
+					shadow-mapSize={[2048, 2048]}
+					shadow-camera-near={0.5}
+					shadow-camera-far={16}
+					shadow-camera-left={-3}
+					shadow-camera-right={3}
+					shadow-camera-top={3}
+					shadow-camera-bottom={-3}
+					shadow-bias={-0.0006}
+					shadow-normalBias={0.02}
+				/>
+				<AvatarPrototype />
+				<Room />
+				<RoomWalls />
+				<WallClock />
+			</group>
+		</>
+	);
+}
 
 export function Scene() {
 	const { doePermission, checkDoePermission } = useDoePermission();
@@ -23,19 +62,13 @@ export function Scene() {
 				<Canvas shadows orthographic>
 					<Suspense fallback={null}>
 						<MyCamera />
-						<ambientLight position={[0, 5, 0]} intensity={1} />
-						<pointLight position={[0, 5, 1]} intensity={10} />
-						<group
+						<RoomScene
 							rotation={[
 								Math.PI * (mousePos.y * 0.1),
 								Math.PI * (mousePos.x * 0.25),
 								Math.PI * (mousePos.y * 0.1),
 							]}
-						>
-							<AvatarPrototype />
-							<Room />
-							<WallClock />
-						</group>
+						/>
 					</Suspense>
 				</Canvas>
 			</div>
@@ -49,19 +82,13 @@ export function Scene() {
 					<Canvas shadows orthographic>
 						<Suspense fallback={null}>
 							<MyCamera />
-							<ambientLight position={[0, 5, 0]} intensity={1} />
-							<pointLight position={[0, 5, 1]} intensity={10} />
-							<group
+							<RoomScene
 								rotation={[
 									Math.PI * (((orientation.beta - 30) / 90) * 0.075),
 									Math.PI * ((orientation.gamma / 90) * 0.25),
 									Math.PI * (((orientation.beta - 30) / 90) * 0.075),
 								]}
-							>
-								<AvatarPrototype />
-								<Room />
-								<WallClock />
-							</group>
+							/>
 						</Suspense>
 					</Canvas>
 				</div>
