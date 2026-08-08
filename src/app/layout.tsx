@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import { Noto_Sans_JP } from "next/font/google";
 import { GlobalNav } from "@/components/ui/GlobalNav";
 import { Text } from "@/components/ui/Text";
+import { TimeOfDayTheme } from "@/components/ui/TimeOfDayTheme";
+import type { Metadata } from "next";
+import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 
 const notoSansJP = Noto_Sans_JP({ subsets: ["latin"] });
@@ -19,6 +20,7 @@ export default function RootLayout({
 	return (
 		<html lang="ja">
 			<body className={notoSansJP.className}>
+				<TimeOfDayTheme />
 				<div className=" p-8 pt-16 mb-16 md:pt-24 lg:p-16 lg:pt-28 lg:mb-0  ">
 					<>
 						{children}

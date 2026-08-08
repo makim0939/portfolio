@@ -4,6 +4,8 @@ import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
 import { useDoePermission } from "@/hooks/useDoePermission";
 import { useMousePos } from "@/hooks/useMousePos";
 import { useResponsiveBreakpoint } from "@/hooks/useResponsiveBreakpoint";
+import { useTimeOfDay } from "@/hooks/useTimeOfDay";
+import { SCENE_LIGHTING, type SceneLighting } from "@/lib/timeOfDay";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 import { MyCamera } from "./MyCamera";
@@ -13,12 +15,16 @@ import { WallClock } from "./WallClock";
 
 /**
  * 部屋の中身と照明。PC版・モバイル版で傾け方だけが違うので、rotation を受け取る。
+ * 光の色・角度・強さは時間帯のプリセットから引く（issue #35）。
  */
-function RoomScene({ rotation }: { rotation: [number, number, number] }) {
+function RoomScene({
+	rotation,
+	lighting,
+}: { rotation: [number, number, number]; lighting: SceneLighting }) {
 	return (
 		<>
-			<ambientLight position={[0, 5, 0]} intensity={1} />
-			<pointLight position={[0, 5, 1]} intensity={10} />
+			<ambientLight position={[0, 5, 0]} intensity={lighting.ambientIntensity} />
+			<pointLight position={[0, 5, 1]} intensity={lighting.pointIntensity} />
 			<group rotation={rotation}>
 				{/*
 					窓から差し込む日光。回転グループの内側に置いてある。
@@ -26,9 +32,9 @@ function RoomScene({ rotation }: { rotation: [number, number, number] }) {
 					部屋を傾けても窓と光の位置関係が変わらない。
 				*/}
 				<directionalLight
-					position={[5.16, 2.88, -0.96]}
-					intensity={3}
-					color="#fff4e2"
+					position={lighting.sunPosition}
+					intensity={lighting.sunIntensity}
+					color={lighting.sunColor}
 					castShadow
 					shadow-mapSize={[2048, 2048]}
 					shadow-camera-near={0.5}
@@ -42,7 +48,7 @@ function RoomScene({ rotation }: { rotation: [number, number, number] }) {
 				/>
 				<AvatarPrototype />
 				<Room />
-				<RoomWalls />
+				<RoomWalls skyColor={lighting.skyColor} skyEmissive={lighting.skyEmissive} />
 				<WallClock />
 			</group>
 		</>
@@ -54,6 +60,7 @@ export function Scene() {
 	const orientation = useDeviceOrientation();
 	const mousePos = useMousePos(doePermission !== null && doePermission === "notSupported");
 	const responsive = useResponsiveBreakpoint();
+	const lighting = SCENE_LIGHTING[useTimeOfDay()];
 
 	// PC版
 	if (responsive === "lg")
@@ -63,6 +70,7 @@ export function Scene() {
 					<Suspense fallback={null}>
 						<MyCamera />
 						<RoomScene
+							lighting={lighting}
 							rotation={[
 								Math.PI * (mousePos.y * 0.1),
 								Math.PI * (mousePos.x * 0.25),
@@ -83,6 +91,7 @@ export function Scene() {
 						<Suspense fallback={null}>
 							<MyCamera />
 							<RoomScene
+								lighting={lighting}
 								rotation={[
 									Math.PI * (((orientation.beta - 30) / 90) * 0.075),
 									Math.PI * ((orientation.gamma / 90) * 0.25),
