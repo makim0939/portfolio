@@ -1,12 +1,11 @@
 /*
-Source: 3DCG/Objects/RoomWalls (RoomWalls.py -> RoomWalls.glb)
+モデルのソース: 3DCG/Objects/RoomWalls (RoomWalls.py -> RoomWalls.glb)
 
-Replaces the `Wall` mesh that ships inside portfolio_room_1_1.glb. Same
-silhouette, but with a real opening cut through the x = 1.387 wall and the
-z = -1.388 face painted green.
+portfolio_room_1_1.glb に含まれる `Wall` メッシュの置き換え。シルエットは同じだが、
+x = 1.387 の壁に本物の開口を貫通させ、z = -1.388 の面を緑に塗っている。
 
-The opening is a genuine hole, so the directional light in Scene.tsx casts a
-window-shaped patch on the floor instead of a faked highlight.
+開口は本物の穴なので、Scene.tsx の directionalLight が偽のハイライトではなく、
+実際に窓型の光を床に落とす。
 */
 
 import { useGLTF } from "@react-three/drei";
