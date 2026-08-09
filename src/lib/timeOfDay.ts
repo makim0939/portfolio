@@ -116,14 +116,16 @@ export const SCENE_LIGHTING: Record<TimeOfDay, SceneLighting> = {
 	night: {
 		sunColor: "#8fa6d8",
 		sunPosition: [4.32, 3.96, -1.32],
-		sunIntensity: 0.7,
-		// 寒色の弱い環境光と、暖色の室内灯の対比で見せる。
-		ambientColor: "#93a8d6",
-		ambientIntensity: 0.55,
-		pointColor: "#ffbe86",
-		// 天井高くではなく部屋の中ほどに置いて、光が落ちる範囲を作る。
-		pointPosition: [0.1, 2.5, 0.5],
-		pointIntensity: 9,
+		sunIntensity: 0.6,
+		// やや寒色の環境光と暖色の室内灯を組み合わせる。
+		// 環境光を落として室内灯を強めると陰影が硬くなりすぎるので、
+		// 環境光は高めに保ったまま暖色を足して雰囲気を出す。
+		ambientColor: "#aebcd8",
+		ambientIntensity: 0.68,
+		pointColor: "#ffca94",
+		// 低い位置に置くと減衰が急になって顔に濃い影が出るため、天井寄りに置く。
+		pointPosition: [0.1, 3.5, 0.5],
+		pointIntensity: 11,
 		skyColor: "#2b3a5c",
 		skyEmissive: "#151d33",
 	},
