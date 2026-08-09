@@ -176,36 +176,12 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
 					rotation={[Math.PI, 0, Math.PI]}
 				/>
 			</group>
-			<group position={[-1.328, 0.198, -1.198]}>
-				<group position={[0, 0.153, 0]} rotation={[-3.11, 0.365, -3.096]} scale={0.258}>
-					<mesh
-						castShadow
-						receiveShadow
-						geometry={nodes.ベジエカーブ006.geometry}
-						material={materials.EucalyptusTrunk}
-					/>
-					<mesh
-						castShadow
-						receiveShadow
-						geometry={nodes.ベジエカーブ006_1.geometry}
-						material={materials.EucalyptusLeaf}
-					/>
-				</group>
-				<group position={[0, 0.152, 0]} scale={0.099}>
-					<mesh
-						castShadow
-						receiveShadow
-						geometry={nodes.円柱_1.geometry}
-						material={materials.Planter}
-					/>
-					<mesh
-						castShadow
-						receiveShadow
-						geometry={nodes.円柱_2.geometry}
-						material={materials.Soil}
-					/>
-				</group>
-			</group>
+			{/*
+				元の観葉植物（茎・葉・鉢・土）はここで描画していたが、Eucalyptus
+				コンポーネントに置き換えたため描画していない。葉のマテリアルが
+				KHR_materials_unlit で書き出されていて光を受けなかったのが理由。
+				gltfjsx で本ファイルを再生成した場合は、この削除をやり直すこと。
+			*/}
 			<group position={[-0.906, 0.806, 1.225]} rotation={[-2.903, 0, -Math.PI]}>
 				<mesh
 					castShadow
