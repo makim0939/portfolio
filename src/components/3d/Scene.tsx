@@ -8,6 +8,7 @@ import { useTimeOfDay } from "@/hooks/useTimeOfDay";
 import { SCENE_LIGHTING, type SceneLighting } from "@/lib/timeOfDay";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
+import { Eucalyptus } from "./Eucalyptus";
 import { MyCamera } from "./MyCamera";
 import { Room } from "./Room";
 import { RoomWalls } from "./RoomWalls";
@@ -54,6 +55,7 @@ function RoomScene({
 				<Room />
 				<RoomWalls skyColor={lighting.skyColor} skyEmissive={lighting.skyEmissive} />
 				<WallClock />
+				<Eucalyptus />
 			</group>
 		</>
 	);
