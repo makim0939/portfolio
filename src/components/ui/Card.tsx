@@ -11,7 +11,7 @@ function Card({ children, className }: CardProps) {
 	return (
 		<div
 			className={twMerge(
-				" @container p-5 md:p-12 border-2 border-neutral-100 rounded-xl shadow-lg ",
+				" @container p-5 md:p-12 bg-[var(--surface)] border-2 border-neutral-100 rounded-xl shadow-lg ",
 				className,
 			)}
 		>

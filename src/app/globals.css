@@ -170,3 +170,38 @@ h1 {
 		@apply bg-background text-foreground;
 	}
 }
+
+/*
+---break--- */
+/*
+	時間帯ごとの背景色（issue #35）。TimeOfDayTheme が <html data-time="..."> を
+	付け替える。文字色は maki-black のまま使い回すので、どの時間帯でも文字が
+	読める明度に収めている。
+	切り替わる瞬間だけ短くフェードさせる。時刻に応じて連続的に変化させる方式は
+	見づらいという理由で採らず、パターンの切り替えにしている。
+
+	--surface は、背景色が変わってもカードやボタンなどの「面」を白のままに
+	保つための色。--background に追従させると面と地の区別がつかなくなる。
+*/
+:root {
+	--surface: oklch(1 0 0);
+}
+/*
+	--background は :root で切り替わるが、実際に色が乗るのは body なので
+	transition も body に置く（カスタムプロパティ自体は @property なしでは補間されない）。
+*/
+body {
+	transition: background-color 600ms ease;
+}
+:root[data-time="morning"] {
+	--background: oklch(0.99 0.01 85);
+}
+:root[data-time="day"] {
+	--background: oklch(1 0 0);
+}
+:root[data-time="evening"] {
+	--background: oklch(0.995 0.01 75);
+}
+:root[data-time="night"] {
+	--background: oklch(0.99 0.012 250);
+}

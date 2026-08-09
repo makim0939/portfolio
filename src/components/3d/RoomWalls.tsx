@@ -28,7 +28,13 @@ type GLTFResult = GLTF & {
 	};
 };
 
-export function RoomWalls(props: JSX.IntrinsicElements["group"]) {
+type RoomWallsProps = JSX.IntrinsicElements["group"] & {
+	/** 窓の外の板の色。時間帯で差し替える（issue #35）。 */
+	skyColor: string;
+	skyEmissive: string;
+};
+
+export function RoomWalls({ skyColor, skyEmissive, ...props }: RoomWallsProps) {
 	const { nodes, materials } = useGLTF("/room_walls.glb") as unknown as GLTFResult;
 	return (
 		<group {...props} dispose={null}>
@@ -52,14 +58,15 @@ export function RoomWalls(props: JSX.IntrinsicElements["group"]) {
 				position={[1.3795, 1.525, -0.535]}
 			/>
 			{/*
-				白飛びした「外」。窓の向こう側に置いてあるだけの板で、
+				窓の向こう側に置いてあるだけの板。昼は白飛び、夜は暗い空になる。
 				castShadow を付けると太陽と窓の間に入って光を遮ってしまうので付けない。
+				色を時間帯で変えるため、GLB の materials.WindowSky は使わずに
+				ここでマテリアルを与えている（GLB 側のものは共有インスタンスなので、
+				書き換えると他の用途にも波及してしまう）。
 			*/}
-			<mesh
-				geometry={nodes.WindowSky.geometry}
-				material={materials.WindowSky}
-				position={[1.755, 1.525, 0.125]}
-			/>
+			<mesh geometry={nodes.WindowSky.geometry} position={[1.755, 1.525, 0.125]}>
+				<meshStandardMaterial color={skyColor} emissive={skyEmissive} roughness={1} />
+			</mesh>
 		</group>
 	);
 }
