@@ -23,8 +23,12 @@ function RoomScene({
 }: { rotation: [number, number, number]; lighting: SceneLighting }) {
 	return (
 		<>
-			<ambientLight position={[0, 5, 0]} intensity={lighting.ambientIntensity} />
-			<pointLight position={[0, 5, 1]} intensity={lighting.pointIntensity} />
+			<ambientLight color={lighting.ambientColor} intensity={lighting.ambientIntensity} />
+			<pointLight
+				position={lighting.pointPosition}
+				color={lighting.pointColor}
+				intensity={lighting.pointIntensity}
+			/>
 			<group rotation={rotation}>
 				{/*
 					窓から差し込む日光。回転グループの内側に置いてある。

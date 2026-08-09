@@ -1,12 +1,12 @@
+import type { OgpData } from "@/lib/zenn";
 // components/OgpCard.tsx
 import Image from "next/image";
-import type { OgpData } from "@/lib/zenn";
 import Link from "next/link";
 import FavoriteFillIcon from "./icons/FavoriteFillIcon";
 
 export function OgpCard({ ogp }: { ogp: OgpData }) {
 	return (
-		<article className=" min-w-44 max-w-96 p-5 space-y-2 rounded-2xl border hover:shadow-sm transition shadow-lg ">
+		<article className=" min-w-44 max-w-96 p-5 space-y-2 bg-[var(--surface)] rounded-2xl border hover:shadow-sm transition shadow-lg ">
 			<div>
 				<Link href={ogp.url} target="_blank" rel="noopener noreferrer">
 					<Image

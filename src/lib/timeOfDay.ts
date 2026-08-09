@@ -15,12 +15,37 @@ export function isTimeOfDay(value: string | null): value is TimeOfDay {
 }
 
 /** 朝5時〜、昼10時〜、夕16時〜、夜19時〜翌5時。 */
+export const HOUR_BOUNDARIES = {
+	morning: 5,
+	day: 10,
+	evening: 16,
+	night: 19,
+} as const;
+
 export function getTimeOfDay(date: Date): TimeOfDay {
 	const hour = date.getHours();
-	if (hour >= 19 || hour < 5) return "night";
-	if (hour >= 16) return "evening";
-	if (hour >= 10) return "day";
+	if (hour >= HOUR_BOUNDARIES.night || hour < HOUR_BOUNDARIES.morning) return "night";
+	if (hour >= HOUR_BOUNDARIES.evening) return "evening";
+	if (hour >= HOUR_BOUNDARIES.day) return "day";
 	return "morning";
+}
+
+/**
+ * ハイドレーション前に <html data-time="..."> を確定させるためのインラインスクリプト。
+ *
+ * ページは静的生成なのでサーバ側では時刻が分からず、マウント後に設定すると
+ * 初回描画で一瞬だけ既定値（昼）が見えてしまう。これを head で同期実行して防ぐ。
+ * 判定の境界値は上の HOUR_BOUNDARIES から埋め込むので、二重管理にはならない。
+ */
+export function timeOfDayInitScript(): string {
+	const { morning, day, evening, night } = HOUR_BOUNDARIES;
+	return `(function(){try{
+var q=new URLSearchParams(location.search).get("time");
+var t=${JSON.stringify(TIMES_OF_DAY)}.indexOf(q)>=0?q:(function(){
+var h=new Date().getHours();
+return h>=${night}||h<${morning}?"night":h>=${evening}?"evening":h>=${day}?"day":"morning";})();
+document.documentElement.dataset.time=t;
+}catch(e){document.documentElement.dataset.time="day";}})();`;
 }
 
 export type SceneLighting = {
@@ -33,8 +58,14 @@ export type SceneLighting = {
 	 */
 	sunPosition: [number, number, number];
 	sunIntensity: number;
+	ambientColor: string;
 	ambientIntensity: number;
-	/** 室内灯。夜も点けたままにして、部屋が完全に沈まないようにする。 */
+	/**
+	 * 室内灯。夜は暖色の弱い灯りを低い位置に置き、寒色の環境光と対比させて
+	 * 陰影とコントラストを稼ぐ。
+	 */
+	pointColor: string;
+	pointPosition: [number, number, number];
 	pointIntensity: number;
 	/** 窓の向こうに置いてある板の色。昼は白飛び、夜は暗い空。 */
 	skyColor: string;
@@ -47,8 +78,11 @@ export const SCENE_LIGHTING: Record<TimeOfDay, SceneLighting> = {
 		// 低めの朝日。これ以上寝かせると光が床を越えて画面外に抜けてしまうので、
 		// 手前側の床に落ちるぎりぎりの角度にしている。
 		sunPosition: [5.0, 3.2, -1.6],
-		sunIntensity: 2.8,
-		ambientIntensity: 0.95,
+		sunIntensity: 3.0,
+		ambientColor: "#eef3ff",
+		ambientIntensity: 0.8,
+		pointColor: "#fff2e0",
+		pointPosition: [0, 5, 1],
 		pointIntensity: 9,
 		skyColor: "#fff4e0",
 		skyEmissive: "#ffe9c8",
@@ -56,9 +90,13 @@ export const SCENE_LIGHTING: Record<TimeOfDay, SceneLighting> = {
 	day: {
 		sunColor: "#fff4e2",
 		sunPosition: [5.16, 2.88, -0.96],
-		sunIntensity: 3,
-		ambientIntensity: 1,
-		pointIntensity: 10,
+		// 環境光を落として日光との差を広げ、床の光と影をはっきり出す。
+		sunIntensity: 3.4,
+		ambientColor: "#ffffff",
+		ambientIntensity: 0.78,
+		pointColor: "#ffffff",
+		pointPosition: [0, 5, 1],
+		pointIntensity: 9,
 		skyColor: "#ffffff",
 		skyEmissive: "#f8fff5",
 	},
@@ -67,8 +105,11 @@ export const SCENE_LIGHTING: Record<TimeOfDay, SceneLighting> = {
 		// さらに低く、朝とは逆側から差す。
 		sunPosition: [5.52, 1.56, 1.74],
 		sunIntensity: 2.6,
-		ambientIntensity: 0.8,
-		pointIntensity: 9,
+		ambientColor: "#ffe4d0",
+		ambientIntensity: 0.72,
+		pointColor: "#ffe0bb",
+		pointPosition: [0, 5, 1],
+		pointIntensity: 8,
 		skyColor: "#ffd0a0",
 		skyEmissive: "#ffb070",
 	},
@@ -76,7 +117,12 @@ export const SCENE_LIGHTING: Record<TimeOfDay, SceneLighting> = {
 		sunColor: "#8fa6d8",
 		sunPosition: [4.32, 3.96, -1.32],
 		sunIntensity: 0.7,
-		ambientIntensity: 0.5,
+		// 寒色の弱い環境光と、暖色の室内灯の対比で見せる。
+		ambientColor: "#93a8d6",
+		ambientIntensity: 0.55,
+		pointColor: "#ffbe86",
+		// 天井高くではなく部屋の中ほどに置いて、光が落ちる範囲を作る。
+		pointPosition: [0.1, 2.5, 0.5],
 		pointIntensity: 9,
 		skyColor: "#2b3a5c",
 		skyEmissive: "#151d33",

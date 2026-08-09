@@ -7,7 +7,7 @@ type SocialLinkIconProps = {
 };
 export function SocialLinkIcon({ socialLinkData, svgAttr }: SocialLinkIconProps) {
 	return (
-		<button type="button" className=" rounded-sm border-2 border-neutral-300">
+		<button type="button" className=" bg-[var(--surface)] rounded-sm border-2 border-neutral-300">
 			<Link href={socialLinkData.url} target="_blank" className=" block p-2 w-full h-full">
 				<socialLinkData.logo {...svgAttr} />
 			</Link>

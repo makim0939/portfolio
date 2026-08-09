@@ -7,8 +7,10 @@ import { HomeIcon } from "./icons/HomeIcon";
 import { WorksIcon } from "./icons/WorksIcon";
 
 export function GlobalNav() {
+	// すりガラスの地色は白ではなく背景色そのものを薄めて使う。白固定にすると、
+	// 時間帯で背景色が色づいたときにナビだけ白く浮いてしまうため。
 	return (
-		<nav className=" w-screen h-fit fixed bottom-0 md:top-0 z-10 border-neutral-100 border-b bg-white/50 backdrop-blur-sm ">
+		<nav className=" w-screen h-fit fixed bottom-0 md:top-0 z-10 border-neutral-100 border-b bg-[var(--background)]/60 backdrop-blur-sm ">
 			<ul className=" flex justify-around pt-1 md:pt-2 pb-1 [&>li]:w-full [&>li]:md:w-28 [&_small]:text-[12px] [&_small]:md:text-sm">
 				<li>
 					<GlobalNavItem href={"/"}>
