@@ -1,71 +1,50 @@
+"use client";
 /*
-モデルのソース: 3DCG/Objects/Eucalyptus (Eucalyptus.py -> Eucalyptus.glb)
+モデルのソース: 3DCG/Objects/EucalyptusPlant (EucalyptusPlant.blend + Objects/Eucalyptus/Relight.py -> Eucalyptus.glb)
 
-portfolio_room_1_1.glb に含まれる観葉植物の置き換え。
+portfolio_room_1_1.glb に含まれる観葉植物の置き換え。形は元のモデルのままで、
+マテリアルだけ差し替えてある。
 
 元のモデルは葉のマテリアルが「画像テクスチャ → マテリアル出力」で Principled BSDF を
 通しておらず、glTF に KHR_materials_unlit として書き出されていた。three.js では
 MeshBasicMaterial になるため光を一切受けず、時間帯を変えても葉だけ同じ色のまま
 浮いて見えていた。
 
-作り直しでは (1) マテリアルを必ず BSDF 経由にし、(2) 葉を板ではなく浅い凸レンズに
-してある。板のままだと1枚の葉の中で明るさが一定になり、光を受けていても
-「貼り付けた絵」に見えてしまうため。
+そこで .blend からの書き出しをやり直し、
+  - 葉のマテリアルを 画像テクスチャ → Principled BSDF → 出力 に組み替え
+  - unlit のときはテクスチャの色がそのまま出ていたぶん、環境光で沈む差を
+    埋めるためテクスチャを 1.8 倍に明るくして GLB に埋め込み
+してある。ジオメトリと配置は元のまま。
 */
 
 import { useGLTF } from "@react-three/drei";
-import type { JSX } from "react";
+import { type JSX, useLayoutEffect } from "react";
 import type * as THREE from "three";
-import type { GLTF } from "three/examples/jsm/Addons.js";
-
-type GLTFResult = GLTF & {
-	nodes: {
-		EucalyptusStem: THREE.Mesh;
-		EucalyptusLeaf: THREE.Mesh;
-		EucalyptusPlanter: THREE.Mesh;
-		EucalyptusSoil: THREE.Mesh;
-	};
-	materials: {
-		EucalyptusStem: THREE.MeshStandardMaterial;
-		EucalyptusLeaf: THREE.MeshStandardMaterial;
-		EucalyptusPlanter: THREE.MeshStandardMaterial;
-		EucalyptusSoil: THREE.MeshStandardMaterial;
-	};
-};
 
 /**
- * 棚の左隣のスツールの上。モデルの原点は土の表面なので、
- * 鉢の底（原点から 0.16 下）がスツールの天板 y = 0.199 に乗る高さに置く。
+ * 棚の左隣のスツールの上。GLB 側のノードが元の .blend の位置とスケールを
+ * そのまま持っているので、ここは元の Room.tsx で親グループに与えていた
+ * 位置と同じ値でよい。
  */
-const POSITION: [number, number, number] = [-1.328, 0.359, -1.198];
+const POSITION: [number, number, number] = [-1.328, 0.198, -1.198];
 
 export function Eucalyptus(props: JSX.IntrinsicElements["group"]) {
-	const { nodes, materials } = useGLTF("/eucalyptus.glb") as unknown as GLTFResult;
+	const { scene } = useGLTF("/eucalyptus.glb");
+
+	// メッシュ名が元の .blend 由来（日本語・自動生成）で扱いにくいので、
+	// ノードを個別に並べずに読み込んだシーンをそのまま置き、影の設定だけ回す。
+	useLayoutEffect(() => {
+		scene.traverse((object) => {
+			if ((object as THREE.Mesh).isMesh) {
+				object.castShadow = true;
+				object.receiveShadow = true;
+			}
+		});
+	}, [scene]);
+
 	return (
 		<group position={POSITION} {...props} dispose={null}>
-			<mesh
-				castShadow
-				receiveShadow
-				geometry={nodes.EucalyptusPlanter.geometry}
-				material={materials.EucalyptusPlanter}
-			/>
-			<mesh
-				receiveShadow
-				geometry={nodes.EucalyptusSoil.geometry}
-				material={materials.EucalyptusSoil}
-			/>
-			<mesh
-				castShadow
-				receiveShadow
-				geometry={nodes.EucalyptusStem.geometry}
-				material={materials.EucalyptusStem}
-			/>
-			<mesh
-				castShadow
-				receiveShadow
-				geometry={nodes.EucalyptusLeaf.geometry}
-				material={materials.EucalyptusLeaf}
-			/>
+			<primitive object={scene} />
 		</group>
 	);
 }
