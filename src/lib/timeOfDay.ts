@@ -114,18 +114,19 @@ export const SCENE_LIGHTING: Record<TimeOfDay, SceneLighting> = {
 		skyEmissive: "#ffb070",
 	},
 	night: {
+		// 月明かり。強くすると明暗境界が顔を横切って縞に見えるため、ごく弱く。
 		sunColor: "#8fa6d8",
 		sunPosition: [4.32, 3.96, -1.32],
-		sunIntensity: 0.6,
+		sunIntensity: 0.35,
 		// やや寒色の環境光と暖色の室内灯を組み合わせる。
-		// 環境光を落として室内灯を強めると陰影が硬くなりすぎるので、
-		// 環境光は高めに保ったまま暖色を足して雰囲気を出す。
+		// 陰影は環境光で浅く保つ。室内灯を強くして稼ぐ方向は顔に濃い影が出る。
 		ambientColor: "#aebcd8",
-		ambientIntensity: 0.68,
-		pointColor: "#ffca94",
-		// 低い位置に置くと減衰が急になって顔に濃い影が出るため、天井寄りに置く。
-		pointPosition: [0.1, 3.5, 0.5],
-		pointIntensity: 11,
+		ambientIntensity: 0.75,
+		pointColor: "#ffd6ae",
+		// カメラ側の上方から顔を照らすフィルライト。真上や部屋の奥に置くと
+		// アバターの顔が陰になり、月明かりの明暗境界と重なって影が強く出る。
+		pointPosition: [-0.8, 3.6, 1.6],
+		pointIntensity: 8,
 		skyColor: "#2b3a5c",
 		skyEmissive: "#151d33",
 	},
