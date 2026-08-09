@@ -194,14 +194,14 @@ body {
 	transition: background-color 600ms ease;
 }
 :root[data-time="morning"] {
-	--background: oklch(0.985 0.012 75);
+	--background: oklch(0.99 0.01 85);
 }
 :root[data-time="day"] {
 	--background: oklch(1 0 0);
 }
 :root[data-time="evening"] {
-	--background: oklch(0.965 0.028 55);
+	--background: oklch(0.995 0.01 75);
 }
 :root[data-time="night"] {
-	--background: oklch(0.945 0.012 250);
+	--background: oklch(0.99 0.012 250);
 }

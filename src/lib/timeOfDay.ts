@@ -84,7 +84,7 @@ export const SCENE_LIGHTING: Record<TimeOfDay, SceneLighting> = {
 		pointColor: "#fff2e0",
 		pointPosition: [0, 5, 1],
 		pointIntensity: 9,
-		skyColor: "#fff4e0",
+		skyColor: "#fff0d0",
 		skyEmissive: "#ffe9c8",
 	},
 	day: {
@@ -101,7 +101,7 @@ export const SCENE_LIGHTING: Record<TimeOfDay, SceneLighting> = {
 		skyEmissive: "#f8fff5",
 	},
 	evening: {
-		sunColor: "#ff9d5c",
+		sunColor: "#fcc097",
 		// さらに低く、朝とは逆側から差す。
 		sunPosition: [5.52, 1.56, 1.74],
 		sunIntensity: 2.6,
@@ -120,14 +120,14 @@ export const SCENE_LIGHTING: Record<TimeOfDay, SceneLighting> = {
 		sunIntensity: 0.35,
 		// やや寒色の環境光と暖色の室内灯を組み合わせる。
 		// 陰影は環境光で浅く保つ。室内灯を強くして稼ぐ方向は顔に濃い影が出る。
-		ambientColor: "#aebcd8",
-		ambientIntensity: 0.75,
-		pointColor: "#ffd6ae",
+		ambientColor: "#bcc2e0",
+		ambientIntensity: 0.7,
 		// カメラ側の上方から顔を照らすフィルライト。真上や部屋の奥に置くと
 		// アバターの顔が陰になり、月明かりの明暗境界と重なって影が強く出る。
+		pointColor: "#ffdbae",
 		pointPosition: [-0.8, 3.6, 1.6],
-		pointIntensity: 8,
-		skyColor: "#2b3a5c",
+		pointIntensity: 6,
+		skyColor: "#3c4973",
 		skyEmissive: "#151d33",
 	},
 };
