@@ -45,3 +45,5 @@ next-env.d.ts
 # temporary
 /src/stories
 certificates
+# モーション確認用のプレビュー動画（作業用・追跡しない）
+.motion-preview/
