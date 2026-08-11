@@ -24,3 +24,33 @@ export const AVATAR_MOTION_CLIPS = {
 	pcwork: "PCWork",
 	wave: "Waving_Mixamo",
 } as const satisfies Record<AvatarMotion, string>;
+
+export type ScenePlacement = {
+	position: [number, number, number];
+	rotation: [number, number, number];
+};
+
+/**
+ * モーションごとのアバターの立ち位置。
+ *
+ * モーション自体はアバターの原点まわりの姿勢しか持っていないので、
+ * 「どこで」その姿勢をとるかはここが決める。
+ *
+ * - `pcwork` … Portfolio2025-Room.blend の `Avatar` エンプティの値。椅子の上
+ * - `wave` … 部屋の中央。glb のノード値そのままだと正面を向かないので Y 45度だけ回す
+ */
+export const AVATAR_PLACEMENTS: Record<AvatarMotion, ScenePlacement> = {
+	pcwork: { position: [-0.587, 0.031, 0.715], rotation: [0, -0.4329, 0] },
+	wave: { position: [0, 0, 0], rotation: [0, -Math.PI / 4, 0] },
+};
+
+/**
+ * モーションごとの椅子の位置。
+ *
+ * - `pcwork` … Portfolio2025-Room.blend の `Chair`。座るために机から引き出した位置
+ * - `wave` … アバターが座っていないので、机に収めた位置（部屋 glb の元の値）
+ */
+export const CHAIR_PLACEMENTS: Record<AvatarMotion, ScenePlacement> = {
+	pcwork: { position: [-0.577, 0, 0.644], rotation: [0, -0.3976, 0] },
+	wave: { position: [-0.45, 0, 0.802], rotation: [0, -0.814, 0] },
+};

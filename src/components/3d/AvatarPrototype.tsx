@@ -4,7 +4,7 @@ Command: npx gltfjsx@6.5.3 avatar_prototype.glb -t
 */
 "use client";
 import { useAvatarMotion } from "@/hooks/useAvatarMotion";
-import { AVATAR_MOTION_CLIPS } from "@/lib/avatarMotion";
+import { AVATAR_MOTION_CLIPS, AVATAR_PLACEMENTS } from "@/lib/avatarMotion";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useGraph } from "@react-three/fiber";
 import React, { type JSX, useEffect } from "react";
@@ -43,17 +43,6 @@ type GLTFResult = GLTF & {
 /** モーションを切り替えるときのクロスフェード時間（秒）。 */
 const FADE_DURATION = 0.4;
 
-/**
- * 部屋の中でのアバターの立ち位置。Portfolio2025-Room.blend の `Avatar`
- * （Avatar コレクションのインスタンス）をそのまま three.js の座標に直した値。
- *
- * PCWork のモーションはアバターの原点まわりに座った姿勢で作られていて、
- * 椅子に座らせる仕事はこの配置が担っている。椅子（Room の Chair）を動かすときは
- * こちらも一緒に見直すこと。
- */
-const AVATAR_POSITION: [number, number, number] = [-0.587, 0.031, 0.715];
-const AVATAR_ROTATION: [number, number, number] = [0, -0.4329, 0];
-
 export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 	const group = React.useRef<THREE.Group>(null);
 	const { scene, animations } = useGLTF("/avatar_prototype.glb");
@@ -61,6 +50,8 @@ export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 	const { nodes, materials } = useGraph(clone) as unknown as GLTFResult;
 	const { actions } = useAnimations(animations, group);
 	const motion = useAvatarMotion();
+	// モーションはアバターの原点まわりの姿勢しか持たないので、立ち位置は別で与える
+	const placement = AVATAR_PLACEMENTS[motion];
 
 	useEffect(() => {
 		const action = actions[AVATAR_MOTION_CLIPS[motion]];
@@ -83,10 +74,10 @@ export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 
 	return (
 		<group ref={group} {...props} dispose={null}>
-			<group name="Scene" position={AVATAR_POSITION} rotation={AVATAR_ROTATION}>
+			<group name="Scene" position={placement.position} rotation={placement.rotation}>
 				{/*
 					Armature の値は glb のノードそのまま。以前ここに Z 45度が足してあったが、
-					部屋に配置していなかった頃に向きを整えるために入れた手加減なので外した。
+					これは向きを整えるための手加減なので、立ち位置を持つ上の group に移した。
 				*/}
 				<group
 					name="Armature"
