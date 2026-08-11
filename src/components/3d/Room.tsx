@@ -71,7 +71,8 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
 				RoomWalls コンポーネントに置き換えたため描画していない。
 				gltfjsx で本ファイルを再生成した場合は、この削除をやり直すこと。
 			*/}
-			<group position={[-0.401, 1.11, 1.3]}>
+			{/* モニター。位置と向きは Portfolio2025-Room.blend の Monitor に合わせてある */}
+			<group position={[-0.387, 1.111, 1.269]} rotation={[0, 0.1484, 0]}>
 				<mesh
 					castShadow
 					receiveShadow
@@ -94,7 +95,12 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
 				rotation={[Math.PI, -0.841, Math.PI]}
 				scale={[0.15, 0.022, 0.15]}
 			/>
-			<group position={[-0.45, 0, 0.802]} rotation={[0, -0.814, 0]}>
+			{/*
+				椅子。位置と向きは Portfolio2025-Room.blend の Chair に合わせてある。
+				PCWork のモーションはこの位置に座る前提で作られているので、
+				動かすときはアバターの配置（AvatarPrototype）と一緒に見直すこと。
+			*/}
+			<group position={[-0.577, 0, 0.644]} rotation={[0, -0.3976, 0]}>
 				<mesh
 					castShadow
 					receiveShadow
@@ -182,21 +188,26 @@ export function Room(props: JSX.IntrinsicElements["group"]) {
 				KHR_materials_unlit で書き出されていて光を受けなかったのが理由。
 				gltfjsx で本ファイルを再生成した場合は、この削除をやり直すこと。
 			*/}
-			<group position={[-0.906, 0.806, 1.225]} rotation={[-2.903, 0, -Math.PI]}>
-				<mesh
-					castShadow
-					receiveShadow
-					geometry={nodes.平面012.geometry}
-					material={materials.PC_Body}
-				/>
-				<mesh
-					castShadow
-					receiveShadow
-					geometry={nodes.平面012_1.geometry}
-					material={materials.PC_Screen}
-				/>
-			</group>
-			<group position={[-0.906, 0.811, 1.125]}>
+			{/*
+				ノートPC。glb では本体と画面が別オブジェクトのまま書き出されているので、
+				ひとつにまとめて Portfolio2025-Room.blend の Laptop の位置・向きに置く。
+				子の座標は本体の原点からの相対値。
+			*/}
+			<group position={[-0.836, 0.81, 1.179]} rotation={[0, -0.5643, 0]}>
+				<group position={[0, -0.005, 0.1]} rotation={[-2.903, 0, -Math.PI]}>
+					<mesh
+						castShadow
+						receiveShadow
+						geometry={nodes.平面012.geometry}
+						material={materials.PC_Body}
+					/>
+					<mesh
+						castShadow
+						receiveShadow
+						geometry={nodes.平面012_1.geometry}
+						material={materials.PC_Screen}
+					/>
+				</group>
 				<mesh
 					castShadow
 					receiveShadow
