@@ -4,11 +4,19 @@
 
 export type RoadmapStatus = "wip" | "todo" | "done";
 
+/** Issue 本文の箇条書き1行。done はチェックボックス付きのときだけ入る */
+export type RoadmapListItem = {
+	text: string;
+	done?: boolean;
+};
+
 export type RoadmapItem = {
 	number: number;
 	title: string;
-	/** Issue 本文。カードでは先頭だけ抜粋して使う */
-	description: string;
+	/** Issue 本文のうち、箇条書きが始まる前の文 */
+	summary: string;
+	/** Issue 本文の箇条書き。カードでは先頭数件だけ出す */
+	items: RoadmapListItem[];
 	status: RoadmapStatus;
 	url: string;
 	/** YYYY-MM-DD */
@@ -34,8 +42,8 @@ const OWNER = "makim0939";
 const REPO = "portfolio";
 const LABEL = "enhancement";
 
-/** カードの抜粋に使う本文の長さ */
-const DESCRIPTION_LENGTH = 120;
+/** カードに出す本文（箇条書きの前）の長さ */
+const SUMMARY_LENGTH = 100;
 
 function formatDate(iso: string): string {
 	const date = new Date(iso);
@@ -45,21 +53,52 @@ function formatDate(iso: string): string {
 	return `${yyyy}-${mm}-${dd}`;
 }
 
-/**
- * Issue 本文はマークダウンなので、記号を落としてカード用の一文にする。
- * 見出しやリストの記号がそのまま出ると読めないため。
- */
-function toDescription(body: string | null): string {
-	if (!body) return "";
-	const plain = body
-		.replace(/```[\s\S]*?```/g, "") // コードブロックごと落とす
-		.replace(/^#+\s*/gm, "")
-		.replace(/^[-*]\s*/gm, "")
+/** 装飾のマークダウン記号を落として、そのまま出せるテキストにする */
+function toPlainText(line: string): string {
+	return line
 		.replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1") // リンク・画像はテキストだけ残す
 		.replace(/[*_`>|]/g, "")
 		.replace(/\s+/g, " ")
 		.trim();
-	return plain.length > DESCRIPTION_LENGTH ? `${plain.slice(0, DESCRIPTION_LENGTH)}…` : plain;
+}
+
+/**
+ * Issue 本文を「文」と「箇条書き」に分けて読む。
+ * 箇条書きを1本の文につなげると `[x]` や中黒が文中に紛れて読めなくなるので、
+ * カード側でリストとして組めるよう、構造を保ったまま渡す。
+ *
+ * 箇条書きより後ろの段落は落とす。カードに収まる量を超えるうえ、
+ * 続きは Issue を開けば読めるため。
+ */
+function parseBody(body: string | null): { summary: string; items: RoadmapListItem[] } {
+	if (!body) return { summary: "", items: [] };
+
+	const lines = body.replace(/```[\s\S]*?```/g, "").split(/\r?\n/); // コードブロックごと落とす
+	const summaryLines: string[] = [];
+	const items: RoadmapListItem[] = [];
+
+	for (const raw of lines) {
+		const line = raw.trim();
+		if (!line) continue;
+		if (/^#{1,6}\s/.test(line)) continue; // 見出しはカードでは使わない
+
+		const list = line.match(/^(?:[-*+]|\d+\.)\s+(.*)$/);
+		if (list) {
+			const checkbox = list[1].match(/^\[([ xX])\]\s*(.*)$/);
+			const text = toPlainText(checkbox ? checkbox[2] : list[1]);
+			if (!text) continue; // 「- 」だけの空行は捨てる
+			items.push(checkbox ? { text, done: checkbox[1].toLowerCase() === "x" } : { text });
+			continue;
+		}
+
+		if (items.length === 0) summaryLines.push(toPlainText(line));
+	}
+
+	const summary = summaryLines.join(" ");
+	return {
+		summary: summary.length > SUMMARY_LENGTH ? `${summary.slice(0, SUMMARY_LENGTH)}…` : summary,
+		items,
+	};
 }
 
 /**
@@ -96,7 +135,7 @@ export async function getRoadmapItems(): Promise<RoadmapItem[]> {
 			.map((issue) => ({
 				number: issue.number,
 				title: issue.title,
-				description: toDescription(issue.body),
+				...parseBody(issue.body),
 				status: toStatus(issue),
 				url: issue.html_url,
 				createdAt: formatDate(issue.created_at),

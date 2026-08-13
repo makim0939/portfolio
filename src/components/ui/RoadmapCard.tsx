@@ -1,5 +1,8 @@
-import type { RoadmapItem, RoadmapStatus } from "@/lib/roadmap";
+import type { RoadmapItem, RoadmapListItem, RoadmapStatus } from "@/lib/roadmap";
 import { tv } from "tailwind-variants";
+
+/** カードに出す箇条書きの件数。これを超えた分は「ほか N 件」にまとめる */
+const MAX_LIST_ITEMS = 3;
 
 // 状態は色だけでなく、面の作り（実線か破線か）と印（●／✓）でも区別する。
 // 色だけだと時間帯で背景色が変わったときに差が読み取りにくいため。
@@ -61,6 +64,60 @@ function StatusMark({ status }: { status: RoadmapStatus }) {
 	);
 }
 
+/**
+ * 箇条書きの行頭の印。チェックボックス付きなら済／未が分かる形にし、
+ * ただの箇条書きなら中黒を置く。
+ */
+function ListMark({ done }: { done?: boolean }) {
+	if (done === undefined) {
+		return <span className=" mt-2 w-1 h-1 shrink-0 rounded-full bg-neutral-400 " />;
+	}
+	return (
+		<span
+			className={` mt-0.5 grid place-items-center w-3.5 h-3.5 shrink-0 rounded border ${
+				done ? "bg-emerald-500 border-emerald-500 text-white" : "border-neutral-300"
+			} `}
+		>
+			{done && (
+				<svg viewBox="0 0 12 12" width="9" height="9" role="img" aria-label="完了">
+					<path
+						d="M2 6.5 L4.8 9 L10 3"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					/>
+				</svg>
+			)}
+		</span>
+	);
+}
+
+function ListItems({ items }: { items: RoadmapListItem[] }) {
+	const shown = items.slice(0, MAX_LIST_ITEMS);
+	const rest = items.length - shown.length;
+	// 「ほか N 件」の字下げは行頭の印の幅に合わせる（中黒とチェックボックスで幅が違う）
+	const restIndent = shown.some((listItem) => listItem.done !== undefined) ? "pl-[22px]" : "pl-3";
+
+	return (
+		<ul className=" space-y-1 text-sm text-neutral-600 ">
+			{shown.map((listItem) => (
+				<li key={listItem.text} className=" flex items-start gap-2 ">
+					<ListMark done={listItem.done} />
+					{/* 1件が長くても2行で止める。3件×2行がカードの取りうる最大 */}
+					<span
+						className={` line-clamp-2 ${listItem.done ? "text-neutral-400 line-through" : ""} `}
+					>
+						{listItem.text}
+					</span>
+				</li>
+			))}
+			{rest > 0 && <li className={` ${restIndent} text-[11px] text-maki-gray `}>ほか {rest} 件</li>}
+		</ul>
+	);
+}
+
 export function RoadmapCard({ item }: { item: RoadmapItem }) {
 	const date = item.status === "done" ? item.completedAt : item.createdAt;
 
@@ -90,11 +147,18 @@ export function RoadmapCard({ item }: { item: RoadmapItem }) {
 				</a>
 			</h3>
 
-			{item.description && (
-				<p className=" text-sm text-neutral-600 leading-relaxed line-clamp-3 ">
-					{item.description}
+			{item.summary && (
+				<p
+					className={` text-sm text-neutral-600 leading-relaxed ${
+						// 箇条書きが続くときは文を2行に抑えて、リストの居場所を空ける
+						item.items.length > 0 ? "line-clamp-2" : "line-clamp-3"
+					} `}
+				>
+					{item.summary}
 				</p>
 			)}
+
+			{item.items.length > 0 && <ListItems items={item.items} />}
 
 			<p className=" mt-auto pt-2 text-[11px] text-maki-gray ">
 				Issue #{item.number}
