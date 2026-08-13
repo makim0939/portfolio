@@ -1,5 +1,6 @@
 "use client";
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
+import { DropIn } from "@/components/3d/DropIn";
 import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
 import { useDoePermission } from "@/hooks/useDoePermission";
 import { useMousePos } from "@/hooks/useMousePos";
@@ -17,8 +18,11 @@ import { WallClock } from "./WallClock";
 /**
  * 部屋の中身と照明。PC版・モバイル版で傾け方だけが違うので、rotation を受け取る。
  * 光の色・角度・強さは時間帯のプリセットから引く（issue #35）。
+ *
+ * オブジェクトを包んでいる DropIn は、上位に DropInProvider が無ければ素通しなので、
+ * ここでは何も起きない。出現アニメーションの見た目確認は /poc/drop-in で行う（issue #41）。
  */
-function RoomScene({
+export function RoomScene({
 	rotation,
 	lighting,
 }: { rotation: [number, number, number]; lighting: SceneLighting }) {
@@ -51,11 +55,19 @@ function RoomScene({
 					shadow-bias={-0.0006}
 					shadow-normalBias={0.02}
 				/>
-				<AvatarPrototype />
+				<DropIn objectKey="avatar">
+					<AvatarPrototype />
+				</DropIn>
 				<Room />
-				<RoomWalls skyColor={lighting.skyColor} skyEmissive={lighting.skyEmissive} />
-				<WallClock />
-				<Eucalyptus />
+				<DropIn objectKey="walls">
+					<RoomWalls skyColor={lighting.skyColor} skyEmissive={lighting.skyEmissive} />
+				</DropIn>
+				<DropIn objectKey="wallClock">
+					<WallClock />
+				</DropIn>
+				<DropIn objectKey="eucalyptus">
+					<Eucalyptus />
+				</DropIn>
 			</group>
 		</>
 	);
