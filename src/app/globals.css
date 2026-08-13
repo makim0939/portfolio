@@ -205,3 +205,19 @@ body {
 :root[data-time="night"] {
 	--background: oklch(0.99 0.012 250);
 }
+
+/*
+---break--- */
+/*
+	ロードマップの進捗バー（issue #42）。0 から実際の割合まで伸ばす。
+	伸ばす先は width の値そのものではなく --roadmap-progress で受け取る。
+	要素側の width はアニメーション終了後の値として残す必要があるため。
+*/
+@keyframes roadmap-progress-grow {
+	from {
+		width: 0;
+	}
+	to {
+		width: var(--roadmap-progress);
+	}
+}
