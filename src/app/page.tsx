@@ -1,19 +1,30 @@
-import React, { Suspense } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcnui/avatar";
 import { Scene } from "@/components/3d/Scene";
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { OgpCard } from "@/components/ui/OgpCard";
+import { RoadmapCard } from "@/components/ui/RoadmapCard";
 import { SocialLinkIcon } from "@/components/ui/SocialLinkIcon";
 import { StyledLink } from "@/components/ui/StyledLink";
 import { Text } from "@/components/ui/Text";
 import { WorkCard } from "@/components/ui/WorkCard";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcnui/avatar";
+import { filterByStatus, getRoadmapItems } from "@/lib/roadmap";
 import { socialLinks } from "@/lib/socialLinks";
 import { getAllWorks } from "@/lib/works";
 import { getAllArticleOgps } from "@/lib/zenn";
+import React, { Suspense } from "react";
+
+/** トップに出すロードマップの件数 */
+const ROADMAP_PREVIEW_COUNT = 3;
 
 export default async function HomePage() {
 	const ogps = await getAllArticleOgps();
 	const works = await getAllWorks();
+	const allRoadmapItems = await getRoadmapItems();
+	// トップでは「これから」だけ見せる。できたことは制作物やロードマップ側で見てもらう。
+	const roadmapItems = [
+		...filterByStatus(allRoadmapItems, "wip"),
+		...filterByStatus(allRoadmapItems, "todo"),
+	].slice(0, ROADMAP_PREVIEW_COUNT);
 	return (
 		<>
 			{/* トップ */}
@@ -136,6 +147,35 @@ export default async function HomePage() {
 							</StyledLink>
 						</Text>
 					</section>
+
+					{/* ロードマップ */}
+					{roadmapItems.length > 0 && (
+						<section className=" my-16 ">
+							<Text variant="h2">ロードマップ</Text>
+							<Text variant="small" className=" mt-2 ">
+								このサイトにこれから盛り込みたいことです。
+							</Text>
+							<FadeInContainer
+								className="
+									grid gap-6 mt-8 mb-4 items-stretch
+									[grid-template-columns:repeat(auto-fill,minmax(200px,1fr))]
+									sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
+									md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
+									lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
+									[&>div]:h-full
+								"
+							>
+								{roadmapItems.map((item) => (
+									<RoadmapCard key={item.number} item={item} />
+								))}
+							</FadeInContainer>
+							<Text variant="p" className=" text-sm text-maki-gray text-right ">
+								<StyledLink href="/roadmap">
+									<u>ロードマップを見る</u>→
+								</StyledLink>
+							</Text>
+						</section>
+					)}
 
 					{/* コンタクト */}
 					<section className=" my-16 ">
