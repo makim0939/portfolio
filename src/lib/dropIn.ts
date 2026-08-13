@@ -51,11 +51,12 @@ export type DropInParams = {
 	materializeDuration: number;
 };
 
+/** /poc/drop-in で詰めた値。全部が出終わるまで約1.0秒。 */
 export const DEFAULT_DROP_IN_PARAMS: DropInParams = {
-	height: 2.5,
-	fallDuration: 0.42,
-	restitution: 0.35,
-	stagger: 0.12,
+	height: 0.4,
+	fallDuration: 0.24,
+	restitution: 0.2,
+	stagger: 0.05,
 	popUpDuration: 0.65,
 	popUpSquash: 0.45,
 	materializeDuration: 1.1,
@@ -69,8 +70,11 @@ export const DEFAULT_DROP_IN_PARAMS: DropInParams = {
  * 語彙が硬すぎて浮く。
  *
  * 家具は「落ちて一度跳ねる」という物理的で愛嬌のある動きをしているので、
- * アバターも同じ語彙（スクワッシュ＆ストレッチ）に揃えて、落ちる代わりに
- * 足元からぴょこんと立ち上がるのが既定。残り2つは比較用に残してある。
+ * アバターも同じ語彙（スクワッシュ＆ストレッチ）に揃えた popUp も用意したが、
+ * 現時点では家具と同じ落下で出す方針。いずれ出現専用のモーションを作って
+ * 差し替える想定なので、それまでの繋ぎとして素直に落とす。
+ *
+ * popUp と materialize は比較用に残してあり、/poc/drop-in で見比べられる。
  */
 export const AVATAR_APPEARANCES = ["popUp", "materialize", "drop"] as const;
 
@@ -82,7 +86,7 @@ export const AVATAR_APPEARANCE_LABELS: Record<AvatarAppearance, string> = {
 	drop: "落下（家具と同じ）",
 };
 
-export const DEFAULT_AVATAR_APPEARANCE: AvatarAppearance = "popUp";
+export const DEFAULT_AVATAR_APPEARANCE: AvatarAppearance = "drop";
 
 /** アバターが出切るまでの秒数。出し方で使うパラメータが違う。 */
 export function avatarAppearDuration(params: DropInParams, appearance: AvatarAppearance): number {

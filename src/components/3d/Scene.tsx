@@ -1,15 +1,20 @@
 "use client";
 import { AvatarAppear } from "@/components/3d/AvatarAppear";
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
-import { DropIn } from "@/components/3d/DropIn";
+import { DropIn, DropInProvider } from "@/components/3d/DropIn";
 import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
 import { useDoePermission } from "@/hooks/useDoePermission";
 import { useMousePos } from "@/hooks/useMousePos";
 import { useResponsiveBreakpoint } from "@/hooks/useResponsiveBreakpoint";
 import { useTimeOfDay } from "@/hooks/useTimeOfDay";
+import {
+	DEFAULT_AVATAR_APPEARANCE,
+	DEFAULT_DROP_IN_ORDER,
+	DEFAULT_DROP_IN_PARAMS,
+} from "@/lib/dropIn";
 import { SCENE_LIGHTING, type SceneLighting } from "@/lib/timeOfDay";
 import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Eucalyptus } from "./Eucalyptus";
 import { MyCamera } from "./MyCamera";
 import { Room } from "./Room";
@@ -20,8 +25,8 @@ import { WallClock } from "./WallClock";
  * 部屋の中身と照明。PC版・モバイル版で傾け方だけが違うので、rotation を受け取る。
  * 光の色・角度・強さは時間帯のプリセットから引く（issue #35）。
  *
- * オブジェクトを包んでいる DropIn は、上位に DropInProvider が無ければ素通しなので、
- * ここでは何も起きない。出現アニメーションの見た目確認は /poc/drop-in で行う（issue #41）。
+ * オブジェクトを包んでいる DropIn は、上位に DropInProvider が無ければ素通しになる。
+ * 出現アニメーション（issue #41）を付けるかどうかは RoomSceneWithIntro が決める。
  */
 export function RoomScene({
 	rotation,
@@ -56,7 +61,7 @@ export function RoomScene({
 					shadow-bias={-0.0006}
 					shadow-normalBias={0.02}
 				/>
-				{/* アバターだけは落下ではなく実体化。理由は AvatarAppear のコメント参照 */}
+				{/* アバターの出し方は AvatarAppear が選ぶ。今は家具と同じ落下 */}
 				<AvatarAppear>
 					<AvatarPrototype />
 				</AvatarAppear>
@@ -75,6 +80,51 @@ export function RoomScene({
 	);
 }
 
+/**
+ * 出現アニメーションを再生済みかどうか。
+ *
+ * 「初回表示のみ」なので、他のページから戻ってくるたびに部屋が組み直されると
+ * うるさい。モジュール変数にしておくと、サイト内の遷移では読み込み直されないので
+ * 二度目からは静かなまま出る。読み込み直せば（リロード・別タブ）また再生される。
+ */
+let introPlayed = false;
+
+function useIntro(): boolean {
+	// 判定は描画時に読むだけ。フラグを立てるのは commit 後の effect でやる。
+	// 読み込み待ちで描画が捨てられても、再生し損ねないようにするため
+	const [play] = useState(() => !introPlayed);
+
+	useEffect(() => {
+		introPlayed = true;
+	}, []);
+
+	return play;
+}
+
+type RoomSceneProps = { rotation: [number, number, number]; lighting: SceneLighting };
+
+/**
+ * 初回表示のときだけ出現アニメーション付きで部屋を出す（issue #41）。
+ *
+ * DropInProvider は Suspense の内側に置くこと。glb の読み込みで描画が一度捨てられると
+ * commit したときの時刻で再生が始まるので、モデルが出そろう前に演出だけ進んでしまう
+ * ことがない。外側に置くと、読み込みの間に再生が終わってしまう。
+ */
+function RoomSceneWithIntro(props: RoomSceneProps) {
+	if (!useIntro()) return <RoomScene {...props} />;
+
+	return (
+		<DropInProvider
+			params={DEFAULT_DROP_IN_PARAMS}
+			order={DEFAULT_DROP_IN_ORDER}
+			avatarAppearance={DEFAULT_AVATAR_APPEARANCE}
+			replayCount={0}
+		>
+			<RoomScene {...props} />
+		</DropInProvider>
+	);
+}
+
 export function Scene() {
 	const { doePermission, checkDoePermission } = useDoePermission();
 	const orientation = useDeviceOrientation();
@@ -89,7 +139,7 @@ export function Scene() {
 				<Canvas shadows orthographic>
 					<Suspense fallback={null}>
 						<MyCamera />
-						<RoomScene
+						<RoomSceneWithIntro
 							lighting={lighting}
 							rotation={[
 								Math.PI * (mousePos.y * 0.1),
@@ -110,7 +160,7 @@ export function Scene() {
 					<Canvas shadows orthographic>
 						<Suspense fallback={null}>
 							<MyCamera />
-							<RoomScene
+							<RoomSceneWithIntro
 								lighting={lighting}
 								rotation={[
 									Math.PI * (((orientation.beta - 30) / 90) * 0.075),
