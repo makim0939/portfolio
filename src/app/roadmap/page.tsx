@@ -108,14 +108,14 @@ export default async function RoadmapPage() {
 				</ol>
 			</div>
 
-			<Text variant="p" className=" mt-16 text-sm text-maki-gray text-right ">
+			<Text variant="p" className=" mt-16 text-sm text-maki-gray text-left ">
 				<a
 					href={ISSUES_URL}
 					target="_blank"
 					rel="noopener noreferrer"
 					className=" hover:text-blue-500 duration-100 "
 				>
-					<u>GitHubで全てのIssueを見る</u>→
+					←<u>Homeに戻る</u>
 				</a>
 			</Text>
 		</main>
