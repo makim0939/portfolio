@@ -2,17 +2,14 @@
 /*
 アバターの出現演出（issue #41）。
 
-家具と同じに落とすと、座ったポーズのまま棒立ちで降ってきて人形が落ちたように
-見えてしまう。人だけは落下をやめて、足元から上へ光が走り、通り過ぎた高さから
-順に実体化していく出方にしてある。
+出し方は3つあり、/poc/drop-in のパネルで見比べられる。既定は popUp。
 
-やっていることは4つ。
-  1. マテリアルにディゾルブを差し込み、走査面より上をまだ描かない
-  2. 走査面の高さに光の輪を置いて一緒に上げる
-  3. 開始と同時に床へ広がる輪を出す
-  4. 走査面のまわりに粒を散らして、上に流す
-
-比較用に「家具と同じ落下」も残してあるので、/poc/drop-in のパネルで切り替えられる。
+- popUp（既定）… 足元でぺしゃんこに潰れた状態から、ぴょこんと立ち上がる。
+    家具が「落ちて一度跳ねる」のと同じスクワッシュ＆ストレッチの語彙で、
+    行きすぎてから戻る跳ね方も家具のバウンドと揃えてある。足元にほこりが舞う。
+- materialize … 足元から上へ光が走り、通り過ぎた高さから実体化する。
+    見栄えはするが、手作りの部屋に対して転送装置の語彙が硬く、世界観からは浮く。
+- drop … 家具と同じに落とす。座ったポーズのまま降ってくるので人形に見える。
 */
 
 import {
@@ -26,6 +23,28 @@ import { AVATAR_PLACEMENTS } from "@/lib/avatarMotion";
 import { useFrame } from "@react-three/fiber";
 import { type ReactNode, useLayoutEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+
+/**
+ * 行きすぎの強さ。1.7 で潰れ具合の 1 割ほど伸びすぎてから戻る。
+ * 家具のバウンドと同じで、一度だけ行きすぎて収まる。
+ */
+const POP_UP_OVERSHOOT = 1.7;
+
+/** 縦に潰れたぶん横に広がる強さ。0 で体積無視、0.5 で体積保存に近い。 */
+const SQUASH_STRENGTH = 0.35;
+
+/** 横の広がりの上限と下限。人の形が崩れて見えない範囲に抑える。 */
+const SQUASH_LIMIT = { min: 0.92, max: 1.3 };
+
+/** 足元に舞うほこりの数。 */
+const DUST_COUNT = 24;
+
+/** ほこりの色。床と家具の暖色に寄せた、少しくすんだ白。 */
+const DUST_COLOR = "#e6ded2";
+
+/** ほこりが外へ広がる距離と、舞い上がる高さ（メートル）。 */
+const DUST_SPREAD = 0.34;
+const DUST_LIFT = 0.16;
 
 /** 光の色。部屋が暖色なので、寒色に寄せすぎず白に近い水色にしてある。 */
 const GLOW_COLOR = "#bfe3ff";
@@ -112,6 +131,15 @@ function easeOutCubic(t: number): number {
 }
 
 /**
+ * 1 を一度だけ行きすぎてから戻る補間。家具のバウンドと同じ「一度だけ跳ねる」形。
+ * t=0 で 0、t=1 でちょうど 1 になる。
+ */
+function easeOutBack(t: number): number {
+	const c = POP_UP_OVERSHOOT;
+	return 1 + (c + 1) * (t - 1) ** 3 + c * (t - 1) ** 2;
+}
+
+/**
  * 走査する高さの範囲を、いまのポーズのアバターから測る。
  *
  * SkinnedMesh.computeBoundingBox はボーンを効かせた頂点で測ってくれるので、
@@ -145,7 +173,108 @@ export function AvatarAppear({ children }: { children: ReactNode }) {
 	// Provider が無ければ演出なし。トップページはこちらを通る
 	if (!runtime) return <>{children}</>;
 	if (runtime.avatarAppearance === "drop") return <DropIn objectKey="avatar">{children}</DropIn>;
-	return <AvatarMaterialize runtime={runtime}>{children}</AvatarMaterialize>;
+	if (runtime.avatarAppearance === "materialize")
+		return <AvatarMaterialize runtime={runtime}>{children}</AvatarMaterialize>;
+	return <AvatarPopUp runtime={runtime}>{children}</AvatarPopUp>;
+}
+
+/**
+ * 足元で潰れた状態から、ぴょこんと立ち上がる。
+ *
+ * 伸び縮みの中心は部屋の原点ではなく足元でなければならない。原点で拡大すると
+ * 部屋の隅から寄ってくるように見えてしまう。立ち位置ぶん動かしたグループを
+ * 拡大し、その中で同じぶん戻すことで、足を床に着けたまま伸ばしている。
+ *
+ * マテリアルには触らないので、実体化の方と違って複製も後始末もいらない。
+ */
+function AvatarPopUp({ runtime, children }: { runtime: DropInRuntime; children: ReactNode }) {
+	const root = useRef<THREE.Group>(null);
+	const pivot = useRef<THREE.Group>(null);
+	const dust = useRef<THREE.Points>(null);
+
+	// 伸び縮みの中心。モーションで立ち位置が変わるので追従させる
+	const center = AVATAR_PLACEMENTS[useAvatarMotion()].position;
+
+	// ほこりの飛ぶ向きと勢い。毎フレーム位置だけ動かす
+	const dustSeeds = useMemo(
+		() =>
+			Array.from({ length: DUST_COUNT }, () => ({
+				angle: Math.random() * Math.PI * 2,
+				reach: 0.5 + Math.random() * 0.5,
+				lift: 0.3 + Math.random() * 0.7,
+			})),
+		[],
+	);
+	const dustPositions = useMemo(() => new Float32Array(DUST_COUNT * 3), []);
+
+	useFrame(() => {
+		const rootGroup = root.current;
+		if (!rootGroup) return;
+
+		const elapsed = dropInElapsed(runtime, "avatar");
+		// 出番が来るまでは丸ごと出さない
+		if (elapsed < 0) {
+			rootGroup.visible = false;
+			return;
+		}
+		rootGroup.visible = true;
+
+		const duration = runtime.params.popUpDuration;
+		const progress = duration > 0 ? Math.min(elapsed / duration, 1) : 1;
+
+		// 縦に伸びる。一度 1 を行きすぎてから戻る
+		const start = runtime.params.popUpSquash;
+		const stretch = start + (1 - start) * easeOutBack(progress);
+		// 縦が縮んだぶん横に広がる。潰れているときほど太く、伸び切ったときは細く
+		const squash = THREE.MathUtils.clamp(
+			stretch ** -SQUASH_STRENGTH,
+			SQUASH_LIMIT.min,
+			SQUASH_LIMIT.max,
+		);
+		pivot.current?.scale.set(squash, stretch, squash);
+
+		// 足元のほこり。立ち上がりの前半で外へ広がって舞い上がり、消える
+		if (dust.current) {
+			const puff = Math.min(progress / 0.6, 1);
+			dust.current.visible = puff < 1;
+			const spread = DUST_SPREAD * easeOutCubic(puff);
+			dustSeeds.forEach((seed, index) => {
+				const radius = 0.04 + spread * seed.reach;
+				dustPositions[index * 3] = Math.cos(seed.angle) * radius;
+				// 舞い上がってから落ちてくるので、山なりの高さにする
+				dustPositions[index * 3 + 1] = DUST_LIFT * seed.lift * Math.sin(puff * Math.PI);
+				dustPositions[index * 3 + 2] = Math.sin(seed.angle) * radius;
+			});
+			dust.current.geometry.attributes.position.needsUpdate = true;
+			setOpacity(dust.current, (1 - puff) * 0.5);
+		}
+	});
+
+	return (
+		<group ref={root} visible={false}>
+			{/* 立ち位置へ移してから拡大し、中で同じぶん戻す。足元を中心に伸び縮みする */}
+			<group ref={pivot} position={[center[0], 0, center[2]]}>
+				<group position={[-center[0], 0, -center[2]]}>{children}</group>
+			</group>
+
+			{/* 床すれすれ。加算合成にしないので、光ではなく舞うほこりに見える */}
+			<group position={[center[0], 0.01, center[2]]}>
+				<points ref={dust}>
+					<bufferGeometry>
+						<bufferAttribute attach="attributes-position" args={[dustPositions, 3]} />
+					</bufferGeometry>
+					<pointsMaterial
+						color={DUST_COLOR}
+						size={0.035}
+						sizeAttenuation
+						transparent
+						opacity={0}
+						depthWrite={false}
+					/>
+				</points>
+			</group>
+		</group>
+	);
 }
 
 function AvatarMaterialize({ runtime, children }: { runtime: DropInRuntime; children: ReactNode }) {

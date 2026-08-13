@@ -90,7 +90,7 @@ export default function DropInPocPage() {
 	};
 
 	const sequence = dropInSequence(order, replayCount);
-	const total = dropInTotalDuration(params);
+	const total = dropInTotalDuration(params, appearance);
 
 	return (
 		<div className=" flex flex-col gap-8 lg:flex-row ">
@@ -99,7 +99,8 @@ export default function DropInPocPage() {
 					出現アニメーション PoC
 				</Text>
 				<Text variant="small" className=" mb-4 text-maki-gray ">
-					issue #41 のイメージ合わせ用。オブジェクトごとに落ちてきて、床で一度バウンドします。
+					issue #41 のイメージ合わせ用。家具はひとつずつ落ちてきて床で一度バウンドし、
+					アバターだけは同じ跳ね方でぴょこんと立ち上がります。
 				</Text>
 				<div className=" aspect-square w-full max-w-[32rem] overflow-hidden rounded-2xl border border-neutral-300 ">
 					<Canvas shadows orthographic>
@@ -189,6 +190,31 @@ export default function DropInPocPage() {
 						))}
 					</select>
 				</label>
+
+				{appearance === "popUp" && (
+					<>
+						<Slider
+							label="立ち上がりの時間"
+							value={params.popUpDuration}
+							min={0.2}
+							max={1.5}
+							step={0.05}
+							unit="秒"
+							hint="潰れた状態から伸び切って収まるまで"
+							onChange={(popUpDuration) => update({ popUpDuration })}
+						/>
+						<Slider
+							label="始まりの潰れ具合"
+							value={params.popUpSquash}
+							min={0.2}
+							max={0.95}
+							step={0.05}
+							unit=""
+							hint={`1 で潰さない。下げるほど漫画寄り。伸びすぎは ${((1 - params.popUpSquash) * 0.1 + 1).toFixed(2)}倍`}
+							onChange={(popUpSquash) => update({ popUpSquash })}
+						/>
+					</>
+				)}
 
 				{appearance === "materialize" && (
 					<Slider

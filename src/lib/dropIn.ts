@@ -39,7 +39,15 @@ export type DropInParams = {
 	restitution: number;
 	/** 隣り合うオブジェクトの落下開始をずらす間隔（秒）。0 で全部同時。 */
 	stagger: number;
-	/** アバターが実体化し切るまでの時間（秒）。落下ではなくこちらを使う。 */
+	/** アバターがぴょこんと立ち上がり切るまでの時間（秒）。 */
+	popUpDuration: number;
+	/**
+	 * 立ち上がり始めるときの縦の潰れ具合。1 で潰さず、小さいほど紙のようにぺしゃんこ。
+	 * 行きすぎの量もこれに比例するので、下げるほど漫画寄りの跳ね方になる。
+	 * 座っているアバターを潰しすぎると椅子にめり込むので、既定は控えめ。
+	 */
+	popUpSquash: number;
+	/** アバターが実体化し切るまでの時間（秒）。 */
 	materializeDuration: number;
 };
 
@@ -48,25 +56,40 @@ export const DEFAULT_DROP_IN_PARAMS: DropInParams = {
 	fallDuration: 0.42,
 	restitution: 0.35,
 	stagger: 0.12,
+	popUpDuration: 0.65,
+	popUpSquash: 0.45,
 	materializeDuration: 1.1,
 };
 
 /**
  * アバターの出し方。
  *
- * 家具と同じに落とすと、座ったポーズのまま棒立ちで降ってきて違和感が出る。
- * 人だけは落下ではなく、足元から光と一緒に立ち上がる「実体化」にする。
+ * 家具と同じに落とすと、座ったポーズのまま棒立ちで降ってきて、人形が落ちたように
+ * 見えてしまう。かといって光で実体化させると、手作りの部屋に対して転送装置の
+ * 語彙が硬すぎて浮く。
+ *
+ * 家具は「落ちて一度跳ねる」という物理的で愛嬌のある動きをしているので、
+ * アバターも同じ語彙（スクワッシュ＆ストレッチ）に揃えて、落ちる代わりに
+ * 足元からぴょこんと立ち上がるのが既定。残り2つは比較用に残してある。
  */
-export const AVATAR_APPEARANCES = ["materialize", "drop"] as const;
+export const AVATAR_APPEARANCES = ["popUp", "materialize", "drop"] as const;
 
 export type AvatarAppearance = (typeof AVATAR_APPEARANCES)[number];
 
 export const AVATAR_APPEARANCE_LABELS: Record<AvatarAppearance, string> = {
+	popUp: "ぴょこんと現れる（家具と同じ跳ね方）",
 	materialize: "実体化（足元から光と一緒に現れる）",
 	drop: "落下（家具と同じ）",
 };
 
-export const DEFAULT_AVATAR_APPEARANCE: AvatarAppearance = "materialize";
+export const DEFAULT_AVATAR_APPEARANCE: AvatarAppearance = "popUp";
+
+/** アバターが出切るまでの秒数。出し方で使うパラメータが違う。 */
+export function avatarAppearDuration(params: DropInParams, appearance: AvatarAppearance): number {
+	if (appearance === "popUp") return params.popUpDuration;
+	if (appearance === "materialize") return params.materializeDuration;
+	return dropInDuration(params);
+}
 
 /**
  * 落下開始からの経過時間に対する、最終位置からの高さ。
@@ -168,9 +191,9 @@ export function dropInDelays(
 
 /**
  * 全部が出終わるまでの秒数。パネルの表示用。
- * アバターの実体化は落下より長引くことがあるので、長い方で見積もる。
+ * アバターの出現は落下より長引くことがあるので、長い方で見積もる。
  */
-export function dropInTotalDuration(params: DropInParams): number {
+export function dropInTotalDuration(params: DropInParams, appearance: AvatarAppearance): number {
 	const lastDelay = (LAYERED_SEQUENCE.length - 1) * params.stagger;
-	return lastDelay + Math.max(dropInDuration(params), params.materializeDuration);
+	return lastDelay + Math.max(dropInDuration(params), avatarAppearDuration(params, appearance));
 }
