@@ -14,6 +14,7 @@ Provider は必ず <Canvas> の内側に置くこと。react-three-fiber は DOM
 */
 
 import {
+	type AvatarAppearance,
 	type DropInObjectKey,
 	type DropInOrder,
 	type DropInParams,
@@ -24,18 +25,31 @@ import { useFrame } from "@react-three/fiber";
 import { type ReactNode, createContext, useContext, useMemo, useRef } from "react";
 import type * as THREE from "three";
 
-type DropInRuntime = {
+export type DropInRuntime = {
 	params: DropInParams;
 	delays: Record<DropInObjectKey, number>;
+	/** アバターだけは出し方を選べる。AvatarAppear が見る。 */
+	avatarAppearance: AvatarAppearance;
 	/** 再生を始めた時刻（performance.now() のミリ秒）。 */
 	startedAt: number;
 };
 
 const DropInContext = createContext<DropInRuntime | null>(null);
 
+/** 再生中なら再生状態を、そうでなければ null を返す。 */
+export function useDropInRuntime(): DropInRuntime | null {
+	return useContext(DropInContext);
+}
+
+/** そのオブジェクトが出始めてからの秒数。負ならまだ出番が来ていない。 */
+export function dropInElapsed(runtime: DropInRuntime, objectKey: DropInObjectKey): number {
+	return (performance.now() - runtime.startedAt) / 1000 - runtime.delays[objectKey];
+}
+
 type DropInProviderProps = {
 	params: DropInParams;
 	order: DropInOrder;
+	avatarAppearance: AvatarAppearance;
 	/**
 	 * 増やすと最初から再生し直す。ランダム順の並びもこの値を種にするので、
 	 * リプレイのたびに違う順番になる。
@@ -44,14 +58,21 @@ type DropInProviderProps = {
 	children: ReactNode;
 };
 
-export function DropInProvider({ params, order, replayCount, children }: DropInProviderProps) {
+export function DropInProvider({
+	params,
+	order,
+	avatarAppearance,
+	replayCount,
+	children,
+}: DropInProviderProps) {
 	const runtime = useMemo<DropInRuntime>(
 		() => ({
 			params,
 			delays: dropInDelays(order, params.stagger, replayCount),
+			avatarAppearance,
 			startedAt: performance.now(),
 		}),
-		[params, order, replayCount],
+		[params, order, avatarAppearance, replayCount],
 	);
 
 	return <DropInContext.Provider value={runtime}>{children}</DropInContext.Provider>;
@@ -63,7 +84,7 @@ type DropInProps = {
 };
 
 export function DropIn({ objectKey, children }: DropInProps) {
-	const runtime = useContext(DropInContext);
+	const runtime = useDropInRuntime();
 	// Provider が無ければ何もしない。トップページはこちらを通る。
 	if (!runtime) return <>{children}</>;
 	return (
@@ -75,12 +96,11 @@ export function DropIn({ objectKey, children }: DropInProps) {
 
 function DropInGroup({ runtime, objectKey, children }: DropInProps & { runtime: DropInRuntime }) {
 	const ref = useRef<THREE.Group>(null);
-	const delay = runtime.delays[objectKey];
 
 	useFrame(() => {
 		const group = ref.current;
 		if (!group) return;
-		const elapsed = (performance.now() - runtime.startedAt) / 1000 - delay;
+		const elapsed = dropInElapsed(runtime, objectKey);
 		// 落下開始まではそもそも出さない。空中に浮いたまま待つと種明かしになってしまう
 		group.visible = elapsed >= 0;
 		group.position.y = dropInOffset(elapsed, runtime.params);

@@ -1,4 +1,5 @@
 "use client";
+import { AvatarAppear } from "@/components/3d/AvatarAppear";
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
 import { DropIn } from "@/components/3d/DropIn";
 import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
@@ -55,9 +56,10 @@ export function RoomScene({
 					shadow-bias={-0.0006}
 					shadow-normalBias={0.02}
 				/>
-				<DropIn objectKey="avatar">
+				{/* アバターだけは落下ではなく実体化。理由は AvatarAppear のコメント参照 */}
+				<AvatarAppear>
 					<AvatarPrototype />
-				</DropIn>
+				</AvatarAppear>
 				<Room />
 				<DropIn objectKey="walls">
 					<RoomWalls skyColor={lighting.skyColor} skyEmissive={lighting.skyEmissive} />

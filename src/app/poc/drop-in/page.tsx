@@ -15,6 +15,10 @@ import { MyCamera } from "@/components/3d/MyCamera";
 import { RoomScene } from "@/components/3d/Scene";
 import { Text } from "@/components/ui/Text";
 import {
+	AVATAR_APPEARANCES,
+	AVATAR_APPEARANCE_LABELS,
+	type AvatarAppearance,
+	DEFAULT_AVATAR_APPEARANCE,
 	DEFAULT_DROP_IN_ORDER,
 	DEFAULT_DROP_IN_PARAMS,
 	DROP_IN_OBJECT_LABELS,
@@ -74,6 +78,7 @@ function Slider({ label, value, min, max, step, unit, hint, onChange }: SliderPr
 export default function DropInPocPage() {
 	const [params, setParams] = useState<DropInParams>(DEFAULT_DROP_IN_PARAMS);
 	const [order, setOrder] = useState<DropInOrder>(DEFAULT_DROP_IN_ORDER);
+	const [appearance, setAppearance] = useState<AvatarAppearance>(DEFAULT_AVATAR_APPEARANCE);
 	const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("day");
 	// 増やすと DropInProvider が作り直されて最初から再生される
 	const [replayCount, setReplayCount] = useState(0);
@@ -104,7 +109,12 @@ export default function DropInPocPage() {
 								DropInProvider は Canvas の内側に置くこと。
 								react-three-fiber は別リコンサイラなので、外側の Provider は届かない。
 							*/}
-							<DropInProvider params={params} order={order} replayCount={replayCount}>
+							<DropInProvider
+								params={params}
+								order={order}
+								avatarAppearance={appearance}
+								replayCount={replayCount}
+							>
 								<RoomScene lighting={SCENE_LIGHTING[timeOfDay]} rotation={[0, 0, 0]} />
 							</DropInProvider>
 						</Suspense>
@@ -161,6 +171,37 @@ export default function DropInPocPage() {
 					hint="0 にすると全部同時に落ちる"
 					onChange={(stagger) => update({ stagger })}
 				/>
+
+				<label className=" block text-sm ">
+					<span className=" block mb-1 ">アバターの出し方</span>
+					<select
+						value={appearance}
+						onChange={(event) => {
+							setAppearance(event.target.value as AvatarAppearance);
+							setReplayCount((count) => count + 1);
+						}}
+						className=" w-full rounded-lg border border-neutral-300 p-2 "
+					>
+						{AVATAR_APPEARANCES.map((value) => (
+							<option key={value} value={value}>
+								{AVATAR_APPEARANCE_LABELS[value]}
+							</option>
+						))}
+					</select>
+				</label>
+
+				{appearance === "materialize" && (
+					<Slider
+						label="実体化の時間"
+						value={params.materializeDuration}
+						min={0.3}
+						max={2.5}
+						step={0.05}
+						unit="秒"
+						hint="足元から頭まで光が走り切るまで"
+						onChange={(materializeDuration) => update({ materializeDuration })}
+					/>
+				)}
 
 				<label className=" block text-sm ">
 					<span className=" block mb-1 ">出現の順番</span>

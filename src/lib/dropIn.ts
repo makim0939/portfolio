@@ -39,6 +39,8 @@ export type DropInParams = {
 	restitution: number;
 	/** 隣り合うオブジェクトの落下開始をずらす間隔（秒）。0 で全部同時。 */
 	stagger: number;
+	/** アバターが実体化し切るまでの時間（秒）。落下ではなくこちらを使う。 */
+	materializeDuration: number;
 };
 
 export const DEFAULT_DROP_IN_PARAMS: DropInParams = {
@@ -46,7 +48,25 @@ export const DEFAULT_DROP_IN_PARAMS: DropInParams = {
 	fallDuration: 0.42,
 	restitution: 0.35,
 	stagger: 0.12,
+	materializeDuration: 1.1,
 };
+
+/**
+ * アバターの出し方。
+ *
+ * 家具と同じに落とすと、座ったポーズのまま棒立ちで降ってきて違和感が出る。
+ * 人だけは落下ではなく、足元から光と一緒に立ち上がる「実体化」にする。
+ */
+export const AVATAR_APPEARANCES = ["materialize", "drop"] as const;
+
+export type AvatarAppearance = (typeof AVATAR_APPEARANCES)[number];
+
+export const AVATAR_APPEARANCE_LABELS: Record<AvatarAppearance, string> = {
+	materialize: "実体化（足元から光と一緒に現れる）",
+	drop: "落下（家具と同じ）",
+};
+
+export const DEFAULT_AVATAR_APPEARANCE: AvatarAppearance = "materialize";
 
 /**
  * 落下開始からの経過時間に対する、最終位置からの高さ。
@@ -146,8 +166,11 @@ export function dropInDelays(
 	return delays;
 }
 
-/** 全部が静止し切るまでの秒数。パネルの表示用。 */
+/**
+ * 全部が出終わるまでの秒数。パネルの表示用。
+ * アバターの実体化は落下より長引くことがあるので、長い方で見積もる。
+ */
 export function dropInTotalDuration(params: DropInParams): number {
 	const lastDelay = (LAYERED_SEQUENCE.length - 1) * params.stagger;
-	return lastDelay + dropInDuration(params);
+	return lastDelay + Math.max(dropInDuration(params), params.materializeDuration);
 }
