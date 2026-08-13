@@ -10,8 +10,6 @@ export const metadata: Metadata = {
 	description: "このサイトにこれから盛り込みたい機能と、できたことの記録です。",
 };
 
-const ISSUES_URL = "https://github.com/makim0939/portfolio/issues";
-
 const sections: { status: RoadmapStatus; heading: string; lead: string; empty: string }[] = [
 	{
 		status: "wip",
@@ -109,12 +107,7 @@ export default async function RoadmapPage() {
 			</div>
 
 			<Text variant="p" className=" mt-16 text-sm text-maki-gray text-left ">
-				<a
-					href={ISSUES_URL}
-					target="_blank"
-					rel="noopener noreferrer"
-					className=" hover:text-blue-500 duration-100 "
-				>
+				<a href="/" className=" hover:text-blue-500 duration-100 ">
 					←<u>Homeに戻る</u>
 				</a>
 			</Text>
