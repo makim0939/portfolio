@@ -209,6 +209,18 @@ body {
 /*
 ---break--- */
 /*
+	制作物のサムネイルを全画面で見るときの動画。
+	全画面の出入りは、こちらで出している「閉じる」ボタンに一本化している。
+	プレイヤー側にも全画面のボタンが並ぶと押し分けが分からなくなるため、
+	controlsList="nofullscreen" が効かない WebKit 系ではここで隠す。
+*/
+.work-cover-video::-webkit-media-controls-fullscreen-button {
+	display: none;
+}
+
+/*
+---break--- */
+/*
 	ロードマップの進捗バー（issue #42）。0 から実際の割合まで伸ばす。
 	伸ばす先は width の値そのものではなく --roadmap-progress で受け取る。
 	要素側の width はアニメーション終了後の値として残す必要があるため。
