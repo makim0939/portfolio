@@ -17,7 +17,12 @@ export function MDXContent({ source }: { source: string }) {
 			</Text>
 		),
 		a: ({ children, href }: { children: React.ReactNode; href: string }) => (
-			<StyledLink href={href} className="text-sm md:text-base">
+			<StyledLink
+				href={href}
+				target="_blank"
+				rel="noopener noreferrer"
+				className="text-sm md:text-base"
+			>
 				<u>{children}</u>
 			</StyledLink>
 		),
