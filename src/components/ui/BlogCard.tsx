@@ -10,17 +10,15 @@ export function BlogCard({ entry }: { entry: BlogEntry }) {
 
 	return (
 		<article className=" min-w-44 max-w-96 p-5 space-y-2 bg-[var(--surface)] rounded-2xl border hover:shadow-sm transition shadow-lg ">
-			<div>
-				<Link href={entry.href} {...linkProps}>
-					<Image
-						src={entry.image}
-						alt={entry.title}
-						className=" w-full rounded-md bg-neutral-200"
-						width={1200}
-						height={630}
-					/>
-				</Link>
-			</div>
+			{/* 枠を16:9に固定して object-cover で揃える。Zennの画像は必ずしも同じ縦横比とは
+				限らず、枠が可変だとカードの高さが記事ごとにばらついて段差ができるため。 */}
+			<Link
+				href={entry.href}
+				{...linkProps}
+				className=" block relative aspect-video overflow-hidden rounded-md bg-neutral-200 "
+			>
+				<Image src={entry.image} alt={entry.title} fill className=" object-cover " />
+			</Link>
 
 			<h3 className="text-base font-semibold">
 				<Link href={entry.href} {...linkProps} className="hover:underline text-blue-600">
