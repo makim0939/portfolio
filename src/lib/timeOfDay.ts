@@ -1,9 +1,7 @@
 /**
- * 時間帯ごとのプリセット。
- *
- * issue #35 の方針にあわせて、シームレスな補間ではなく朝/昼/夕/夜の
- * 4パターンを切り替える。背景色は globals.css 側に `:root[data-time="..."]`
- * として持たせ、3D側の光はここの `SCENE_LIGHTING` を使う。
+ * 時間帯ごとのプリセット。連続的に補間せず、朝/昼/夕/夜の4パターンを切り替える。
+ * 背景色は globals.css の `:root[data-time="..."]` が持ち、3D側の光はここの
+ * `SCENE_LIGHTING` を使う。
  */
 
 export const TIMES_OF_DAY = ["morning", "day", "evening", "night"] as const;
@@ -35,7 +33,6 @@ export function getTimeOfDay(date: Date): TimeOfDay {
  *
  * ページは静的生成なのでサーバ側では時刻が分からず、マウント後に設定すると
  * 初回描画で一瞬だけ既定値（昼）が見えてしまう。これを head で同期実行して防ぐ。
- * 判定の境界値は上の HOUR_BOUNDARIES から埋め込むので、二重管理にはならない。
  */
 export function timeOfDayInitScript(): string {
 	const { morning, day, evening, night } = HOUR_BOUNDARIES;
@@ -90,9 +87,9 @@ export const SCENE_LIGHTING: Record<TimeOfDay, SceneLighting> = {
 	day: {
 		sunColor: "#fff4e2",
 		sunPosition: [5.16, 2.88, -0.96],
-		// 環境光を落として日光との差を広げ、床の光と影をはっきり出す。
 		sunIntensity: 3.4,
 		ambientColor: "#ffffff",
+		// 落とし気味にして日光との差を広げ、床の光と影をはっきり出す。
 		ambientIntensity: 0.78,
 		pointColor: "#ffffff",
 		pointPosition: [0, 5, 1],

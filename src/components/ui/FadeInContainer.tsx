@@ -52,8 +52,8 @@ export function FadeInContainer({
 		<div ref={containerRef} {...props}>
 			{childArray.map((child, index) => (
 				<div
-					//biome-ignore lint/suspicious/noArrayIndexKey:
-					key={index} // 順番が固定かつid等の要素がないためkeyにindexを設定することを許す
+					// biome-ignore lint/suspicious/noArrayIndexKey: 並びが固定で、子に id 相当の値がないため
+					key={index}
 					style={{
 						opacity: visibleIndexes.has(index) ? 100 : 0,
 						transform: visibleIndexes.has(index) ? "translateY(0)" : `translateY(${distance}px)`,

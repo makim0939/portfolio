@@ -1,6 +1,5 @@
-// GitHub の Issue をそのままロードマップの元データとして使う（issue #42）。
-// サイト側に別途ロードマップの一覧を持つと Issue と二重管理になって必ずずれるので、
-// 公開する内容は enhancement ラベルの付いた Issue に一本化している。
+// ロードマップの元データは GitHub の Issue。サイト側にも一覧を持つと二重管理になって
+// 必ずずれるので、公開する内容は enhancement ラベルの付いた Issue に一本化している。
 
 export type RoadmapStatus = "wip" | "todo" | "done";
 
@@ -63,12 +62,9 @@ function toPlainText(line: string): string {
 }
 
 /**
- * Issue 本文を「文」と「箇条書き」に分けて読む。
- * 箇条書きを1本の文につなげると `[x]` や中黒が文中に紛れて読めなくなるので、
- * カード側でリストとして組めるよう、構造を保ったまま渡す。
- *
- * 箇条書きより後ろの段落は落とす。カードに収まる量を超えるうえ、
- * 続きは Issue を開けば読めるため。
+ * Issue 本文を「文」と「箇条書き」に分ける。1本の文につなげると `[x]` や中黒が
+ * 文中に紛れて読めなくなるので、カード側でリストとして組めるよう構造を保つ。
+ * 箇条書きより後ろの段落は、カードに収まらないうえ Issue を開けば読めるので落とす。
  */
 function parseBody(body: string | null): { summary: string; items: RoadmapListItem[] } {
 	if (!body) return { summary: "", items: [] };
@@ -101,11 +97,7 @@ function parseBody(body: string | null): { summary: string; items: RoadmapListIt
 	};
 }
 
-/**
- * open な Issue のうち、担当者が付いているものを「制作中」とみなす。
- * 着手を表す情報が Issue 側に他にないため、アサインを着手の合図として使っている。
- * （自分にアサインすればサイト上で「いま作っているもの」に上がる）
- */
+/** 着手を表す情報が Issue に他にないので、アサイン済みの open を「制作中」とみなす。 */
 function toStatus(issue: GitHubIssue): RoadmapStatus {
 	if (issue.state === "closed") return "done";
 	return issue.assignees.length > 0 ? "wip" : "todo";
@@ -114,8 +106,7 @@ function toStatus(issue: GitHubIssue): RoadmapStatus {
 export async function getRoadmapItems(): Promise<RoadmapItem[]> {
 	const url = `https://api.github.com/repos/${OWNER}/${REPO}/issues?state=all&labels=${LABEL}&per_page=100&sort=created&direction=desc`;
 
-	// 公開リポジトリなので認証なしでも読めるが、その場合 IP あたり 60req/h に制限される。
-	// トークンがある環境では使い、無い環境（ローカルなど）でも動くようにしている。
+	// 認証なしでも公開リポジトリは読めるが、その場合 IP あたり 60req/h に制限される。
 	const token = process.env.GITHUB_TOKEN;
 
 	try {
@@ -124,14 +115,14 @@ export async function getRoadmapItems(): Promise<RoadmapItem[]> {
 				Accept: "application/vnd.github+json",
 				...(token ? { Authorization: `Bearer ${token}` } : {}),
 			},
-			next: { revalidate: 3600 }, // ISRでキャッシュ
+			next: { revalidate: 3600 },
 		});
 		if (!res.ok) throw new Error(`Failed to fetch issues: ${res.status}`);
 
 		const issues: GitHubIssue[] = await res.json();
 
 		return issues
-			.filter((issue) => !issue.pull_request) // Issues API が混ぜてくる PR を除く
+			.filter((issue) => !issue.pull_request)
 			.map((issue) => ({
 				number: issue.number,
 				title: issue.title,
@@ -142,8 +133,7 @@ export async function getRoadmapItems(): Promise<RoadmapItem[]> {
 				completedAt: issue.closed_at ? formatDate(issue.closed_at) : undefined,
 			}));
 	} catch (e) {
-		// ロードマップはサイトの主役ではないので、取得に失敗してもページごと落とさず
-		// 空の状態で表示する。
+		// ロードマップはサイトの主役ではないので、取得に失敗してもページごと落とさない。
 		console.error("Failed to fetch roadmap items:", e);
 		return [];
 	}

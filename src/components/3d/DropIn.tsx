@@ -1,6 +1,6 @@
 "use client";
 /*
-issue #41 の出現アニメーションを、部屋のオブジェクト1つずつに配る仕組み。
+出現アニメーションを、部屋のオブジェクト1つずつに配る仕組み。
 
 各オブジェクトを <DropIn objectKey="desk"> で包むと、再生中はその Y 座標に
 dropInOffset の値がオフセットとして乗る。包むだけなので、オブジェクト側の
@@ -56,7 +56,6 @@ type DropInProps = {
 
 export function DropIn({ objectKey, children }: DropInProps) {
 	const runtime = useContext(DropInContext);
-	// Provider が無ければ何もしない。二度目以降のトップページはこちらを通る。
 	if (!runtime) return <>{children}</>;
 	return (
 		<DropInGroup runtime={runtime} objectKey={objectKey}>
