@@ -1,5 +1,4 @@
 "use client";
-import { AvatarAppear } from "@/components/3d/AvatarAppear";
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
 import { DropIn, DropInProvider } from "@/components/3d/DropIn";
 import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
@@ -7,11 +6,7 @@ import { useDoePermission } from "@/hooks/useDoePermission";
 import { useMousePos } from "@/hooks/useMousePos";
 import { useResponsiveBreakpoint } from "@/hooks/useResponsiveBreakpoint";
 import { useTimeOfDay } from "@/hooks/useTimeOfDay";
-import {
-	DEFAULT_AVATAR_APPEARANCE,
-	DEFAULT_DROP_IN_ORDER,
-	DEFAULT_DROP_IN_PARAMS,
-} from "@/lib/dropIn";
+import { DEFAULT_DROP_IN_PARAMS } from "@/lib/dropIn";
 import { SCENE_LIGHTING, type SceneLighting } from "@/lib/timeOfDay";
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useEffect, useState } from "react";
@@ -28,7 +23,7 @@ import { WallClock } from "./WallClock";
  * オブジェクトを包んでいる DropIn は、上位に DropInProvider が無ければ素通しになる。
  * 出現アニメーション（issue #41）を付けるかどうかは RoomSceneWithIntro が決める。
  */
-export function RoomScene({
+function RoomScene({
 	rotation,
 	lighting,
 }: { rotation: [number, number, number]; lighting: SceneLighting }) {
@@ -61,10 +56,10 @@ export function RoomScene({
 					shadow-bias={-0.0006}
 					shadow-normalBias={0.02}
 				/>
-				{/* アバターの出し方は AvatarAppear が選ぶ。今は家具と同じ落下 */}
-				<AvatarAppear>
+				{/* アバターも家具と同じに落とす。いずれ出現専用のモーションに差し替える想定 */}
+				<DropIn objectKey="avatar">
 					<AvatarPrototype />
-				</AvatarAppear>
+				</DropIn>
 				<Room />
 				<DropIn objectKey="walls">
 					<RoomWalls skyColor={lighting.skyColor} skyEmissive={lighting.skyEmissive} />
@@ -114,12 +109,7 @@ function RoomSceneWithIntro(props: RoomSceneProps) {
 	if (!useIntro()) return <RoomScene {...props} />;
 
 	return (
-		<DropInProvider
-			params={DEFAULT_DROP_IN_PARAMS}
-			order={DEFAULT_DROP_IN_ORDER}
-			avatarAppearance={DEFAULT_AVATAR_APPEARANCE}
-			replayCount={0}
-		>
+		<DropInProvider params={DEFAULT_DROP_IN_PARAMS}>
 			<RoomScene {...props} />
 		</DropInProvider>
 	);

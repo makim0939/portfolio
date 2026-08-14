@@ -6,73 +6,44 @@ issue #41 の出現アニメーションを、部屋のオブジェクト1つず
 dropInOffset の値がオフセットとして乗る。包むだけなので、オブジェクト側の
 位置・回転・スケールには触らない。
 
-DropInProvider が無いときは素通し（group すら足さない）。トップページは
-今のところ Provider を置いていないので、この仕組みを入れても見た目は変わらない。
+DropInProvider が無いときは素通し（group すら足さない）。トップページは初回表示の
+ときだけ Provider を置くので、二度目以降は演出のコードが一切走らない。
 
 Provider は必ず <Canvas> の内側に置くこと。react-three-fiber は DOM とは別の
 リコンサイラで動いていて、Canvas をまたいだ React コンテキストは届かない。
 */
 
-import {
-	type AvatarAppearance,
-	type DropInObjectKey,
-	type DropInOrder,
-	type DropInParams,
-	dropInDelays,
-	dropInOffset,
-} from "@/lib/dropIn";
+import { type DropInObjectKey, type DropInParams, dropInDelays, dropInOffset } from "@/lib/dropIn";
 import { useFrame } from "@react-three/fiber";
 import { type ReactNode, createContext, useContext, useMemo, useRef } from "react";
 import type * as THREE from "three";
 
-export type DropInRuntime = {
+type DropInRuntime = {
 	params: DropInParams;
 	delays: Record<DropInObjectKey, number>;
-	/** アバターだけは出し方を選べる。AvatarAppear が見る。 */
-	avatarAppearance: AvatarAppearance;
 	/** 再生を始めた時刻（performance.now() のミリ秒）。 */
 	startedAt: number;
 };
 
 const DropInContext = createContext<DropInRuntime | null>(null);
 
-/** 再生中なら再生状態を、そうでなければ null を返す。 */
-export function useDropInRuntime(): DropInRuntime | null {
-	return useContext(DropInContext);
-}
-
 /** そのオブジェクトが出始めてからの秒数。負ならまだ出番が来ていない。 */
-export function dropInElapsed(runtime: DropInRuntime, objectKey: DropInObjectKey): number {
+function dropInElapsed(runtime: DropInRuntime, objectKey: DropInObjectKey): number {
 	return (performance.now() - runtime.startedAt) / 1000 - runtime.delays[objectKey];
 }
 
-type DropInProviderProps = {
-	params: DropInParams;
-	order: DropInOrder;
-	avatarAppearance: AvatarAppearance;
-	/**
-	 * 増やすと最初から再生し直す。ランダム順の並びもこの値を種にするので、
-	 * リプレイのたびに違う順番になる。
-	 */
-	replayCount: number;
-	children: ReactNode;
-};
-
 export function DropInProvider({
 	params,
-	order,
-	avatarAppearance,
-	replayCount,
 	children,
-}: DropInProviderProps) {
+}: { params: DropInParams; children: ReactNode }) {
+	// 再生開始の時刻はここで決まる。params は定数なので、作り直されるのは一度だけ
 	const runtime = useMemo<DropInRuntime>(
 		() => ({
 			params,
-			delays: dropInDelays(order, params.stagger, replayCount),
-			avatarAppearance,
+			delays: dropInDelays(params.stagger),
 			startedAt: performance.now(),
 		}),
-		[params, order, avatarAppearance, replayCount],
+		[params],
 	);
 
 	return <DropInContext.Provider value={runtime}>{children}</DropInContext.Provider>;
@@ -84,8 +55,8 @@ type DropInProps = {
 };
 
 export function DropIn({ objectKey, children }: DropInProps) {
-	const runtime = useDropInRuntime();
-	// Provider が無ければ何もしない。トップページはこちらを通る。
+	const runtime = useContext(DropInContext);
+	// Provider が無ければ何もしない。二度目以降のトップページはこちらを通る。
 	if (!runtime) return <>{children}</>;
 	return (
 		<DropInGroup runtime={runtime} objectKey={objectKey}>
