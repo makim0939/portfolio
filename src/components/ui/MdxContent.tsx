@@ -1,8 +1,8 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
-import { Text } from "./Text";
 import { StyledLink } from "./StyledLink";
+import { Text } from "./Text";
 
 export function MDXContent({ source }: { source: string }) {
 	const mdxComponents = {

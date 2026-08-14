@@ -1,23 +1,23 @@
 import { Scene } from "@/components/3d/Scene";
+import { BlogCard } from "@/components/ui/BlogCard";
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
-import { OgpCard } from "@/components/ui/OgpCard";
 import { RoadmapCard } from "@/components/ui/RoadmapCard";
 import { SocialLinkIcon } from "@/components/ui/SocialLinkIcon";
 import { StyledLink } from "@/components/ui/StyledLink";
 import { Text } from "@/components/ui/Text";
 import { WorkCard } from "@/components/ui/WorkCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcnui/avatar";
+import { getBlogEntries } from "@/lib/blog";
 import { filterByStatus, getRoadmapItems } from "@/lib/roadmap";
 import { socialLinks } from "@/lib/socialLinks";
 import { getAllWorks } from "@/lib/works";
-import { getAllArticleOgps } from "@/lib/zenn";
 import React, { Suspense } from "react";
 
 /** トップに出すロードマップの件数 */
 const ROADMAP_PREVIEW_COUNT = 3;
 
 export default async function HomePage() {
-	const ogps = await getAllArticleOgps();
+	const blogEntries = await getBlogEntries();
 	const works = await getAllWorks();
 	const allRoadmapItems = await getRoadmapItems();
 	// トップでは「これから」だけ見せる。できたことは制作物やロードマップ側で見てもらう。
@@ -129,7 +129,9 @@ export default async function HomePage() {
 								lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
 							"
 							>
-								{ogps.map((ogp, index) => index < 3 && <OgpCard key={ogp.url} ogp={ogp} />)}
+								{blogEntries.map(
+									(entry, index) => index < 3 && <BlogCard key={entry.href} entry={entry} />,
+								)}
 							</FadeInContainer>
 						</Suspense>
 						<Text variant="p" className=" text-sm text-maki-gray text-right ">

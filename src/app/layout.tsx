@@ -9,6 +9,8 @@ import "./globals.css";
 const notoSansJP = Noto_Sans_JP({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+	// OGP画像などをページ側で相対パスで書けるようにするため、基準のURLを持たせる
+	metadataBase: new URL("https://www.makimura.me"),
 	title: "まきむらのポートフォリオ",
 	description: "まきむらのポートフォリオサイトです。",
 };
