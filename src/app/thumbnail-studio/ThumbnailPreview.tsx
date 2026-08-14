@@ -119,6 +119,11 @@ function ClipDurationProbe({
 type PoseEditorProps = {
 	pose: BonePose;
 	selectedBone: string;
+	/**
+	 * いま止めている姿勢の目印。モーションや止める時刻が変わって値が変わったら、
+	 * そのときの姿勢を新しい基準として撮り直す。
+	 */
+	resetKey: string;
 	onBonesFound: (names: string[]) => void;
 	onBoneRotated: (name: string, rotation: [number, number, number]) => void;
 };
@@ -126,13 +131,25 @@ type PoseEditorProps = {
 /**
  * 骨を直に回してポーズを作る。
  *
- * モーションは毎フレーム骨に姿勢を書き込むので、その後ろから上書きしないと
- * 手で回した分がすぐ消える。この中の useFrame はアバターより後に登録されるため、
- * モーションが書いたあとに走る。
+ * 上書き中は毎フレーム書き込んで、手で回した分をモーションの上に残す。
+ *
+ * 上書きをやめたときは、モーション側が書き戻してくれることを当てにできない。
+ * three.js のミキサーには「前フレームと値が変わらなければ書き込みを省く」
+ * 最適化があり、ポーズを止めた直後の数フレームで書き込みが止まるため。
+ * そのため止めた直後の姿勢を自分たちで控えておき、上書きが外れた骨には
+ * その姿勢を書き戻す。
  */
-function PoseEditor({ pose, selectedBone, onBonesFound, onBoneRotated }: PoseEditorProps) {
+function PoseEditor({
+	pose,
+	selectedBone,
+	resetKey,
+	onBonesFound,
+	onBoneRotated,
+}: PoseEditorProps) {
 	const scene = useThree((state) => state.scene);
 	const bones = useRef(new Map<string, THREE.Bone>());
+	const baseline = useRef(new Map<string, THREE.Quaternion>());
+	const previousPose = useRef<BonePose>({});
 	const [selected, setSelected] = useState<THREE.Bone | null>(null);
 
 	useEffect(() => {
@@ -149,9 +166,31 @@ function PoseEditor({ pose, selectedBone, onBonesFound, onBoneRotated }: PoseEdi
 		setSelected(bones.current.get(selectedBone) ?? null);
 	}, [selectedBone]);
 
+	// 基準の姿勢が変わったので、控えを撮り直す（次の useFrame で撮り直される）
+	// biome-ignore lint/correctness/useExhaustiveDependencies: resetKey は値ではなく、変わったことだけを合図に使う
+	useEffect(() => {
+		baseline.current.clear();
+	}, [resetKey]);
+
+	// 上書きが外れた骨（=戻された骨）には、控えておいた姿勢を書き戻す
+	useEffect(() => {
+		for (const name of Object.keys(previousPose.current)) {
+			if (name in pose) continue;
+			const bone = bones.current.get(name);
+			const base = baseline.current.get(name);
+			if (bone && base) bone.quaternion.copy(base);
+		}
+		previousPose.current = pose;
+	}, [pose]);
+
 	useFrame(() => {
-		for (const [name, rotation] of Object.entries(pose)) {
-			bones.current.get(name)?.rotation.set(rotation[0], rotation[1], rotation[2]);
+		for (const [name, bone] of bones.current) {
+			const rotation = pose[name];
+			if (rotation) {
+				bone.rotation.set(rotation[0], rotation[1], rotation[2]);
+			} else if (!baseline.current.has(name)) {
+				baseline.current.set(name, bone.quaternion.clone());
+			}
 		}
 	});
 
@@ -304,6 +343,7 @@ export function ThumbnailPreview({
 						<PoseEditor
 							pose={design.pose}
 							selectedBone={selectedBone}
+							resetKey={`${design.motion}:${design.time}`}
 							onBonesFound={onBonesFound}
 							onBoneRotated={onBoneRotated}
 						/>
