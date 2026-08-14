@@ -9,6 +9,21 @@ export const THUMBNAIL_SIZE = { width: 1200, height: 630 };
 /** 題名の改行に使う区切り。シェルから渡すので改行文字そのものは使わない */
 export const TITLE_LINE_SEPARATOR = "|";
 
+/** 写真の置き方。左上を原点にした位置と大きさで持つ */
+export type PhotoLayout = {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	/** 傾き（度） */
+	rotation: number;
+	/** アバターより手前に出す。既定では奥に置く */
+	inFront: boolean;
+};
+
+/** 骨ごとの回転（ラジアン）。動きを止めたうえで、この分だけ姿勢を上書きする */
+export type BonePose = Record<string, [number, number, number]>;
+
 export type ThumbnailDesign = {
 	/** 大きく出す題名。行ごとに分けて渡す */
 	titleLines: string[];
@@ -18,9 +33,22 @@ export type ThumbnailDesign = {
 	label: string;
 	/** 右に貼る写真。public からのパス。空なら文字とアバターだけになる */
 	photo: string;
+	photoLayout: PhotoLayout;
 	motion: AvatarMotion;
 	/** モーションを止める時刻（秒）。同じ値なら必ず同じポーズになる */
 	time: number;
+	/** 骨を触って直した分。触っていなければ空 */
+	pose: BonePose;
+};
+
+/** 写真の既定の置き方。右上に少し傾けて貼る */
+export const DEFAULT_PHOTO_LAYOUT: PhotoLayout = {
+	x: 752,
+	y: 46,
+	width: 392,
+	height: 523,
+	rotation: 2.5,
+	inFront: false,
 };
 
 const DEFAULT_DESIGN: ThumbnailDesign = {
@@ -28,32 +56,49 @@ const DEFAULT_DESIGN: ThumbnailDesign = {
 	subtitle: "ここに一行の説明を入れます",
 	label: "ラベル",
 	photo: "",
+	photoLayout: DEFAULT_PHOTO_LAYOUT,
 	motion: DEFAULT_AVATAR_MOTION,
 	time: 0,
+	pose: {},
 };
+
+/** 壊れた JSON が来ても画面ごと落ちないように、読めなければ既定値に戻す */
+function parseJson<T>(value: string | null, fallback: T): T {
+	if (!value) return fallback;
+	try {
+		return JSON.parse(value) as T;
+	} catch {
+		return fallback;
+	}
+}
 
 /** クエリからサムネイルの指定を読む。書かれていない項目は既定値のまま */
 export function parseThumbnailDesign(params: URLSearchParams): ThumbnailDesign {
 	const title = params.get("title");
-	const subtitle = params.get("subtitle");
-	const label = params.get("label");
-	const photo = params.get("photo");
-	const motion = params.get("motion");
 	const time = Number(params.get("time"));
+	const motion = params.get("motion");
 
 	return {
 		titleLines: title ? title.split(TITLE_LINE_SEPARATOR) : DEFAULT_DESIGN.titleLines,
-		subtitle: subtitle ?? DEFAULT_DESIGN.subtitle,
-		label: label ?? DEFAULT_DESIGN.label,
-		photo: photo ?? DEFAULT_DESIGN.photo,
+		subtitle: params.get("subtitle") ?? DEFAULT_DESIGN.subtitle,
+		label: params.get("label") ?? DEFAULT_DESIGN.label,
+		photo: params.get("photo") ?? DEFAULT_DESIGN.photo,
+		photoLayout: {
+			...DEFAULT_PHOTO_LAYOUT,
+			...parseJson<Partial<PhotoLayout>>(params.get("layout"), {}),
+		},
 		motion: isAvatarMotion(motion) ? motion : DEFAULT_DESIGN.motion,
 		time: Number.isFinite(time) && time > 0 ? time : DEFAULT_DESIGN.time,
+		pose: parseJson<BonePose>(params.get("pose"), DEFAULT_DESIGN.pose),
 	};
 }
 
-/** 指定をクエリに戻す。作業場が撮影スクリプトの引数を組み立てるのに使う */
+/**
+ * 指定をクエリに戻す。
+ * 画面から書き出すときも、この形にしてから撮影スクリプトへ渡す。
+ */
 export function thumbnailDesignToQuery(design: ThumbnailDesign): URLSearchParams {
-	return new URLSearchParams({
+	const params = new URLSearchParams({
 		title: design.titleLines.join(TITLE_LINE_SEPARATOR),
 		subtitle: design.subtitle,
 		label: design.label,
@@ -61,4 +106,25 @@ export function thumbnailDesignToQuery(design: ThumbnailDesign): URLSearchParams
 		motion: design.motion,
 		time: design.time.toFixed(2),
 	});
+
+	// 触っていないものは書かない。コマンドが読みづらくなるだけなので
+	if (!isSameLayout(design.photoLayout, DEFAULT_PHOTO_LAYOUT)) {
+		params.set("layout", JSON.stringify(design.photoLayout));
+	}
+	if (Object.keys(design.pose).length > 0) {
+		params.set("pose", JSON.stringify(design.pose));
+	}
+
+	return params;
+}
+
+function isSameLayout(a: PhotoLayout, b: PhotoLayout) {
+	return (
+		a.x === b.x &&
+		a.y === b.y &&
+		a.width === b.width &&
+		a.height === b.height &&
+		a.rotation === b.rotation &&
+		a.inFront === b.inFront
+	);
 }

@@ -31,6 +31,7 @@ const USAGE = `
   --time      モーションを止める時刻（秒）
   --out       書き出し先を直に指定する（--slug の代わり）
   --url       開発サーバのURL（既定: ${DEV_SERVER_URL}）
+  --query     絵柄の指定をクエリのまま渡す（作業場の「書き出す」が使う）
 
 ポーズと文字は ${DEV_SERVER_URL}/thumbnail-studio を開いて決められます。
 決まると、そのまま貼れるコマンドが画面の下に出ます。
@@ -80,11 +81,17 @@ async function main() {
 	const outPath = args.out ?? path.join("public", "blog", args.slug, "thumbnail.webp");
 	const baseUrl = args.url ?? DEV_SERVER_URL;
 
-	// 絵柄に関わる指定だけを、そのままページに渡す
-	const query = new URLSearchParams();
-	for (const key of ["title", "subtitle", "label", "photo", "motion", "time", "slug"]) {
-		if (args[key]) query.set(key, args[key]);
-	}
+	/*
+		絵柄の指定はそのままページへ渡す。
+		--query があればそれを使い、無ければ個別の指定を組み立てる。
+		書き出し先を決める --slug などは絵柄に関わらないので混ぜない。
+	*/
+	const notDesign = ["out", "url", "query"];
+	const query = args.query
+		? new URLSearchParams(args.query)
+		: new URLSearchParams(
+				Object.entries(args).filter(([key, value]) => value && !notDesign.includes(key)),
+			);
 
 	const browser = await chromium.launch();
 	const page = await browser.newPage({
