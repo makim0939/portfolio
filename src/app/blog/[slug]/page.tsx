@@ -1,4 +1,3 @@
-import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { MDXContent } from "@/components/ui/MdxContent";
 import { Text } from "@/components/ui/Text";
 import {
@@ -110,9 +109,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 					<hr className=" mt-8 " />
 				</header>
 			)}
-			<FadeInContainer className=" lg:max-w-6xl lg:min-h-[100vh] lg:m-auto ">
+			<div className=" lg:max-w-6xl lg:min-h-[100vh] lg:m-auto ">
 				<MDXContent source={post.body} />
-			</FadeInContainer>
+			</div>
 		</main>
 	);
 }
