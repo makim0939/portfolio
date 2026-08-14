@@ -26,6 +26,21 @@ const inputStyle: React.CSSProperties = {
 	fontFamily: "inherit",
 };
 
+/**
+ * 押せないボタンの見た目。
+ *
+ * 素の disabled 属性だけでは、このパネルのボタンはどれも同じ枠線・文字色なので
+ * 押せる状態と見分けがつかない。カーソルも指定していると disabled でも
+ * pointer のまま残ることがあるため、ここで薄くしてはっきり示す。
+ */
+function disabledButtonStyle(disabled: boolean): React.CSSProperties {
+	return {
+		...inputStyle,
+		cursor: disabled ? "not-allowed" : "pointer",
+		opacity: disabled ? 0.4 : 1,
+	};
+}
+
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
 	return (
 		<div style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 30 }}>
@@ -438,7 +453,7 @@ export function StudioControls({
 									const { [selectedBone]: _removed, ...rest } = design.pose;
 									onChange({ ...design, pose: rest });
 								}}
-								style={{ ...inputStyle, cursor: "pointer" }}
+								style={disabledButtonStyle(!selectedBone || !design.pose[selectedBone])}
 							>
 								この骨を戻す
 							</button>
@@ -446,7 +461,7 @@ export function StudioControls({
 								type="button"
 								disabled={editedBones.length === 0}
 								onClick={() => onChange({ ...design, pose: {} })}
-								style={{ ...inputStyle, cursor: "pointer" }}
+								style={disabledButtonStyle(editedBones.length === 0)}
 							>
 								全部戻す
 							</button>
@@ -457,7 +472,8 @@ export function StudioControls({
 							</span>
 						</div>
 						<p style={{ fontSize: 11, color: SUB_TEXT_COLOR }}>
-							選ぶと輪が出ます。輪をドラッグすると、その骨だけ回せます。
+							骨を選んでプレビューの輪をドラッグすると回せます。ここの2つは、選んだ骨・
+							全部の骨を回す前に戻すボタンです（まだ回していなければ押せません）。
 						</p>
 					</Section>
 
