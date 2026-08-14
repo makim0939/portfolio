@@ -1,37 +1,19 @@
 "use client";
 /*
-モデルのソース: 3DCG/Objects/WallClock (WallClock.py -> WallClock.glb)
+壁掛け時計。Room と同じ glb から描く。
+
+針が実時刻を指すので、Room.tsx に混ぜず別コンポーネントにしてある。
+useGLTF は同じパスなら読み込みを共有するので、glb が二重に落ちてくることはない。
 
 針は 12 時を指した状態で作ってあり、オブジェクトの原点は文字盤の中心にある。
 そのため Z 軸まわりに回すだけで実時刻を指す。
 */
 
+import { ROOM_GLB, type RoomGLTF } from "@/components/3d/Room";
 import { useGLTF } from "@react-three/drei";
 import { type JSX, useEffect, useState } from "react";
-import type * as THREE from "three";
-import type { GLTF } from "three/examples/jsm/Addons.js";
 
-type GLTFResult = GLTF & {
-	nodes: {
-		ClockCase: THREE.Mesh;
-		ClockFace: THREE.Mesh;
-		ClockMarks: THREE.Mesh;
-		ClockHourHand: THREE.Mesh;
-		ClockMinuteHand: THREE.Mesh;
-	};
-	materials: {
-		ClockCase: THREE.MeshStandardMaterial;
-		ClockFace: THREE.MeshStandardMaterial;
-		ClockHand: THREE.MeshStandardMaterial;
-	};
-};
-
-/**
- * 棚の上の壁（内側の面が z = -1.388）に掛ける位置。モデルは +z を向いている。
- * 壁の中央だと掛ける必然性がなく浮いて見えるため、棚と観葉植物の真上に寄せて
- * 家具のまとまりの一部として見えるようにしている。
- * 棚の天板は y = 0.90、植物の先端は y = 1.33 なので、下端 y = 1.465 で干渉しない。
- */
+/** 棚と観葉植物の真上の壁。値は Portfolio2025-Room.blend の WallClock から来ている。 */
 const WALL_POSITION: [number, number, number] = [-0.9, 1.62, -1.36];
 
 /** 分針は 1 分で 6 度しか動かないので、この間隔で十分追従する。 */
@@ -68,7 +50,7 @@ function useHandAngles(): HandAngles {
 }
 
 export function WallClock(props: JSX.IntrinsicElements["group"]) {
-	const { nodes, materials } = useGLTF("/wall_clock.glb") as unknown as GLTFResult;
+	const { nodes, materials } = useGLTF(ROOM_GLB) as unknown as RoomGLTF;
 	const angles = useHandAngles();
 
 	return (
@@ -109,5 +91,3 @@ export function WallClock(props: JSX.IntrinsicElements["group"]) {
 		</group>
 	);
 }
-
-useGLTF.preload("/wall_clock.glb");
