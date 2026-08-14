@@ -8,6 +8,7 @@ import {
 	postThumbnailPath,
 } from "@/lib/blog";
 import { BLOG_CATEGORIES } from "@/lib/blogCategories";
+import { AUTHOR_NAME, SITE_URL, canonicalUrl } from "@/lib/site";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -26,13 +27,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	const image = postThumbnailPath(post);
 
 	return {
-		title: `${post.title} – ブログ`,
+		title: post.title,
 		description,
+		// 同じ記事が複数のURLで拾われないように、どれが本物かを示しておく
+		alternates: { canonical: `/blog/${post.slug}` },
+		authors: [{ name: AUTHOR_NAME }],
+		keywords: post.tags,
 		openGraph: {
 			type: "article",
 			title: post.title,
 			description,
+			url: canonicalUrl(`/blog/${post.slug}`),
 			publishedTime: post.date,
+			authors: [AUTHOR_NAME],
+			tags: post.tags,
 			images: [image],
 		},
 		twitter: {
@@ -41,6 +49,29 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 			description,
 			images: [image],
 		},
+	};
+}
+
+/**
+ * 記事の中身を検索エンジンに読める形で置く。
+ * 見た目には出ないが、書いた人・公開日・サムネイルが検索結果に使われる。
+ */
+function articleJsonLd(post: Post) {
+	const url = canonicalUrl(`/blog/${post.slug}`);
+	return {
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		headline: post.title,
+		description: post.description,
+		image: canonicalUrl(postThumbnailPath(post)),
+		datePublished: post.date,
+		dateModified: post.date,
+		author: { "@type": "Person", name: AUTHOR_NAME, url: SITE_URL },
+		publisher: { "@type": "Person", name: AUTHOR_NAME, url: SITE_URL },
+		mainEntityOfPage: { "@type": "WebPage", "@id": url },
+		url,
+		keywords: post.tags?.join(", "),
+		inLanguage: "ja",
 	};
 }
 
@@ -83,6 +114,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
 	return (
 		<main>
+			{/* 中身は記事のfrontmatterから組み立てたものだけで、外から来た文字は混ざらない */}
+			<script
+				type="application/ld+json"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD はこの形でしか埋め込めない
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(post)) }}
+			/>
 			{cover ? (
 				<header
 					className=" relative -mx-8 -mt-16 mb-8 h-[40vh]
