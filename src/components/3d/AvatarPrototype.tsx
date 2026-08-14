@@ -4,7 +4,12 @@ Command: npx gltfjsx@6.5.3 avatar_prototype.glb -t
 */
 "use client";
 import { useAvatarMotion } from "@/hooks/useAvatarMotion";
-import { AVATAR_MOTION_CLIPS, AVATAR_PLACEMENTS, type ScenePlacement } from "@/lib/avatarMotion";
+import {
+	AVATAR_MOTION_CLIPS,
+	AVATAR_PLACEMENTS,
+	type AvatarMotion,
+	type ScenePlacement,
+} from "@/lib/avatarMotion";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useGraph } from "@react-three/fiber";
 import React, { type JSX, useLayoutEffect } from "react";
@@ -58,11 +63,18 @@ type AvatarPrototypeProps = JSX.IntrinsicElements["group"] & {
 	 * サムネイルのように部屋の外で使うときは原点などに置き直す。
 	 */
 	placement?: ScenePlacement;
+	/**
+	 * 再生するモーションを差し替える。
+	 *
+	 * 指定しなければクエリから読む。画面の操作で切り替えたいときに渡す。
+	 */
+	motion?: AvatarMotion;
 };
 
 export function AvatarPrototype({
 	frozenTime,
 	placement: placementOverride,
+	motion: motionOverride,
 	...props
 }: AvatarPrototypeProps) {
 	const group = React.useRef<THREE.Group>(null);
@@ -70,7 +82,8 @@ export function AvatarPrototype({
 	const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene]);
 	const { nodes, materials } = useGraph(clone) as unknown as GLTFResult;
 	const { actions, mixer } = useAnimations(animations, group);
-	const motion = useAvatarMotion();
+	const motionFromQuery = useAvatarMotion();
+	const motion = motionOverride ?? motionFromQuery;
 	const placement = placementOverride ?? AVATAR_PLACEMENTS[motion];
 
 	/*

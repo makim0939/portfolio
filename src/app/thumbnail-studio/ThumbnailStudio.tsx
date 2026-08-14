@@ -156,7 +156,11 @@ export function ThumbnailStudio() {
 							<directionalLight position={[2, 4, 3]} intensity={2.6} color="#fff3e2" />
 							<directionalLight position={[-3, 2, -2]} intensity={0.9} color="#e8f0ff" />
 							<group position={[0, -0.85, 0]} rotation={[0, Math.PI / 2, 0]}>
-								<AvatarPrototype frozenTime={design.time} placement={PORTRAIT_PLACEMENT} />
+								<AvatarPrototype
+									motion={design.motion}
+									frozenTime={design.time}
+									placement={PORTRAIT_PLACEMENT}
+								/>
 							</group>
 							<ClipDurationProbe motion={design.motion} onMeasure={handleMeasure} />
 							<CaptureReadySignal />
