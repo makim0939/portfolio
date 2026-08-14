@@ -13,6 +13,16 @@ export const WORK_CATEGORIES = {
 
 export type WorkCategory = keyof typeof WORK_CATEGORIES;
 
+/**
+ * 一覧の並び順の既定値。小さいほど上に来る。演奏は趣味の作品も多いので、
+ * 仕事寄りのソフトウェア・CGより下に置く。
+ */
+const CATEGORY_PRIORITY: Record<WorkCategory, number> = {
+	software: 0,
+	cg: 0,
+	music: 10,
+};
+
 export type WorkFront = {
 	title: string;
 	description?: string;
@@ -24,11 +34,21 @@ export type WorkFront = {
 	coverImage?: string;
 	/** YouTubeのURL。書くと、上部の画像の代わりに動画を出す */
 	videoUrl?: string;
+	/**
+	 * 一覧の並び順。小さいほど上に来る。省略時はカテゴリの既定値を使うので、
+	 * 力を入れた作品をカテゴリの既定より上げたいときだけ書く。
+	 */
+	priority?: number;
 	tags?: string[];
 	published?: boolean;
 };
 
 export type Work = WorkFront & { body: string };
+
+/** 一覧の並び替えに使う重み。priority を書いていなければカテゴリの既定値 */
+export function workSortWeight(work: WorkFront): number {
+	return work.priority ?? CATEGORY_PRIORITY[work.category];
+}
 
 /** 一覧のカードに出す画像。用意した画像がなければYouTubeのものを使う */
 export function workThumbnailPath(work: WorkFront): string | undefined {
