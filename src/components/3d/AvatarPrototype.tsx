@@ -50,7 +50,6 @@ export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 	const { nodes, materials } = useGraph(clone) as unknown as GLTFResult;
 	const { actions, mixer } = useAnimations(animations, group);
 	const motion = useAvatarMotion();
-	// モーションはアバターの原点まわりの姿勢しか持たないので、立ち位置は別で与える
 	const placement = AVATAR_PLACEMENTS[motion];
 
 	/*
@@ -81,27 +80,16 @@ export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 		*/
 		mixer.update(0);
 
-		// 別のモーションに変わるときは、こちらを薄くしながら次を重ねる
+		// 止めずに薄くする。次のモーションの fadeIn と重ねてつなぐため
 		return () => {
 			action.fadeOut(FADE_DURATION);
 		};
 	}, [actions, mixer, motion]);
 
-	// const rotationSpeed = React.useMemo(() => 1, []);
-
-	// useFrame((_state, delta) => {
-	// 	if (group.current) {
-	// 		group.current.rotation.y += delta * rotationSpeed;
-	// 	}
-	// });
-
 	return (
 		<group ref={group} {...props} dispose={null}>
 			<group name="Scene" position={placement.position} rotation={placement.rotation}>
-				{/*
-					Armature の値は glb のノードそのまま。以前ここに Z 45度が足してあったが、
-					これは向きを整えるための手加減なので、立ち位置を持つ上の group に移した。
-				*/}
+				{/* Armature の値は glb のノードそのまま。向きの調整は上の group が持つ */}
 				<group
 					name="Armature"
 					position={[0, 0, -0.0142]}

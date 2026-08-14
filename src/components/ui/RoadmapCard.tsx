@@ -64,10 +64,7 @@ function StatusMark({ status }: { status: RoadmapStatus }) {
 	);
 }
 
-/**
- * 箇条書きの行頭の印。チェックボックス付きなら済／未が分かる形にし、
- * ただの箇条書きなら中黒を置く。
- */
+/** 箇条書きの行頭の印。チェックボックス付きの行だけ、済／未が分かる形にする。 */
 function ListMark({ done }: { done?: boolean }) {
 	if (done === undefined) {
 		return <span className=" mt-2 w-1 h-1 shrink-0 rounded-full bg-neutral-400 " />;

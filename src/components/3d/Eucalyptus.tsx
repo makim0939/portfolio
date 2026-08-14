@@ -2,35 +2,18 @@
 /*
 モデルのソース: 3DCG/Objects/EucalyptusPlant (EucalyptusPlant.blend + Objects/Eucalyptus/Relight.py -> Eucalyptus.glb)
 
-portfolio_room_1_1.glb に含まれる観葉植物の置き換え。形は元のモデルのままで、
-マテリアルだけ差し替えてある。
-
-元のモデルは葉のマテリアルが「画像テクスチャ → マテリアル出力」で Principled BSDF を
-通しておらず、glTF に KHR_materials_unlit として書き出されていた。three.js では
-MeshBasicMaterial になるため光を一切受けず、時間帯を変えても葉だけ同じ色のまま
-浮いて見えていた。
-
-そこで .blend からの書き出しをやり直し、
-  - 葉のマテリアルを 画像テクスチャ → Principled BSDF → 出力 に組み替え
-  - unlit のときはテクスチャの色がそのまま出ていたぶん、環境光で沈む差を
-    埋めるためテクスチャを 1.7 倍に明るくし、彩度を 0.7 に落として GLB に埋め込み
-  - 枝の色を銀灰色（#b6bcaa）に差し替え
-してある。ジオメトリと配置は元のまま。
-
-枝の色を変えているのは、元が葉より暗い緑で、葉が光を受けるようになると
-枝だけ浮いてしまうため。参考写真のユーカリは枝の方が葉より明るい銀灰色なので
-それに合わせている。
+portfolio_room_1_1.glb に含まれる観葉植物の置き換え。ジオメトリと配置は元のままで、
+マテリアルだけ差し替えてある。元は葉が Principled BSDF を通っておらず
+KHR_materials_unlit で書き出されていたため、three.js では MeshBasicMaterial になって
+光を受けず、時間帯を変えても葉だけ同じ色のまま浮いて見えていた。
+枝を銀灰色にしているのは、葉が光を受けるようになると元の暗い緑では枝だけ浮くため。
 */
 
 import { useGLTF } from "@react-three/drei";
 import { type JSX, useLayoutEffect } from "react";
 import type * as THREE from "three";
 
-/**
- * 棚の左隣のスツールの上。GLB 側のノードが元の .blend の位置とスケールを
- * そのまま持っているので、ここは元の Room.tsx で親グループに与えていた
- * 位置と同じ値でよい。
- */
+/** 棚の左隣のスツールの上。GLB のノードが .blend の位置とスケールを持ったままなので、置き場所だけ与える。 */
 const POSITION: [number, number, number] = [-1.328, 0.198, -1.198];
 
 export function Eucalyptus(props: JSX.IntrinsicElements["group"]) {

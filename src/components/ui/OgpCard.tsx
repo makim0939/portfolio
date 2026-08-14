@@ -1,5 +1,4 @@
 import type { OgpData } from "@/lib/zenn";
-// components/OgpCard.tsx
 import Image from "next/image";
 import Link from "next/link";
 import FavoriteFillIcon from "./icons/FavoriteFillIcon";
@@ -42,13 +41,6 @@ export function OgpCard({ ogp }: { ogp: OgpData }) {
 					/>
 					<p className=" inline align-middle text-sm text-neutral-500">{ogp.likedCount ?? ""}</p>
 				</div>
-				{/* <ul className="flex gap-1 flex-wrap">
-					{work.tags?.map((s) => (
-						<li key={s} className="px-2 py-0.5 rounded-full border text-[11px]">
-							{s}
-						</li>
-					))}
-				</ul> */}
 			</div>
 		</article>
 	);

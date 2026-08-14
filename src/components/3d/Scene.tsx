@@ -18,10 +18,9 @@ import { WallClock } from "./WallClock";
 
 /**
  * 部屋の中身と照明。PC版・モバイル版で傾け方だけが違うので、rotation を受け取る。
- * 光の色・角度・強さは時間帯のプリセットから引く（issue #35）。
  *
  * オブジェクトを包んでいる DropIn は、上位に DropInProvider が無ければ素通しになる。
- * 出現アニメーション（issue #41）を付けるかどうかは RoomSceneWithIntro が決める。
+ * 出現アニメーションを付けるかどうかは RoomSceneWithIntro が決める。
  */
 function RoomScene({
 	rotation,
@@ -37,9 +36,8 @@ function RoomScene({
 			/>
 			<group rotation={rotation}>
 				{/*
-					窓から差し込む日光。回転グループの内側に置いてある。
-					グループは原点まわりに回り、ライトのターゲットは原点なので、
-					部屋を傾けても窓と光の位置関係が変わらない。
+					窓から差し込む日光。グループもライトのターゲットも原点まわりなので、
+					内側に置いておけば部屋を傾けても窓と光の位置関係が変わらない。
 				*/}
 				<directionalLight
 					position={lighting.sunPosition}
@@ -99,7 +97,7 @@ function useIntro(): boolean {
 type RoomSceneProps = { rotation: [number, number, number]; lighting: SceneLighting };
 
 /**
- * 初回表示のときだけ出現アニメーション付きで部屋を出す（issue #41）。
+ * 初回表示のときだけ出現アニメーション付きで部屋を出す。
  *
  * DropInProvider は Suspense の内側に置くこと。glb の読み込みで描画が一度捨てられると
  * commit したときの時刻で再生が始まるので、モデルが出そろう前に演出だけ進んでしまう

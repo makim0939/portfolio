@@ -70,13 +70,6 @@ export default async function HomePage() {
 									/>
 								</li>
 							))}
-							{/* <li className="ml-2 text-right">
-								<Text variant="p" className=" text-sm text-maki-gray ">
-									<StyledLink href="">
-										<u>他のリンクを見る</u>→
-									</StyledLink>
-								</Text>
-							</li> */}
 						</ul>
 						<FadeInContainer>
 							<div className=" [&>*]:mb-6 ">
@@ -104,7 +97,6 @@ export default async function HomePage() {
 						</FadeInContainer>
 					</section>
 
-					{/* 成果物 */}
 					<section className=" w-full my-16">
 						<Text variant="h2">制作物</Text>
 						<FadeInContainer
@@ -125,7 +117,6 @@ export default async function HomePage() {
 						</Text>
 					</section>
 
-					{/* ブログ */}
 					<section className=" my-16">
 						<Text variant="h2">ブログ</Text>
 						<Suspense fallback={<div>Loading...</div>}>
@@ -148,7 +139,6 @@ export default async function HomePage() {
 						</Text>
 					</section>
 
-					{/* ロードマップ */}
 					{roadmapItems.length > 0 && (
 						<section className=" my-16 ">
 							<Text variant="h2">ロードマップ</Text>
@@ -177,7 +167,6 @@ export default async function HomePage() {
 						</section>
 					)}
 
-					{/* コンタクト */}
 					<section className=" my-16 ">
 						<Text variant="h2" className="mt-8 mb-4">
 							コンタクト

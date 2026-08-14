@@ -19,7 +19,6 @@ export function useDoePermission() {
 	}, []);
 
 	useEffect(() => {
-		// DeviceOrientationに対応しているかどうかをチェックする。
 		if (
 			typeof window === "undefined" ||
 			!("DeviceOrientationEvent" in window) ||
@@ -31,7 +30,7 @@ export function useDoePermission() {
 		}
 	}, [checkDoePermission]);
 
-	// DeviceOrientationEventに未対応の場合、checkDoePermissionは使えないようにする。
+	// 未対応の環境には requestPermission 自体が無いので、呼んでも落ちないものを返す。
 	if (doePermission === "notSupported")
 		return {
 			doePermission,

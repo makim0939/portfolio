@@ -2,7 +2,6 @@ import { GlobalNavItem } from "./GlobalNavItem";
 import { Text } from "./Text";
 import { AboutIcon } from "./icons/AboutIcon";
 import { BlogIcon } from "./icons/BlogIcon";
-import { ContactIcon } from "./icons/ContactIcon";
 import { HomeIcon } from "./icons/HomeIcon";
 import { WorksIcon } from "./icons/WorksIcon";
 
@@ -40,12 +39,6 @@ export function GlobalNav() {
 						<Text variant="small">ブログ</Text>
 					</GlobalNavItem>
 				</li>
-				{/* <li>
-					<GlobalNavItem href={"/contact"}>
-						<ContactIcon />
-						<Text variant="small">コンタクト</Text>
-					</GlobalNavItem>
-				</li> */}
 			</ul>
 		</nav>
 	);

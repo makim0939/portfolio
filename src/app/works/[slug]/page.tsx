@@ -1,9 +1,9 @@
-import Image from "next/image";
-import { notFound } from "next/navigation";
+import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { MDXContent } from "@/components/ui/MdxContent";
 import { Text } from "@/components/ui/Text";
 import { getAllWorks, getWorkBySlug } from "@/lib/works";
-import { FadeInContainer } from "@/components/ui/FadeInContainer";
+import Image from "next/image";
+import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
 	const works = await getAllWorks();
@@ -63,10 +63,6 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 						{work.title}
 					</Text>
 					{work.description && <Text className="text-neutral-50">{work.description}</Text>}
-					{/* <Text variant="small" className="text-neutral-50">
-						<time dateTime={work.date}>{work.date}</time>
-						{work.tags?.length ? ` ・ ${work.tags.join(", ")}` : null}
-					</Text> */}
 					<div className="flex items-center gap-2 text-xs text-neutral-50">
 						<Text variant="small" className="text-neutral-50 ">
 							<time dateTime={work.date}>{work.date}</time>
