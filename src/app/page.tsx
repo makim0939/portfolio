@@ -9,12 +9,32 @@ import { WorkCard } from "@/components/ui/WorkCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcnui/avatar";
 import { getBlogEntries } from "@/lib/blog";
 import { filterByStatus, getRoadmapItems } from "@/lib/roadmap";
+import { AUTHOR_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import { socialLinks } from "@/lib/socialLinks";
 import { getAllWorks } from "@/lib/works";
 import React, { Suspense } from "react";
 
 /** トップに出すロードマップの件数 */
 const ROADMAP_PREVIEW_COUNT = 3;
+
+/**
+ * サイトと作者を検索エンジンに読める形で置く。
+ * 名前で探されたときに、SNSも含めて同じ人のものだと分かるようにしておく。
+ */
+const siteJsonLd = {
+	"@context": "https://schema.org",
+	"@type": "WebSite",
+	name: SITE_NAME,
+	description: SITE_DESCRIPTION,
+	url: SITE_URL,
+	inLanguage: "ja",
+	author: {
+		"@type": "Person",
+		name: AUTHOR_NAME,
+		url: SITE_URL,
+		sameAs: socialLinks.map((link) => link.url),
+	},
+};
 
 export default async function HomePage() {
 	const blogEntries = await getBlogEntries();
@@ -27,6 +47,12 @@ export default async function HomePage() {
 	].slice(0, ROADMAP_PREVIEW_COUNT);
 	return (
 		<>
+			{/* 中身は自分たちで組み立てた値だけで、外から来た文字は混ざらない */}
+			<script
+				type="application/ld+json"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD はこの形でしか埋め込めない
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+			/>
 			{/* トップ */}
 			<div>
 				<header className="relative z-10 lg:mb-24 ">

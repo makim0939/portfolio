@@ -69,3 +69,15 @@ pnpm thumbnail --slug <記事の名前> --title "1行目|2行目" --label 生活
 
 演奏などYouTubeに置いた制作物は、`videoUrl` にURLを書きます。上部の大きな画像の代わりに
 プレイヤーが主役になり、サムネイルもYouTubeのものを使います。
+
+## 検索に載るまで
+
+`sitemap.xml` と `robots.txt` はビルドのたびに作り直されます。記事を足したら中身も自動で増えるので、
+普段は何もしなくて大丈夫です。Zennの記事は向こうのサイトのものなので、こちらには載せていません。
+
+記事の題名・説明・サムネイルは frontmatter から取っています。`description` を書いておくと、
+それが検索結果の説明文とSNSカードの文になります。書かないと既定の文言になります。
+
+新しく作った記事に早く気づいてもらいたいときは、
+[Google Search Console](https://search.google.com/search-console) でサイトを登録し、
+`https://www.makimura.me/sitemap.xml` を送ります。登録は最初の一度だけで、あとは自動で読まれます。
