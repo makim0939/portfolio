@@ -1,19 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
-
-export type WorkFront = {
-	title: string;
-	description?: string;
-	slug: string;
-	date: string; // YYYY-MM-DD
-	thumbnail: string;
-	coverImage: string;
-	tags?: string[];
-	published?: boolean;
-};
-
-export type Work = WorkFront & { body: string };
+import { type Work, type WorkFront, workSortWeight } from "./workMeta";
 
 const WORKS_DIR = path.join(process.cwd(), "src", "contents", "works");
 
@@ -28,7 +16,11 @@ export async function getAllWorks(): Promise<Work[]> {
 		if (front.published === false) continue;
 		works.push({ ...(front as WorkFront), body: content });
 	}
-	return works.sort((a, b) => (a.date < b.date ? 1 : -1));
+	return works.sort((a, b) => {
+		const weightDiff = workSortWeight(a) - workSortWeight(b);
+		if (weightDiff !== 0) return weightDiff;
+		return a.date < b.date ? 1 : -1;
+	});
 }
 
 export async function getWorkBySlug(slug: string): Promise<Work | undefined> {
