@@ -2,10 +2,10 @@ import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { MDXContent } from "@/components/ui/MdxContent";
 import { Text } from "@/components/ui/Text";
 import { VideoEmbed } from "@/components/ui/VideoEmbed";
+import { WorkCover } from "@/components/ui/WorkCover";
 import { WORK_CATEGORIES, type Work, workCoverPath, workThumbnailPath } from "@/lib/workMeta";
 import { getAllWorks, getWorkBySlug } from "@/lib/works";
 import { youtubeVideoId } from "@/lib/youtube";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
@@ -93,7 +93,6 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
 	}
 
 	const cover = workCoverPath(work) ?? workThumbnailPath(work);
-	const isCoverVideo = cover?.endsWith(".mp4");
 
 	return (
 		<main>
@@ -102,28 +101,7 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
 							lg:-mx-16 lg:-mt-28 lg:mb-16 lg:w-[100vw] lg:h-[100vh]
 							3xl:-mx-20 "
 			>
-				{cover &&
-					(isCoverVideo ? (
-						<video
-							src={cover}
-							width={1920}
-							height={1080}
-							muted
-							autoPlay
-							loop
-							playsInline
-							controls={false}
-							className=" absolute w-full h-full object-cover brightness-50 bg-neutral-200"
-						/>
-					) : (
-						<Image
-							src={cover}
-							width={1920}
-							height={1080}
-							alt={work.title}
-							className=" absolute w-full h-full object-cover  brightness-50"
-						/>
-					))}
+				{cover && <WorkCover src={cover} title={work.title} />}
 
 				<div
 					className=" absolute px-8 top-1/2 -translate-y-1/2 left-0
