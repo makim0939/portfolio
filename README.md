@@ -21,7 +21,7 @@ pnpm new:post
 
 どちらも `category` で一覧を絞り込めます。
 
-- ブログ … `tech`（テック）・`dev`（開発日記）・`life`（日常）
+- ブログ … `tech`（テック）・`dev`（開発日記）・`life`（生活）
 - 制作物 … `software`（ソフトウェア）・`cg`（CG）・`music`（音楽）
 
 ブログの一覧はZennの記事と混ざって新しい順に並びます。Zennの記事は `tech` として扱われます。

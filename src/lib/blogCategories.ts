@@ -5,7 +5,7 @@
 export const BLOG_CATEGORIES = {
 	tech: "テック",
 	dev: "開発日記",
-	life: "日常",
+	life: "生活",
 } as const;
 
 export type BlogCategory = keyof typeof BLOG_CATEGORIES;
