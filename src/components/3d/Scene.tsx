@@ -10,7 +10,6 @@ import { DEFAULT_DROP_IN_PARAMS } from "@/lib/dropIn";
 import { SCENE_LIGHTING, type SceneLighting } from "@/lib/timeOfDay";
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useEffect, useState } from "react";
-import { Eucalyptus } from "./Eucalyptus";
 import { MyCamera } from "./MyCamera";
 import { Room } from "./Room";
 import { RoomWalls } from "./RoomWalls";
@@ -64,9 +63,6 @@ function RoomScene({
 				</DropIn>
 				<DropIn objectKey="wallClock">
 					<WallClock />
-				</DropIn>
-				<DropIn objectKey="eucalyptus">
-					<Eucalyptus />
 				</DropIn>
 			</group>
 		</>

@@ -1,30 +1,13 @@
 /*
-モデルのソース: 3DCG/Objects/RoomWalls (RoomWalls.py -> RoomWalls.glb)
+部屋の壁。Room と同じ glb から描く。
 
-portfolio_room_1_1.glb に含まれる `Wall` メッシュの置き換え。窓が本物の開口になって
-いるので、Scene.tsx の directionalLight が偽のハイライトではなく、実際に窓型の光を
-床に落とす。
+窓の外の板だけ時間帯で色が変わるので、Room.tsx に混ぜず別コンポーネントにしてある。
+useGLTF は同じパスなら読み込みを共有するので、glb が二重に落ちてくることはない。
 */
 
+import { ROOM_GLB, type RoomGLTF } from "@/components/3d/Room";
 import { useGLTF } from "@react-three/drei";
 import type { JSX } from "react";
-import type * as THREE from "three";
-import type { GLTF } from "three/examples/jsm/Addons.js";
-
-type GLTFResult = GLTF & {
-	nodes: {
-		WallGreen: THREE.Mesh;
-		WallWhite: THREE.Mesh;
-		WindowFrame: THREE.Mesh;
-		WindowSky: THREE.Mesh;
-	};
-	materials: {
-		WallGreen: THREE.MeshStandardMaterial;
-		WallWhite: THREE.MeshStandardMaterial;
-		WindowFrame: THREE.MeshStandardMaterial;
-		WindowSky: THREE.MeshStandardMaterial;
-	};
-};
 
 type RoomWallsProps = JSX.IntrinsicElements["group"] & {
 	/** 窓の外の板の色。時間帯で差し替える。 */
@@ -33,7 +16,7 @@ type RoomWallsProps = JSX.IntrinsicElements["group"] & {
 };
 
 export function RoomWalls({ skyColor, skyEmissive, ...props }: RoomWallsProps) {
-	const { nodes, materials } = useGLTF("/room_walls.glb") as unknown as GLTFResult;
+	const { nodes, materials } = useGLTF(ROOM_GLB) as unknown as RoomGLTF;
 	return (
 		<group {...props} dispose={null}>
 			<mesh
@@ -53,7 +36,7 @@ export function RoomWalls({ skyColor, skyEmissive, ...props }: RoomWallsProps) {
 				receiveShadow
 				geometry={nodes.WindowFrame.geometry}
 				material={materials.WindowFrame}
-				position={[1.3795, 1.525, -0.535]}
+				position={[1.379, 1.525, -0.535]}
 			/>
 			{/*
 				窓の向こう側に置いてあるだけの板。castShadow を付けると太陽と窓の間に
@@ -67,5 +50,3 @@ export function RoomWalls({ skyColor, skyEmissive, ...props }: RoomWallsProps) {
 		</group>
 	);
 }
-
-useGLTF.preload("/room_walls.glb");
