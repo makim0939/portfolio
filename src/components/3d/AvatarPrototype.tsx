@@ -7,7 +7,7 @@ import { useAvatarMotion } from "@/hooks/useAvatarMotion";
 import { AVATAR_MOTION_CLIPS, AVATAR_PLACEMENTS } from "@/lib/avatarMotion";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useGraph } from "@react-three/fiber";
-import React, { type JSX, useEffect } from "react";
+import React, { type JSX, useLayoutEffect } from "react";
 import type * as THREE from "three";
 import { type GLTF, SkeletonUtils } from "three/examples/jsm/Addons.js";
 
@@ -48,21 +48,44 @@ export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 	const { scene, animations } = useGLTF("/avatar_prototype.glb");
 	const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene]);
 	const { nodes, materials } = useGraph(clone) as unknown as GLTFResult;
-	const { actions } = useAnimations(animations, group);
+	const { actions, mixer } = useAnimations(animations, group);
 	const motion = useAvatarMotion();
 	// モーションはアバターの原点まわりの姿勢しか持たないので、立ち位置は別で与える
 	const placement = AVATAR_PLACEMENTS[motion];
 
-	useEffect(() => {
+	/*
+		描画の前に姿勢を確定させたいので useEffect ではなく useLayoutEffect を使う。
+		useAnimations はこれより先に mixer の root を張るので、ここで actions を触ってよい。
+	*/
+	useLayoutEffect(() => {
 		const action = actions[AVATAR_MOTION_CLIPS[motion]];
 		if (!action) return;
 
-		action.reset().fadeIn(FADE_DURATION).play();
+		/*
+			モーションを切り替えるときだけクロスフェードする。
+			まだ何も再生していないところで fadeIn すると、重みが 0 から上がりきるまでの間
+			バインドポーズ（Tポーズ）が混ざって見えてしまう。他のページから戻ってきた
+			直後のように、混ぜる相手がいない場合はいきなり全体重で始める。
+		*/
+		const blending = Object.values(actions).some(
+			(other) => other && other !== action && other.isRunning(),
+		);
+
+		action.reset();
+		if (blending) action.fadeIn(FADE_DURATION);
+		action.play();
+
+		/*
+			骨に姿勢を焼くのは mixer なので、最初のフレームをここで進めておく。
+			次の描画を待つと、その1フレームだけTポーズやTポーズ混じりの姿勢が出る。
+		*/
+		mixer.update(0);
+
 		// 別のモーションに変わるときは、こちらを薄くしながら次を重ねる
 		return () => {
 			action.fadeOut(FADE_DURATION);
 		};
-	}, [actions, motion]);
+	}, [actions, mixer, motion]);
 
 	// const rotationSpeed = React.useMemo(() => 1, []);
 
