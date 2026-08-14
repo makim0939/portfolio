@@ -1,4 +1,3 @@
-import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { Text } from "@/components/ui/Text";
 import { WorksList } from "@/components/ui/WorksList";
 import { getAllWorks } from "@/lib/works";
@@ -11,9 +10,7 @@ export default async function WorksPage() {
 				<Text variant="h1">制作物</Text>
 			</header>
 			<hr className="my-8" />
-			<FadeInContainer>
-				<WorksList works={works} />
-			</FadeInContainer>
+			<WorksList works={works} />
 		</main>
 	);
 }

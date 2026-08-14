@@ -1,5 +1,4 @@
 import { BlogList } from "@/components/ui/BlogList";
-import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { Text } from "@/components/ui/Text";
 import { getBlogEntries } from "@/lib/blog";
 
@@ -11,9 +10,7 @@ export default async function BlogPage() {
 				<Text variant="h1">ブログ</Text>
 			</header>
 			<hr className="my-8" />
-			<FadeInContainer>
-				<BlogList entries={entries} />
-			</FadeInContainer>
+			<BlogList entries={entries} />
 		</main>
 	);
 }

@@ -3,6 +3,7 @@
 import { WORK_CATEGORIES, type Work } from "@/lib/workMeta";
 import { useState } from "react";
 import { ALL_CATEGORIES, CategoryTabs } from "./CategoryTabs";
+import { FadeInContainer } from "./FadeInContainer";
 import { WorkCard } from "./WorkCard";
 
 export function WorksList({ works }: { works: Work[] }) {
@@ -20,7 +21,10 @@ export function WorksList({ works }: { works: Work[] }) {
 				onChange={setCategory}
 			/>
 
-			<div
+			{/* 絞り込むと並ぶカードが変わる。key を変えて作り直させないと、
+				新しく現れたカードが表示の監視対象にならず出てこない。 */}
+			<FadeInContainer
+				key={category}
 				className="
 					grid gap-4 md:gap-8
 					sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
@@ -31,7 +35,7 @@ export function WorksList({ works }: { works: Work[] }) {
 				{shown.map((work) => (
 					<WorkCard key={work.slug} work={work} />
 				))}
-			</div>
+			</FadeInContainer>
 		</div>
 	);
 }
