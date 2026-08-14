@@ -2,16 +2,20 @@
 
 import { AVATAR_MOTIONS, type AvatarMotion } from "@/lib/avatarMotion";
 import {
+	type AvatarLayout,
+	DEFAULT_AVATAR_LAYOUT,
 	DEFAULT_PHOTO_LAYOUT,
 	type PhotoLayout,
 	type ThumbnailDesign,
 	thumbnailDesignToQuery,
 } from "@/lib/thumbnailDesign";
+import { useRef, useState } from "react";
 
 const PANEL_BACKGROUND = "#ffffff";
 const BORDER_COLOR = "#e5e5e5";
 const TEXT_COLOR = "#252528";
 const SUB_TEXT_COLOR = "#757578";
+const ACCENT_COLOR = "#dd5522";
 
 const inputStyle: React.CSSProperties = {
 	padding: "4px 8px",
@@ -58,6 +62,88 @@ function NumberField({
 	);
 }
 
+/**
+ * 写真を選ぶところ。落としても、押して選んでも入る。
+ *
+ * 撮影はこのページをもう一度開いて撮るので、選んだ写真は URL で読める場所に
+ * 置く必要がある。記事のフォルダに移してから、そのパスを持たせる。
+ */
+function PhotoPicker({
+	photo,
+	slug,
+	onPick,
+}: { photo: string; slug: string; onPick: (path: string) => void }) {
+	const inputRef = useRef<HTMLInputElement>(null);
+	const [hovering, setHovering] = useState(false);
+	const [message, setMessage] = useState("");
+
+	const upload = async (file: File | undefined) => {
+		if (!file) return;
+		if (!slug) {
+			setMessage("先に「記事の名前」を入れてください。写真はそのフォルダに置きます。");
+			return;
+		}
+
+		setMessage("取り込み中…");
+		const body = new FormData();
+		body.append("slug", slug);
+		body.append("file", file);
+
+		try {
+			const response = await fetch("/api/thumbnail-studio/photo", { method: "POST", body });
+			const result = await response.json();
+			if (!response.ok) {
+				setMessage(result.message ?? "取り込めませんでした。");
+				return;
+			}
+			onPick(result.path);
+			setMessage(`${result.path} に置きました。`);
+		} catch (error) {
+			setMessage(`取り込めませんでした: ${error}`);
+		}
+	};
+
+	return (
+		<div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+			<button
+				type="button"
+				onClick={() => inputRef.current?.click()}
+				onDragOver={(e) => {
+					e.preventDefault();
+					setHovering(true);
+				}}
+				onDragLeave={() => setHovering(false)}
+				onDrop={(e) => {
+					e.preventDefault();
+					setHovering(false);
+					upload(e.dataTransfer.files[0]);
+				}}
+				style={{
+					padding: "14px 12px",
+					borderRadius: 8,
+					border: `2px dashed ${hovering ? ACCENT_COLOR : BORDER_COLOR}`,
+					backgroundColor: hovering ? "#fff6f1" : "#fafafa",
+					color: SUB_TEXT_COLOR,
+					fontSize: 12,
+					fontFamily: "inherit",
+					cursor: "pointer",
+					textAlign: "center",
+				}}
+			>
+				{photo ? "写真を差し替える" : "ここに写真を落とすか、押して選ぶ"}
+			</button>
+			<input
+				ref={inputRef}
+				type="file"
+				accept="image/png,image/jpeg,image/webp"
+				onChange={(e) => upload(e.target.files?.[0])}
+				style={{ display: "none" }}
+			/>
+			{message && <p style={{ fontSize: 11, color: SUB_TEXT_COLOR }}>{message}</p>}
+		</div>
+	);
+}
+
 export type ExportState = { status: "idle" | "running" | "done" | "error"; message: string };
 
 type StudioControlsProps = {
@@ -87,6 +173,9 @@ export function StudioControls({
 }: StudioControlsProps) {
 	const updateLayout = (patch: Partial<PhotoLayout>) =>
 		onChange({ ...design, photoLayout: { ...design.photoLayout, ...patch } });
+
+	const updateAvatar = (patch: Partial<AvatarLayout>) =>
+		onChange({ ...design, avatarLayout: { ...design.avatarLayout, ...patch } });
 
 	const editedBones = Object.keys(design.pose);
 	const command = `pnpm thumbnail --slug ${slug || "<記事の名前>"} --query ${JSON.stringify(thumbnailDesignToQuery(design).toString())}`;
@@ -130,6 +219,11 @@ export function StudioControls({
 				</Section>
 
 				<Section title="写真">
+					<PhotoPicker
+						photo={design.photo}
+						slug={slug}
+						onPick={(photo) => onChange({ ...design, photo })}
+					/>
 					<Row label="パス">
 						<input
 							value={design.photo}
@@ -165,6 +259,33 @@ export function StudioControls({
 							onChange={(rotation) => updateLayout({ rotation })}
 						/>
 					</div>
+					{/* 枠から溢れた分は切り落とされるので、見せたいところに寄せる */}
+					<Row label="トリム 横">
+						<input
+							type="range"
+							min={0}
+							max={100}
+							value={design.photoLayout.trimX}
+							onChange={(e) => updateLayout({ trimX: Number(e.target.value) })}
+							style={{ flex: 1 }}
+						/>
+						<span style={{ fontSize: 12, width: 38, textAlign: "right" }}>
+							{design.photoLayout.trimX}%
+						</span>
+					</Row>
+					<Row label="トリム 縦">
+						<input
+							type="range"
+							min={0}
+							max={100}
+							value={design.photoLayout.trimY}
+							onChange={(e) => updateLayout({ trimY: Number(e.target.value) })}
+							style={{ flex: 1 }}
+						/>
+						<span style={{ fontSize: 12, width: 38, textAlign: "right" }}>
+							{design.photoLayout.trimY}%
+						</span>
+					</Row>
 					<div style={{ display: "flex", gap: 12, alignItems: "center" }}>
 						<label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12 }}>
 							<input
@@ -183,7 +304,7 @@ export function StudioControls({
 						</button>
 					</div>
 					<p style={{ fontSize: 11, color: SUB_TEXT_COLOR }}>
-						写真は上のプレビューでつまんで動かせます。
+						写真はプレビューでつまんで動かせます。右下の角で大きさを変えられます。
 					</p>
 				</Section>
 			</div>
@@ -217,6 +338,43 @@ export function StudioControls({
 							{design.time.toFixed(2)} / {(duration || 6).toFixed(2)}秒
 						</span>
 					</Row>
+					{/* 大きくすると、はみ出した下半身はサムネイルの外に切れる */}
+					<Row label="大きさ">
+						<input
+							type="range"
+							min={0.3}
+							max={3}
+							step={0.01}
+							value={design.avatarLayout.scale}
+							onChange={(e) => updateAvatar({ scale: Number(e.target.value) })}
+							style={{ flex: 1 }}
+						/>
+						<span style={{ fontSize: 12, width: 42, textAlign: "right" }}>
+							{design.avatarLayout.scale.toFixed(2)}倍
+						</span>
+					</Row>
+					<div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+						<NumberField
+							label="x"
+							value={design.avatarLayout.x}
+							onChange={(x) => updateAvatar({ x })}
+						/>
+						<NumberField
+							label="y"
+							value={design.avatarLayout.y}
+							onChange={(y) => updateAvatar({ y })}
+						/>
+						<button
+							type="button"
+							onClick={() => onChange({ ...design, avatarLayout: DEFAULT_AVATAR_LAYOUT })}
+							style={{ ...inputStyle, cursor: "pointer" }}
+						>
+							位置を戻す
+						</button>
+					</div>
+					<p style={{ fontSize: 11, color: SUB_TEXT_COLOR }}>
+						プレビューの「アバター」の札をつまむと動かせます。右下の角で大きさを変えられます。
+					</p>
 				</Section>
 
 				<Section title="骨を直す">

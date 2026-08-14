@@ -100,6 +100,9 @@ async function main() {
 		ignoreHTTPSErrors: true,
 	});
 
+	// 作業用のつまみや枠線を隠してもらう。出したままだと画像に写り込む
+	query.set("capture", "1");
+
 	try {
 		await page.goto(`${baseUrl}/thumbnail-studio?${query}`, { waitUntil: "domcontentloaded" });
 	} catch {

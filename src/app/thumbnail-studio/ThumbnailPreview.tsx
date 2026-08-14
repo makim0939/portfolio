@@ -3,6 +3,8 @@
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
 import { AVATAR_MOTION_CLIPS, type AvatarMotion, type ScenePlacement } from "@/lib/avatarMotion";
 import {
+	AVATAR_BASE_SIZE,
+	type AvatarLayout,
 	type BonePose,
 	type PhotoLayout,
 	THUMBNAIL_SIZE,
@@ -10,7 +12,7 @@ import {
 } from "@/lib/thumbnailDesign";
 import { TransformControls, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import type * as THREE from "three";
 
 /** サイトの地色・文字色に合わせた値 */
@@ -33,11 +35,57 @@ const FRAMES_BEFORE_READY = 3;
 /** 指の骨まで並べると選びきれないので、一覧からは外す */
 const FINGER_BONE_PATTERN = /Thumb|Index|Middle|Ring|Pinky/;
 
+/** 枠を掴む四角の大きさ */
+const HANDLE_SIZE = 16;
+
 declare global {
 	interface Window {
 		/** 撮影スクリプトが待つ合図。絵が出そろったら true になる */
 		__thumbnailReady?: boolean;
 	}
+}
+
+/**
+ * つまんで動かす。
+ * 押した位置からの差分を渡すので、受け取った側が何を動かすかを決める。
+ */
+function startDrag(
+	event: React.PointerEvent,
+	onMove: (deltaX: number, deltaY: number) => void,
+): void {
+	event.preventDefault();
+	event.stopPropagation();
+	const startX = event.clientX;
+	const startY = event.clientY;
+
+	const move = (e: PointerEvent) => onMove(e.clientX - startX, e.clientY - startY);
+	const up = () => {
+		window.removeEventListener("pointermove", move);
+		window.removeEventListener("pointerup", up);
+	};
+	window.addEventListener("pointermove", move);
+	window.addEventListener("pointerup", up);
+}
+
+/** 枠の右下に出す、大きさを変えるためのつまみ */
+function ResizeHandle({ onDrag }: { onDrag: (event: React.PointerEvent) => void }) {
+	return (
+		<div
+			onPointerDown={onDrag}
+			style={{
+				position: "absolute",
+				right: -HANDLE_SIZE / 2,
+				bottom: -HANDLE_SIZE / 2,
+				width: HANDLE_SIZE,
+				height: HANDLE_SIZE,
+				borderRadius: 4,
+				backgroundColor: PAPER_COLOR,
+				border: `2px solid ${ACCENT_COLOR}`,
+				cursor: "nwse-resize",
+				pointerEvents: "auto",
+			}}
+		/>
+	);
 }
 
 /** 絵が出そろったことを撮影スクリプトに知らせる */
@@ -130,47 +178,34 @@ function PoseEditor({ pose, selectedBone, onBonesFound, onBoneRotated }: PoseEdi
 type ThumbnailPreviewProps = {
 	design: ThumbnailDesign;
 	selectedBone: string;
+	/** 撮影中。つまみや枠線を出すと画像に写ってしまうので隠す */
+	capture: boolean;
 	onMeasureDuration: (seconds: number) => void;
 	onBonesFound: (names: string[]) => void;
 	onBoneRotated: (name: string, rotation: [number, number, number]) => void;
-	onPhotoMoved: (layout: PhotoLayout) => void;
+	onPhotoLayoutChange: (layout: PhotoLayout) => void;
+	onAvatarLayoutChange: (layout: AvatarLayout) => void;
 };
 
 export function ThumbnailPreview({
 	design,
 	selectedBone,
+	capture,
 	onMeasureDuration,
 	onBonesFound,
 	onBoneRotated,
-	onPhotoMoved,
+	onPhotoLayoutChange,
+	onAvatarLayoutChange,
 }: ThumbnailPreviewProps) {
-	const { photoLayout } = design;
+	const { photoLayout, avatarLayout } = design;
+	const avatarWidth = AVATAR_BASE_SIZE.width * avatarLayout.scale;
+	const avatarHeight = AVATAR_BASE_SIZE.height * avatarLayout.scale;
 
-	/** 写真はつまんで動かせる。数字を睨むより、置いてみるほうが早いので */
-	const handlePhotoDrag = useCallback(
-		(event: React.PointerEvent<HTMLImageElement>) => {
-			event.preventDefault();
-			const startX = event.clientX;
-			const startY = event.clientY;
-			const originX = photoLayout.x;
-			const originY = photoLayout.y;
-
-			const move = (e: PointerEvent) => {
-				onPhotoMoved({
-					...photoLayout,
-					x: Math.round(originX + (e.clientX - startX)),
-					y: Math.round(originY + (e.clientY - startY)),
-				});
-			};
-			const up = () => {
-				window.removeEventListener("pointermove", move);
-				window.removeEventListener("pointerup", up);
-			};
-			window.addEventListener("pointermove", move);
-			window.addEventListener("pointerup", up);
-		},
-		[photoLayout, onPhotoMoved],
-	);
+	/*
+		骨をいじっているあいだだけ、アバターの枠で受け取る。
+		出しっぱなしにすると、枠が重なったところで写真をつまめなくなる。
+	*/
+	const avatarTakesPointer = !capture && Boolean(selectedBone);
 
 	return (
 		<div
@@ -185,11 +220,8 @@ export function ThumbnailPreview({
 			}}
 		>
 			{design.photo && (
-				<img
-					src={design.photo}
-					alt=""
-					draggable={false}
-					onPointerDown={handlePhotoDrag}
+				// 枠ごと傾ける。つまみも一緒に傾いて、辺と向きが揃う
+				<div
 					style={{
 						position: "absolute",
 						left: photoLayout.x,
@@ -197,30 +229,63 @@ export function ThumbnailPreview({
 						width: photoLayout.width,
 						height: photoLayout.height,
 						zIndex: photoLayout.inFront ? 2 : 0,
-						objectFit: "cover",
 						transform: `rotate(${photoLayout.rotation}deg)`,
-						borderRadius: 24,
-						boxShadow: "0 18px 40px rgba(37,37,40,0.18)",
-						cursor: "move",
 					}}
-				/>
+				>
+					<img
+						src={design.photo}
+						alt=""
+						draggable={false}
+						onPointerDown={(event) =>
+							!capture &&
+							startDrag(event, (dx, dy) =>
+								onPhotoLayoutChange({
+									...photoLayout,
+									x: Math.round(photoLayout.x + dx),
+									y: Math.round(photoLayout.y + dy),
+								}),
+							)
+						}
+						style={{
+							width: "100%",
+							height: "100%",
+							objectFit: "cover",
+							// 枠から溢れた分をどこで切るか。数字が小さいほど左・上が残る
+							objectPosition: `${photoLayout.trimX}% ${photoLayout.trimY}%`,
+							borderRadius: 24,
+							boxShadow: "0 18px 40px rgba(37,37,40,0.18)",
+							cursor: capture ? "default" : "move",
+						}}
+					/>
+					{!capture && (
+						<ResizeHandle
+							onDrag={(event) =>
+								startDrag(event, (dx, dy) =>
+									onPhotoLayoutChange({
+										...photoLayout,
+										width: Math.max(40, Math.round(photoLayout.width + dx)),
+										height: Math.max(40, Math.round(photoLayout.height + dy)),
+									}),
+								)
+							}
+						/>
+					)}
+				</div>
 			)}
 
-			{/* アバター。手を上げるポーズがあるので、縦は全部使ってカメラも引いておく。
-				ここが狭いと万歳したときに指先が切れる。
-
-				骨を選んでいないあいだは触れないようにしておく。
-				アバターの枠は写真と重なるので、出しっぱなしだと重なった部分で
-				写真をつまめなくなる。 */}
+			{/* アバター。枠ごと動かして拡げる。枠を大きくすればアバターも大きくなり、
+				サムネイルから溢れた分は切り落とされる。
+				手を上げるポーズがあるので、基準の枠は縦を全部使ってカメラも引いてある。 */}
 			<div
 				style={{
 					position: "absolute",
-					left: 500,
-					top: 0,
-					width: 380,
-					height: 630,
+					left: avatarLayout.x,
+					top: avatarLayout.y,
+					width: avatarWidth,
+					height: avatarHeight,
 					zIndex: 1,
-					pointerEvents: selectedBone ? "auto" : "none",
+					pointerEvents: avatarTakesPointer ? "auto" : "none",
+					outline: capture ? undefined : "1px dashed rgba(221,85,34,0.4)",
 				}}
 			>
 				{/* dpr を上げて、書き出したときに輪郭がざらつかないようにする */}
@@ -246,6 +311,50 @@ export function ThumbnailPreview({
 						<CaptureReadySignal />
 					</Suspense>
 				</Canvas>
+
+				{/* 枠自体は素通しにしてあるので、つまむところだけ受け取る */}
+				{!capture && (
+					<>
+						<div
+							onPointerDown={(event) =>
+								startDrag(event, (dx, dy) =>
+									onAvatarLayoutChange({
+										...avatarLayout,
+										x: Math.round(avatarLayout.x + dx),
+										y: Math.round(avatarLayout.y + dy),
+									}),
+								)
+							}
+							style={{
+								position: "absolute",
+								left: 0,
+								top: 0,
+								padding: "2px 8px",
+								borderRadius: "0 0 6px 0",
+								backgroundColor: ACCENT_COLOR,
+								color: PAPER_COLOR,
+								fontSize: 11,
+								cursor: "move",
+								pointerEvents: "auto",
+								userSelect: "none",
+							}}
+						>
+							アバター
+						</div>
+						<ResizeHandle
+							onDrag={(event) =>
+								startDrag(event, (dx) =>
+									onAvatarLayoutChange({
+										...avatarLayout,
+										scale:
+											Math.round(Math.max(0.3, (avatarWidth + dx) / AVATAR_BASE_SIZE.width) * 100) /
+											100,
+									}),
+								)
+							}
+						/>
+					</>
+				)}
 			</div>
 
 			{/* 文字の枠はアバターに重なるので、触っても素通りさせる。

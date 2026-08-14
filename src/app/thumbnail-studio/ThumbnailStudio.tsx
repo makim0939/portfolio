@@ -1,6 +1,7 @@
 "use client";
 
 import {
+	type AvatarLayout,
 	type PhotoLayout,
 	type ThumbnailDesign,
 	parseThumbnailDesign,
@@ -22,11 +23,14 @@ export function ThumbnailStudio() {
 	const [boneNames, setBoneNames] = useState<string[]>([]);
 	const [selectedBone, setSelectedBone] = useState("");
 	const [exportState, setExportState] = useState<ExportState>({ status: "idle", message: "" });
+	/** 撮影スクリプトが開いたとき。つまみや枠線が画像に写らないようにする */
+	const [capture, setCapture] = useState(false);
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
 		setDesign(parseThumbnailDesign(params));
 		setSlug(params.get("slug") ?? "");
+		setCapture(params.get("capture") === "1");
 	}, []);
 
 	const handleMeasureDuration = useCallback((seconds: number) => setDuration(seconds), []);
@@ -40,9 +44,15 @@ export function ThumbnailStudio() {
 		[],
 	);
 
-	const handlePhotoMoved = useCallback(
+	const handlePhotoLayoutChange = useCallback(
 		(photoLayout: PhotoLayout) =>
 			setDesign((current) => (current ? { ...current, photoLayout } : current)),
+		[],
+	);
+
+	const handleAvatarLayoutChange = useCallback(
+		(avatarLayout: AvatarLayout) =>
+			setDesign((current) => (current ? { ...current, avatarLayout } : current)),
 		[],
 	);
 
@@ -86,10 +96,12 @@ export function ThumbnailStudio() {
 			<ThumbnailPreview
 				design={design}
 				selectedBone={selectedBone}
+				capture={capture}
 				onMeasureDuration={handleMeasureDuration}
 				onBonesFound={handleBonesFound}
 				onBoneRotated={handleBoneRotated}
-				onPhotoMoved={handlePhotoMoved}
+				onPhotoLayoutChange={handlePhotoLayoutChange}
+				onAvatarLayoutChange={handleAvatarLayoutChange}
 			/>
 			<StudioControls
 				design={design}

@@ -19,7 +19,29 @@ export type PhotoLayout = {
 	rotation: number;
 	/** アバターより手前に出す。既定では奥に置く */
 	inFront: boolean;
+	/**
+	 * 枠に対して写真のどこを見せるか（0〜100%）。
+	 * 枠から溢れた分は切り落とされるので、これで見せたいところに寄せる。
+	 */
+	trimX: number;
+	trimY: number;
 };
+
+/**
+ * アバターの置き方。
+ *
+ * アバターは決まった大きさの枠に描いていて、枠ごと動かして拡げる。
+ * 枠を大きくすればアバターも大きくなり、サムネイルから溢れた分は切り落とされる。
+ */
+export type AvatarLayout = {
+	x: number;
+	y: number;
+	/** 基準の大きさに対する倍率。縦横まとめて掛けるので、比率は崩れない */
+	scale: number;
+};
+
+/** アバターの枠の基準の大きさ。倍率1のときはこの大きさになる */
+export const AVATAR_BASE_SIZE = { width: 380, height: 630 };
 
 /** 骨ごとの回転（ラジアン）。動きを止めたうえで、この分だけ姿勢を上書きする */
 export type BonePose = Record<string, [number, number, number]>;
@@ -34,6 +56,7 @@ export type ThumbnailDesign = {
 	/** 右に貼る写真。public からのパス。空なら文字とアバターだけになる */
 	photo: string;
 	photoLayout: PhotoLayout;
+	avatarLayout: AvatarLayout;
 	motion: AvatarMotion;
 	/** モーションを止める時刻（秒）。同じ値なら必ず同じポーズになる */
 	time: number;
@@ -49,7 +72,12 @@ export const DEFAULT_PHOTO_LAYOUT: PhotoLayout = {
 	height: 523,
 	rotation: 2.5,
 	inFront: false,
+	trimX: 50,
+	trimY: 50,
 };
+
+/** アバターの既定の置き方。文字の右、写真との間あたりに立つ */
+export const DEFAULT_AVATAR_LAYOUT: AvatarLayout = { x: 500, y: 0, scale: 1 };
 
 const DEFAULT_DESIGN: ThumbnailDesign = {
 	titleLines: ["ここに題名を", "入れます"],
@@ -57,6 +85,7 @@ const DEFAULT_DESIGN: ThumbnailDesign = {
 	label: "ラベル",
 	photo: "",
 	photoLayout: DEFAULT_PHOTO_LAYOUT,
+	avatarLayout: DEFAULT_AVATAR_LAYOUT,
 	motion: DEFAULT_AVATAR_MOTION,
 	time: 0,
 	pose: {},
@@ -87,6 +116,10 @@ export function parseThumbnailDesign(params: URLSearchParams): ThumbnailDesign {
 			...DEFAULT_PHOTO_LAYOUT,
 			...parseJson<Partial<PhotoLayout>>(params.get("layout"), {}),
 		},
+		avatarLayout: {
+			...DEFAULT_AVATAR_LAYOUT,
+			...parseJson<Partial<AvatarLayout>>(params.get("avatar"), {}),
+		},
 		motion: isAvatarMotion(motion) ? motion : DEFAULT_DESIGN.motion,
 		time: Number.isFinite(time) && time > 0 ? time : DEFAULT_DESIGN.time,
 		pose: parseJson<BonePose>(params.get("pose"), DEFAULT_DESIGN.pose),
@@ -108,8 +141,11 @@ export function thumbnailDesignToQuery(design: ThumbnailDesign): URLSearchParams
 	});
 
 	// 触っていないものは書かない。コマンドが読みづらくなるだけなので
-	if (!isSameLayout(design.photoLayout, DEFAULT_PHOTO_LAYOUT)) {
+	if (!isSame(design.photoLayout, DEFAULT_PHOTO_LAYOUT)) {
 		params.set("layout", JSON.stringify(design.photoLayout));
+	}
+	if (!isSame(design.avatarLayout, DEFAULT_AVATAR_LAYOUT)) {
+		params.set("avatar", JSON.stringify(design.avatarLayout));
 	}
 	if (Object.keys(design.pose).length > 0) {
 		params.set("pose", JSON.stringify(design.pose));
@@ -118,13 +154,6 @@ export function thumbnailDesignToQuery(design: ThumbnailDesign): URLSearchParams
 	return params;
 }
 
-function isSameLayout(a: PhotoLayout, b: PhotoLayout) {
-	return (
-		a.x === b.x &&
-		a.y === b.y &&
-		a.width === b.width &&
-		a.height === b.height &&
-		a.rotation === b.rotation &&
-		a.inFront === b.inFront
-	);
+function isSame<T extends object>(a: T, b: T) {
+	return (Object.keys(b) as (keyof T)[]).every((key) => a[key] === b[key]);
 }
