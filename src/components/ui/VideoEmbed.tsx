@@ -6,34 +6,16 @@ import { useState } from "react";
 type VideoEmbedProps = {
 	title: string;
 	youtubeId?: string;
-	/** サイト内に置いた動画ファイルのパス */
-	videoSrc?: string;
 	thumbnail?: string;
 };
 
 /**
- * YouTubeの動画は、再生ボタンを押すまでプレイヤーを読み込まない。
+ * 再生ボタンを押すまでYouTubeのプレイヤーを読み込まない。
  * 埋め込みを置いただけでプレイヤーの一式（数百KB）が読み込まれ、
  * 見るとは限らない動画のために表示が重くなるのを避けるため。
  */
-export function VideoEmbed({ title, youtubeId, videoSrc, thumbnail }: VideoEmbedProps) {
+export function VideoEmbed({ title, youtubeId, thumbnail }: VideoEmbedProps) {
 	const [isPlaying, setIsPlaying] = useState(false);
-
-	if (videoSrc) {
-		return (
-			// preload="none" で、再生するまで動画本体を取りに行かせない
-			<video
-				src={videoSrc}
-				poster={thumbnail}
-				controls
-				preload="none"
-				playsInline
-				className=" w-full aspect-video rounded-2xl bg-neutral-900 "
-			>
-				<track kind="captions" />
-			</video>
-		);
-	}
 
 	if (!youtubeId) return null;
 

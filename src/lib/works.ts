@@ -1,19 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
-
-export type WorkFront = {
-	title: string;
-	description?: string;
-	slug: string;
-	date: string; // YYYY-MM-DD
-	thumbnail: string;
-	coverImage: string;
-	tags?: string[];
-	published?: boolean;
-};
-
-export type Work = WorkFront & { body: string };
+import type { Work, WorkFront } from "./workMeta";
 
 const WORKS_DIR = path.join(process.cwd(), "src", "contents", "works");
 

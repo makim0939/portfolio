@@ -1,22 +1,21 @@
 "use client";
 
-import type { BlogEntry } from "@/lib/blog";
-import { BLOG_CATEGORIES } from "@/lib/blogCategories";
+import { WORK_CATEGORIES, type Work } from "@/lib/workMeta";
 import { useState } from "react";
-import { BlogCard } from "./BlogCard";
 import { ALL_CATEGORIES, CategoryTabs } from "./CategoryTabs";
+import { WorkCard } from "./WorkCard";
 
-export function BlogList({ entries }: { entries: BlogEntry[] }) {
+export function WorksList({ works }: { works: Work[] }) {
 	const [category, setCategory] = useState<string>(ALL_CATEGORIES);
 
 	const shown =
-		category === ALL_CATEGORIES ? entries : entries.filter((entry) => entry.category === category);
+		category === ALL_CATEGORIES ? works : works.filter((work) => work.category === category);
 
 	return (
 		<div className=" space-y-8 ">
 			<CategoryTabs
-				labels={BLOG_CATEGORIES}
-				available={entries.map((entry) => entry.category)}
+				labels={WORK_CATEGORIES}
+				available={works.map((work) => work.category)}
 				value={category}
 				onChange={setCategory}
 			/>
@@ -29,8 +28,8 @@ export function BlogList({ entries }: { entries: BlogEntry[] }) {
 					lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
 				"
 			>
-				{shown.map((entry) => (
-					<BlogCard key={entry.href} entry={entry} />
+				{shown.map((work) => (
+					<WorkCard key={work.slug} work={work} />
 				))}
 			</div>
 		</div>

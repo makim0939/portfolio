@@ -15,6 +15,7 @@ export const Default: Story = {
 			title: "Storybook Test WorkCardコンポーネント",
 			description: "StorybookでWorkカードコンポーネントの動作テスト",
 			slug: "storybook-workcard-test",
+			category: "software",
 			date: "2025-09-01", // YYYY-MM-DD
 			thumbnail: "/test-work.png",
 			coverImage: "/test-work.png",

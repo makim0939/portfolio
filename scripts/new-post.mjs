@@ -13,18 +13,26 @@ const BLOG_CATEGORIES = {
 	life: "日常",
 };
 
+const WORK_CATEGORIES = {
+	software: "ソフトウェア",
+	cg: "CG",
+	music: "音楽",
+};
+
 const KINDS = {
 	blog: {
 		label: "ブログ",
 		contentDir: path.join("src", "contents", "blog"),
+		// 記事ごとに画像の置き場所を作る
 		assetDir: path.join("public", "blog"),
 		defaultSlugPrefix: "post",
 	},
-	music: {
-		label: "演奏",
-		contentDir: path.join("src", "contents", "music"),
-		assetDir: path.join("public", "music"),
-		defaultSlugPrefix: "performance",
+	works: {
+		label: "制作物",
+		contentDir: path.join("src", "contents", "works"),
+		// 制作物は thumbnail/ と products/ に分けて置く決まりなので、作品ごとの場所は作らない
+		assetDir: undefined,
+		defaultSlugPrefix: "work",
 	},
 };
 
@@ -96,11 +104,11 @@ function blogBody() {
 `;
 }
 
-function musicBody() {
+function workBody() {
 	return `
-## 曲について
+## 作品について
 
-演奏や曲についてのメモを書きます。
+ここから本文を書きます。
 `;
 }
 
@@ -149,13 +157,15 @@ async function main() {
 		];
 
 		if (kindKey === "blog") {
-			const category = await askChoice(ask, "カテゴリ", BLOG_CATEGORIES);
-			front.push(["category", category]);
+			front.push(["category", await askChoice(ask, "カテゴリ", BLOG_CATEGORIES)]);
 		} else {
-			const instrument = await ask("楽器 (任意): ");
-			const videoUrl = await ask("YouTubeのURL (任意): ");
-			front.push(["instrument", instrument || undefined]);
-			front.push(["videoUrl", videoUrl ? quote(videoUrl) : undefined]);
+			const category = await askChoice(ask, "カテゴリ", WORK_CATEGORIES);
+			front.push(["category", category]);
+			// 音楽はYouTubeに置くことが多いので、そのときだけURLを訊く
+			if (category === "music") {
+				const videoUrl = await ask("YouTubeのURL (任意): ");
+				front.push(["videoUrl", videoUrl ? quote(videoUrl) : undefined]);
+			}
 		}
 
 		if (tags.length > 0) front.push(["tags", `[${tags.map(quote).join(", ")}]`]);
@@ -163,23 +173,30 @@ async function main() {
 		front.push(["published", "false"]);
 
 		const contentPath = path.join(kind.contentDir, `${slug}.mdx`);
-		const assetPath = path.join(kind.assetDir, slug);
 
 		await fs.mkdir(kind.contentDir, { recursive: true });
 		await fs.writeFile(
 			contentPath,
-			buildFrontmatter(front) + (kindKey === "blog" ? blogBody() : musicBody()),
+			buildFrontmatter(front) + (kindKey === "blog" ? blogBody() : workBody()),
 			"utf8",
 		);
 
-		// 画像の置き場所は空だと git に残らないので、目印のファイルを置く
-		await fs.mkdir(assetPath, { recursive: true });
-		await fs.writeFile(path.join(assetPath, ".gitkeep"), "", "utf8");
-
 		stdout.write("\n作成しました。\n");
 		stdout.write(`  ${contentPath}\n`);
-		stdout.write(`  ${assetPath}/  … 画像はここに置いて、frontmatter には\n`);
-		stdout.write(`      thumbnail: "${slug}/ファイル名.png" のように書きます\n`);
+
+		if (kind.assetDir) {
+			// 画像の置き場所は空だと git に残らないので、目印のファイルを置く
+			const assetPath = path.join(kind.assetDir, slug);
+			await fs.mkdir(assetPath, { recursive: true });
+			await fs.writeFile(path.join(assetPath, ".gitkeep"), "", "utf8");
+
+			stdout.write(`  ${assetPath}/  … 画像はここに置いて、frontmatter には\n`);
+			stdout.write(`      thumbnail: "${slug}/ファイル名.png" のように書きます\n`);
+		} else {
+			stdout.write("\n画像は public/works/thumbnail、動画は public/works/products に置いて、\n");
+			stdout.write("frontmatter に thumbnail・coverImage として書きます。\n");
+		}
+
 		stdout.write("\n書き終えたら published を true にすると公開されます。\n");
 	} finally {
 		rl.close();

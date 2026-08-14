@@ -1,6 +1,6 @@
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { Text } from "@/components/ui/Text";
-import { WorkCard } from "@/components/ui/WorkCard";
+import { WorksList } from "@/components/ui/WorksList";
 import { getAllWorks } from "@/lib/works";
 
 export default async function WorksPage() {
@@ -12,18 +12,7 @@ export default async function WorksPage() {
 			</header>
 			<hr className="my-8" />
 			<FadeInContainer>
-				<div
-					className=" 
-                    grid gap-4 md:gap-8
-                    sm:[grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]
-					md:[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]
-					lg:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]
-                "
-				>
-					{works.map((w) => (
-						<WorkCard key={w.slug} work={w} />
-					))}
-				</div>
+				<WorksList works={works} />
 			</FadeInContainer>
 		</main>
 	);

@@ -16,15 +16,18 @@ pnpm new:post
 
 | | 記事 | 画像・動画 |
 | --- | --- | --- |
-| ブログ | `src/contents/blog` | `public/blog` |
-| 演奏 | `src/contents/music` | `public/music` |
-| 制作物 | `src/contents/works` | `public/works` |
+| ブログ | `src/contents/blog` | `public/blog/<記事の名前>` |
+| 制作物 | `src/contents/works` | `public/works/thumbnail`、`public/works/products` |
 
-ブログの `category` は `tech`（テック）・`dev`（開発日記）・`life`（日常）から選びます。
-一覧ではZennの記事と混ざって新しい順に並び、このカテゴリで絞り込めます。
+どちらも `category` で一覧を絞り込めます。
+
+- ブログ … `tech`（テック）・`dev`（開発日記）・`life`（日常）
+- 制作物 … `software`（ソフトウェア）・`cg`（CG）・`music`（音楽）
+
+ブログの一覧はZennの記事と混ざって新しい順に並びます。Zennの記事は `tech` として扱われます。
 
 `thumbnail` を書かなかったブログ記事は、タイトルとカテゴリからサムネイルを作ります。
 一覧のカードとSNSでシェアされたときのOGP画像は、どちらもこの画像になります。
 
-演奏は `videoUrl` にYouTubeのURLを書きます。動画ファイルをこのリポジトリに置く場合は
-`public/music` に入れて `video` にパスを書きます。
+演奏などYouTubeに置いた制作物は、`videoUrl` にURLを書きます。上部の大きな画像の代わりに
+プレイヤーが主役になり、サムネイルもYouTubeのものを使います。
