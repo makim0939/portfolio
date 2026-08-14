@@ -4,7 +4,7 @@ Command: npx gltfjsx@6.5.3 avatar_prototype.glb -t
 */
 "use client";
 import { useAvatarMotion } from "@/hooks/useAvatarMotion";
-import { AVATAR_MOTION_CLIPS, AVATAR_PLACEMENTS } from "@/lib/avatarMotion";
+import { AVATAR_MOTION_CLIPS, AVATAR_PLACEMENTS, type ScenePlacement } from "@/lib/avatarMotion";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useGraph } from "@react-three/fiber";
 import React, { type JSX, useLayoutEffect } from "react";
@@ -43,14 +43,35 @@ type GLTFResult = GLTF & {
 /** モーションを切り替えるときのクロスフェード時間（秒）。 */
 const FADE_DURATION = 0.4;
 
-export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
+type AvatarPrototypeProps = JSX.IntrinsicElements["group"] & {
+	/**
+	 * モーションをこの時刻（秒）で止める。
+	 *
+	 * サムネイルの撮影で、何度撮っても同じポーズにするために使う。
+	 * 指定しなければ、いつも通り再生し続ける。
+	 */
+	frozenTime?: number;
+	/**
+	 * 立ち位置を差し替える。
+	 *
+	 * 既定の値は部屋のどこに立つかを表したものなので、
+	 * サムネイルのように部屋の外で使うときは原点などに置き直す。
+	 */
+	placement?: ScenePlacement;
+};
+
+export function AvatarPrototype({
+	frozenTime,
+	placement: placementOverride,
+	...props
+}: AvatarPrototypeProps) {
 	const group = React.useRef<THREE.Group>(null);
 	const { scene, animations } = useGLTF("/avatar_prototype.glb");
 	const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene]);
 	const { nodes, materials } = useGraph(clone) as unknown as GLTFResult;
 	const { actions, mixer } = useAnimations(animations, group);
 	const motion = useAvatarMotion();
-	const placement = AVATAR_PLACEMENTS[motion];
+	const placement = placementOverride ?? AVATAR_PLACEMENTS[motion];
 
 	/*
 		描画の前に姿勢を確定させたいので useEffect ではなく useLayoutEffect を使う。
@@ -85,6 +106,23 @@ export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 			action.fadeOut(FADE_DURATION);
 		};
 	}, [actions, mixer, motion]);
+
+	/*
+		撮影用にポーズを固定する。
+		mixer は毎フレーム時刻を進めてしまうので、action を止めたうえで時刻を差し込み、
+		その姿勢を骨に焼く。再生の待ち時間で狙うのと違い、同じ値なら必ず同じ姿勢になる。
+	*/
+	useLayoutEffect(() => {
+		const action = actions[AVATAR_MOTION_CLIPS[motion]];
+		if (!action) return;
+
+		action.paused = frozenTime !== undefined;
+		if (frozenTime === undefined) return;
+
+		// クリップの終わりを越えると姿勢が決まらないので、末尾で止める
+		action.time = Math.min(frozenTime, action.getClip().duration);
+		mixer.update(0);
+	}, [actions, mixer, motion, frozenTime]);
 
 	return (
 		<group ref={group} {...props} dispose={null}>
