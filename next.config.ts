@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
 				protocol: "https",
 				hostname: "res.cloudinary.com",
 			},
+			{
+				// 演奏動画のサムネイル（YouTube）
+				protocol: "https",
+				hostname: "i.ytimg.com",
+			},
 		],
 	},
 };

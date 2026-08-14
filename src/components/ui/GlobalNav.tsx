@@ -3,6 +3,7 @@ import { Text } from "./Text";
 import { AboutIcon } from "./icons/AboutIcon";
 import { BlogIcon } from "./icons/BlogIcon";
 import { HomeIcon } from "./icons/HomeIcon";
+import { MusicIcon } from "./icons/MusicIcon";
 import { WorksIcon } from "./icons/WorksIcon";
 
 export function GlobalNav() {
@@ -14,7 +15,9 @@ export function GlobalNav() {
 	// モバイルは画面下、md以上は画面上に出るので、影の向きも入れ替える。
 	return (
 		<nav className=" w-screen h-fit fixed bottom-0 md:top-0 z-10 bg-[var(--background)]/60 backdrop-blur-sm shadow-[0_-1px_6px_rgba(0,0,0,0.07)] md:shadow-[0_1px_6px_rgba(0,0,0,0.07)] ">
-			<ul className=" flex justify-around pt-1 md:pt-2 pb-1 [&>li]:w-full [&>li]:md:w-28 [&_small]:text-[12px] [&_small]:md:text-sm">
+			{/* 項目が5つになると、狭い画面では「プロフィール」が折り返してナビの高さが揃わなくなる。
+				文字を少し詰めて、折り返さずに横並びを保つ。 */}
+			<ul className=" flex justify-around pt-1 md:pt-2 pb-1 [&>li]:w-full [&>li]:md:w-28 [&_small]:text-[11px] [&_small]:md:text-sm [&_small]:whitespace-nowrap">
 				<li>
 					<GlobalNavItem href={"/"}>
 						<HomeIcon />
@@ -37,6 +40,12 @@ export function GlobalNav() {
 					<GlobalNavItem href={"/blog"}>
 						<BlogIcon />
 						<Text variant="small">ブログ</Text>
+					</GlobalNavItem>
+				</li>
+				<li>
+					<GlobalNavItem href={"/music"}>
+						<MusicIcon />
+						<Text variant="small">演奏</Text>
 					</GlobalNavItem>
 				</li>
 			</ul>
