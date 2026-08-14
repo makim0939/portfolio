@@ -4,7 +4,8 @@ import { twMerge } from "tailwind-merge";
 type StyledLinkProps = {
 	className?: string;
 	children: React.ReactNode;
-} & LinkProps;
+} & LinkProps &
+	React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export function StyledLink({ children, className, ...props }: StyledLinkProps) {
 	return (
