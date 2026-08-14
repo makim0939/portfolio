@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "new:post": "node scripts/new-post.mjs",
+    "thumbnail": "node scripts/shoot-thumbnail.mjs",
     "lint": "biome check --no-errors-on-unmatched",
     "check": "biome check --write --no-errors-on-unmatched",
     "storybook": "storybook dev -p 6006",
