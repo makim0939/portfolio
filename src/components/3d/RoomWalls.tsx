@@ -1,11 +1,9 @@
 /*
 モデルのソース: 3DCG/Objects/RoomWalls (RoomWalls.py -> RoomWalls.glb)
 
-portfolio_room_1_1.glb に含まれる `Wall` メッシュの置き換え。シルエットは同じだが、
-x = 1.387 の壁に本物の開口を貫通させ、z = -1.388 の面を緑に塗っている。
-
-開口は本物の穴なので、Scene.tsx の directionalLight が偽のハイライトではなく、
-実際に窓型の光を床に落とす。
+portfolio_room_1_1.glb に含まれる `Wall` メッシュの置き換え。窓が本物の開口になって
+いるので、Scene.tsx の directionalLight が偽のハイライトではなく、実際に窓型の光を
+床に落とす。
 */
 
 import { useGLTF } from "@react-three/drei";

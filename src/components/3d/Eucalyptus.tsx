@@ -2,11 +2,7 @@
 /*
 モデルのソース: 3DCG/Objects/EucalyptusPlant (EucalyptusPlant.blend + Objects/Eucalyptus/Relight.py -> Eucalyptus.glb)
 
-portfolio_room_1_1.glb に含まれる観葉植物の置き換え。ジオメトリと配置は元のままで、
-マテリアルだけ差し替えてある。元は葉が Principled BSDF を通っておらず
-KHR_materials_unlit で書き出されていたため、three.js では MeshBasicMaterial になって
-光を受けず、時間帯を変えても葉だけ同じ色のまま浮いて見えていた。
-枝を銀灰色にしているのは、葉が光を受けるようになると元の暗い緑では枝だけ浮くため。
+portfolio_room_1_1.glb に含まれる観葉植物の置き換え。
 */
 
 import { useGLTF } from "@react-three/drei";
