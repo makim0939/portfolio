@@ -10,35 +10,7 @@
 
 盛り込みたい要素がたくさんあるので、これからも随時更新していきます。
 
-## 使っているもの
-
-| | |
-| --- | --- |
-| フレームワーク | Next.js（App Router）・React・TypeScript |
-| 3D | Three.js・React Three Fiber・drei（モデルはBlenderで作成） |
-| スタイル | Tailwind CSS |
-| 記事 | MDX（`next-mdx-remote`）+ frontmatter |
-| 整形・検査 | Biome |
-| 部品の確認 | Storybook |
-
-## 動かす
-
-```bash
-pnpm install
-pnpm dev
-```
-
-[https://localhost:3000](https://localhost:3000) で開きます。
-開発サーバは自己署名の証明書で HTTPS を張るため、ブラウザに一度警告が出ます。
-
-| コマンド | すること |
-| --- | --- |
-| `pnpm dev` | 開発サーバを起動する |
-| `pnpm build` | 本番用にビルドする |
-| `pnpm lint` | 整形と静的検査をかける（`pnpm check` で自動修正） |
-| `pnpm storybook` | Storybookを起動する |
-
-## ディレクトリ
+## ディレクトリ構成
 
 ```
 src/
@@ -51,4 +23,7 @@ src/
 └── lib/          記事の読み込み、3Dの設定値、外部APIなど
 ```
 
-記事を書くときの手順は [docs/authoring.md](docs/authoring.md) にまとめています。
+## 開発者用備忘録
+| 文書 | 内容 |
+| --- | --- |
+| [docs/authoring.md](docs/authoring.md) | 制作物・ブログ記事の追加方法 |
