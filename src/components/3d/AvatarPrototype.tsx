@@ -11,7 +11,7 @@ import React, { type JSX, useLayoutEffect } from "react";
 import type * as THREE from "three";
 import { type GLTF, SkeletonUtils } from "three/examples/jsm/Addons.js";
 
-type ActionName = "Waving_Mixamo" | "PCWork";
+type ActionName = "Waving_Mixamo" | "PCWork" | "PlayGuitar";
 
 interface GLTFAction extends THREE.AnimationClip {
 	name: ActionName;
@@ -32,10 +32,10 @@ type GLTFResult = GLTF & {
 		Body: THREE.MeshStandardMaterial;
 		Face: THREE.MeshStandardMaterial;
 		Eye: THREE.MeshStandardMaterial;
-		"Eye brow": THREE.MeshStandardMaterial;
-		shirts: THREE.MeshStandardMaterial;
-		buttoms: THREE.MeshStandardMaterial;
-		"マテリアル.004": THREE.MeshStandardMaterial;
+		Eyebrow: THREE.MeshStandardMaterial;
+		Tops: THREE.MeshStandardMaterial;
+		Bottoms: THREE.MeshStandardMaterial;
+		Hair: THREE.MeshStandardMaterial;
 	};
 	animations: GLTFAction[];
 };
@@ -119,7 +119,7 @@ export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 						<skinnedMesh
 							name="Body_4"
 							geometry={nodes.Body_4.geometry}
-							material={materials["Eye brow"]}
+							material={materials.Eyebrow}
 							skeleton={nodes.Body_4.skeleton}
 						/>
 					</group>
@@ -127,19 +127,19 @@ export function AvatarPrototype(props: JSX.IntrinsicElements["group"]) {
 				<skinnedMesh
 					name="Tops"
 					geometry={nodes.Tops.geometry}
-					material={materials.shirts}
+					material={materials.Tops}
 					skeleton={nodes.Tops.skeleton}
 				/>
 				<skinnedMesh
 					name="Bottoms"
 					geometry={nodes.Bottoms.geometry}
-					material={materials.buttoms}
+					material={materials.Bottoms}
 					skeleton={nodes.Bottoms.skeleton}
 				/>
 				<skinnedMesh
 					name="Hair"
 					geometry={nodes.Hair.geometry}
-					material={materials["マテリアル.004"]}
+					material={materials.Hair}
 					skeleton={nodes.Hair.skeleton}
 				/>
 			</group>
