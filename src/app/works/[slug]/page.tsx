@@ -3,6 +3,7 @@ import { MDXContent } from "@/components/ui/MdxContent";
 import { Text } from "@/components/ui/Text";
 import { VideoEmbed } from "@/components/ui/VideoEmbed";
 import { WorkCover } from "@/components/ui/WorkCover";
+import { AUTHOR_NAME, SITE_URL, canonicalUrl } from "@/lib/site";
 import { WORK_CATEGORIES, type Work, workCoverPath, workThumbnailPath } from "@/lib/workMeta";
 import { getAllWorks, getWorkBySlug } from "@/lib/works";
 import { youtubeVideoId } from "@/lib/youtube";
@@ -22,11 +23,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	const thumbnail = workThumbnailPath(work);
 
 	return {
-		title: `${work.title} – 制作物`,
+		title: work.title,
 		description,
+		// 同じ作品が複数のURLで拾われないように、どれが本物かを示しておく
+		alternates: { canonical: `/works/${work.slug}` },
+		authors: [{ name: AUTHOR_NAME }],
+		keywords: work.tags,
 		openGraph: {
+			type: "article",
 			title: work.title,
 			description,
+			url: canonicalUrl(`/works/${work.slug}`),
+			publishedTime: work.date,
+			authors: [AUTHOR_NAME],
+			tags: work.tags,
 			images: thumbnail ? [thumbnail] : undefined,
 		},
 		twitter: {
@@ -35,6 +45,39 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 			description,
 			images: thumbnail ? [thumbnail] : undefined,
 		},
+	};
+}
+
+/**
+ * 作品の中身を検索エンジンに読める形で置く。
+ * 見た目には出ないが、作った人・公開日・サムネイルが検索結果に使われる。
+ */
+function WorkJsonLd({ work }: { work: Work }) {
+	return (
+		// 中身は作品のfrontmatterから組み立てたものだけで、外から来た文字は混ざらない
+		<script
+			type="application/ld+json"
+			// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD はこの形でしか埋め込めない
+			dangerouslySetInnerHTML={{ __html: JSON.stringify(workJsonLd(work)) }}
+		/>
+	);
+}
+
+function workJsonLd(work: Work) {
+	const url = canonicalUrl(`/works/${work.slug}`);
+	const thumbnail = workThumbnailPath(work);
+	return {
+		"@context": "https://schema.org",
+		"@type": "CreativeWork",
+		name: work.title,
+		description: work.description,
+		image: thumbnail ? canonicalUrl(thumbnail) : undefined,
+		datePublished: work.date,
+		creator: { "@type": "Person", name: AUTHOR_NAME, url: SITE_URL },
+		mainEntityOfPage: { "@type": "WebPage", "@id": url },
+		url,
+		keywords: work.tags?.join(", "),
+		inLanguage: "ja",
 	};
 }
 
@@ -77,6 +120,7 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
 	if (work.videoUrl) {
 		return (
 			<main className=" lg:max-w-6xl lg:m-auto ">
+				<WorkJsonLd work={work} />
 				<header className=" mb-8 ">
 					<WorkHeading work={work} onImage={false} />
 				</header>
@@ -96,6 +140,7 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
 
 	return (
 		<main>
+			<WorkJsonLd work={work} />
 			<header
 				className=" relative -mx-8 -mt-16 mb-8 h-[50vh]
 							lg:-mx-16 lg:-mt-28 lg:mb-16 lg:w-[100vw] lg:h-[100vh]

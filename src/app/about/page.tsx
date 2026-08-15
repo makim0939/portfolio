@@ -1,5 +1,13 @@
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { Text } from "@/components/ui/Text";
+import { AUTHOR_NAME } from "@/lib/site";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "プロフィール",
+	description: `${AUTHOR_NAME}について。作っているもの、使っている道具、これまでのことを書いています。`,
+	alternates: { canonical: "/about" },
+};
 
 export default function AboutPage() {
 	return (
