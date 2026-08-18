@@ -13,7 +13,6 @@ import {
 import { useTimeOfDay } from "@/hooks/useTimeOfDay";
 import { DEFAULT_DROP_IN_PARAMS } from "@/lib/dropIn";
 import { SCENE_LIGHTING, type SceneLighting } from "@/lib/timeOfDay";
-import { Preload } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { type RefObject, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { MyCamera } from "./MyCamera";
@@ -21,8 +20,14 @@ import { Room } from "./Room";
 import { RoomWalls } from "./RoomWalls";
 import { WallClock } from "./WallClock";
 
-/** 絵が出そろうまで、見せないまま描いておくフレーム数。 */
-const WARM_UP_FRAMES = 3;
+/**
+ * 見せる前に、伏せたまま描いておくフレーム数。
+ *
+ * 出現アニメーションを見せるときは、落ちてくる途中でコマ落ちしないよう余分に描いて
+ * 影とシェーダを確実に温めておく。二度目以降は組み上がった絵をそのまま出すだけなので、
+ * ちゃんと描けた1枚が出れば足りる。ここで待たせると遷移が重く感じる。
+ */
+const WARM_UP_FRAMES = { intro: 3, revisit: 1 } as const;
 
 /**
  * 出そろってから部屋を見せるまでの時間（ミリ秒）。落下演出と重なる。
@@ -129,14 +134,18 @@ type RoomSceneProps = {
  * glb を読み終えた直後の数フレームは、ジオメトリを GPU に載せ、マテリアルぶんの
  * シェーダを組み立て、影を焼き込むのに時間を食う。ここを黙って通り過ぎるまで
  * Canvas は透明のままにしておき、落下演出も始めない。
+ *
+ * 事前コンパイル（drei の Preload）は使わない。ここで本物のフレームを伏せたまま
+ * 描いているので同じ準備が済むうえ、Preload は環境マップ用に部屋を6面ぶん
+ * 描き足す。使っていない絵のために、遷移のたびに待たされることになる。
  */
-function WarmUp({ onWarm }: { onWarm: () => void }) {
+function WarmUp({ frames, onWarm }: { frames: number; onWarm: () => void }) {
 	const drawn = useRef(0);
 
 	useFrame(() => {
-		if (drawn.current >= WARM_UP_FRAMES) return;
+		if (drawn.current >= frames) return;
 		drawn.current += 1;
-		if (drawn.current === WARM_UP_FRAMES) onWarm();
+		if (drawn.current === frames) onWarm();
 	});
 
 	return null;
@@ -200,9 +209,10 @@ export function Scene() {
 								amplitude={TILT_AMPLITUDE[tiltSource]}
 								lighting={lighting}
 							/>
-							{/* シェーダの組み立てを最初のフレームまで持ち越さない */}
-							<Preload all />
-							<WarmUp onWarm={handleWarm} />
+							<WarmUp
+								frames={intro ? WARM_UP_FRAMES.intro : WARM_UP_FRAMES.revisit}
+								onWarm={handleWarm}
+							/>
 						</Suspense>
 					</Canvas>
 				</div>
