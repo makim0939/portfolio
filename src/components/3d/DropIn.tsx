@@ -9,41 +9,56 @@ dropInOffset の値がオフセットとして乗る。包むだけなので、�
 DropInProvider が無いときは素通し（group すら足さない）。トップページは初回表示の
 ときだけ Provider を置くので、二度目以降は演出のコードが一切走らない。
 
+始めてよいかどうかは started で切り替える。Provider を後から差し込む形にすると、
+その位置のコンポーネントの型が変わって部屋とアバターがまるごと作り直され、
+いちばん見せたい瞬間にそのぶんの重さが乗ってしまうため。
+
 Provider は必ず <Canvas> の内側に置くこと。react-three-fiber は DOM とは別の
 リコンサイラで動いていて、Canvas をまたいだ React コンテキストは届かない。
 */
 
 import { type DropInObjectKey, type DropInParams, dropInDelays, dropInOffset } from "@/lib/dropIn";
 import { useFrame } from "@react-three/fiber";
-import { type ReactNode, createContext, useContext, useMemo, useRef } from "react";
+import { type ReactNode, type RefObject, createContext, useContext, useMemo, useRef } from "react";
 import type * as THREE from "three";
 
 type DropInRuntime = {
 	params: DropInParams;
 	delays: Record<DropInObjectKey, number>;
-	/** 再生を始めた時刻（performance.now() のミリ秒）。 */
-	startedAt: number;
+	/** 再生を始めた時刻（performance.now() のミリ秒）。null なら、まだ1フレームも描いていない。 */
+	startedAt: RefObject<number | null>;
+	/** 演出を始めてよいか。false の間は最終位置のまま描く。 */
+	started: boolean;
 };
 
 const DropInContext = createContext<DropInRuntime | null>(null);
 
 /** そのオブジェクトが出始めてからの秒数。負ならまだ出番が来ていない。 */
 function dropInElapsed(runtime: DropInRuntime, objectKey: DropInObjectKey): number {
-	return (performance.now() - runtime.startedAt) / 1000 - runtime.delays[objectKey];
+	/*
+		時計が動き出すのは、React が描画を組んだ時ではなく最初のフレームを描く時。
+		render の時刻で始めてしまうと、ジオメトリを GPU に載せてシェーダを組み立てている
+		間にも演出だけが進み、最初に目に入った時点で途中まで飛んでいることになる。
+	*/
+	if (runtime.startedAt.current === null) runtime.startedAt.current = performance.now();
+	return (performance.now() - runtime.startedAt.current) / 1000 - runtime.delays[objectKey];
 }
 
-export function DropInProvider({
-	params,
-	children,
-}: { params: DropInParams; children: ReactNode }) {
-	// 再生開始の時刻はここで決まる。params は定数なので、作り直されるのは一度だけ
+type DropInProviderProps = {
+	params: DropInParams;
+	/** 絵が出そろって、演出を始めてよくなったか。 */
+	started: boolean;
+	children: ReactNode;
+};
+
+export function DropInProvider({ params, started, children }: DropInProviderProps) {
+	// started が切り替わっても再生開始の時刻は持ち越す
+	const startedAt = useRef<number | null>(null);
+	// params は定数なので、作り直されるのは一度だけ
+	const delays = useMemo(() => dropInDelays(params.stagger), [params.stagger]);
 	const runtime = useMemo<DropInRuntime>(
-		() => ({
-			params,
-			delays: dropInDelays(params.stagger),
-			startedAt: performance.now(),
-		}),
-		[params],
+		() => ({ params, delays, startedAt, started }),
+		[params, delays, started],
 	);
 
 	return <DropInContext.Provider value={runtime}>{children}</DropInContext.Provider>;
@@ -70,6 +85,13 @@ function DropInGroup({ runtime, objectKey, children }: DropInProps & { runtime: 
 	useFrame(() => {
 		const group = ref.current;
 		if (!group) return;
+		// 始まるまでは最終位置のまま。ここで一度描いておくと、演出が始まるフレームには
+		// ジオメトリもシェーダも影も出来上がっている
+		if (!runtime.started) {
+			group.visible = true;
+			group.position.y = 0;
+			return;
+		}
 		const elapsed = dropInElapsed(runtime, objectKey);
 		// 落下開始まではそもそも出さない。空中に浮いたまま待つと種明かしになってしまう
 		group.visible = elapsed >= 0;
@@ -78,7 +100,11 @@ function DropInGroup({ runtime, objectKey, children }: DropInProps & { runtime: 
 
 	// useFrame が回る前の1フレームで所定の位置に見えてしまわないよう、初期値も入れておく
 	return (
-		<group ref={ref} position-y={runtime.params.height} visible={false}>
+		<group
+			ref={ref}
+			position-y={runtime.started ? runtime.params.height : 0}
+			visible={!runtime.started}
+		>
 			{children}
 		</group>
 	);

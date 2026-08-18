@@ -9,7 +9,8 @@ useGLTF は同じパスなら読み込みを共有するので、glb が二重�
 そのため Z 軸まわりに回すだけで実時刻を指す。
 */
 
-import { ROOM_GLB, type RoomGLTF } from "@/components/3d/Room";
+import type { RoomGLTF } from "@/components/3d/Room";
+import { ROOM_GLB } from "@/lib/sceneAssets";
 import { useGLTF } from "@react-three/drei";
 import { type JSX, useEffect, useState } from "react";
 

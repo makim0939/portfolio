@@ -9,10 +9,13 @@ import { WorkCard } from "@/components/ui/WorkCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/shadcnui/avatar";
 import { getBlogEntries } from "@/lib/blog";
 import { filterByStatus, getRoadmapItems } from "@/lib/roadmap";
+import { SCENE_GLBS } from "@/lib/sceneAssets";
 import { AUTHOR_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import { socialLinks } from "@/lib/socialLinks";
 import { getAllWorks } from "@/lib/works";
 import React, { Suspense } from "react";
+// react-dom はサーバ側の条件だと既定の書き出しを持たないので、名前を指定して取る
+import { preload } from "react-dom";
 
 /** トップに出すロードマップの件数 */
 const ROADMAP_PREVIEW_COUNT = 3;
@@ -45,6 +48,20 @@ export default async function HomePage() {
 		...filterByStatus(allRoadmapItems, "wip"),
 		...filterByStatus(allRoadmapItems, "todo"),
 	].slice(0, ROADMAP_PREVIEW_COUNT);
+
+	/*
+		部屋とアバターの glb を、HTML を読んだ時点で取りに行かせる。client のコードが
+		動き出してから取りに行くと、その手前の JavaScript を待つぶんまるごと出遅れる。
+
+		crossOrigin は three の読み込み方（credentials: same-origin）に合わせてある。
+		食い違うと先読みしたものが使われず、同じものを二度落とすことになる。
+		<link> を書くのではなく preload を呼ぶのは、JSX で書くと React が head へ持ち上げた
+		ぶんと合わせて同じタグが二重に出るため。
+	*/
+	for (const href of SCENE_GLBS) {
+		preload(href, { as: "fetch", crossOrigin: "anonymous" });
+	}
+
 	return (
 		<>
 			{/* 中身は自分たちで組み立てた値だけで、外から来た文字は混ざらない */}

@@ -2,6 +2,7 @@
 
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
 import { AVATAR_MOTION_CLIPS, type AvatarMotion, type ScenePlacement } from "@/lib/avatarMotion";
+import { AVATAR_GLB } from "@/lib/sceneAssets";
 import {
 	AVATAR_BASE_SIZE,
 	type AvatarLayout,
@@ -106,7 +107,7 @@ function ClipDurationProbe({
 	motion,
 	onMeasure,
 }: { motion: AvatarMotion; onMeasure: (seconds: number) => void }) {
-	const { animations } = useGLTF("/avatar_prototype.glb");
+	const { animations } = useGLTF(AVATAR_GLB);
 
 	useEffect(() => {
 		const clip = animations.find((a) => a.name === AVATAR_MOTION_CLIPS[motion]);
