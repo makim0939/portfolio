@@ -10,6 +10,7 @@ import {
 	type AvatarMotion,
 	type ScenePlacement,
 } from "@/lib/avatarMotion";
+import { AVATAR_GLB } from "@/lib/sceneAssets";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import { useGraph } from "@react-three/fiber";
 import React, { type JSX, useLayoutEffect } from "react";
@@ -78,7 +79,7 @@ export function AvatarPrototype({
 	...props
 }: AvatarPrototypeProps) {
 	const group = React.useRef<THREE.Group>(null);
-	const { scene, animations } = useGLTF("/avatar_prototype.glb");
+	const { scene, animations } = useGLTF(AVATAR_GLB);
 	const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene]);
 	const { nodes, materials } = useGraph(clone) as unknown as GLTFResult;
 	const { actions, mixer } = useAnimations(animations, group);
@@ -198,4 +199,4 @@ export function AvatarPrototype({
 	);
 }
 
-useGLTF.preload("/avatar_prototype.glb");
+useGLTF.preload(AVATAR_GLB);

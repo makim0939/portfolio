@@ -1,30 +1,50 @@
 "use client";
 import { AvatarPrototype } from "@/components/3d/AvatarPrototype";
 import { DropIn, DropInProvider } from "@/components/3d/DropIn";
-import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
+import { RoomTilt } from "@/components/3d/RoomTilt";
 import { useDoePermission } from "@/hooks/useDoePermission";
-import { useMousePos } from "@/hooks/useMousePos";
 import { useResponsiveBreakpoint } from "@/hooks/useResponsiveBreakpoint";
+import {
+	TILT_AMPLITUDE,
+	type TiltAmplitude,
+	type TiltInput,
+	useRoomTilt,
+} from "@/hooks/useRoomTilt";
 import { useTimeOfDay } from "@/hooks/useTimeOfDay";
 import { DEFAULT_DROP_IN_PARAMS } from "@/lib/dropIn";
 import { SCENE_LIGHTING, type SceneLighting } from "@/lib/timeOfDay";
-import { Canvas } from "@react-three/fiber";
-import { Suspense, useEffect, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { type RefObject, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { MyCamera } from "./MyCamera";
 import { Room } from "./Room";
 import { RoomWalls } from "./RoomWalls";
 import { WallClock } from "./WallClock";
 
 /**
- * 部屋の中身と照明。PC版・モバイル版で傾け方だけが違うので、rotation を受け取る。
+ * 見せる前に、伏せたまま描いておくフレーム数。
+ *
+ * 出現アニメーションを見せるときは、落ちてくる途中でコマ落ちしないよう余分に描いて
+ * 影とシェーダを確実に温めておく。二度目以降は組み上がった絵をそのまま出すだけなので、
+ * ちゃんと描けた1枚が出れば足りる。ここで待たせると遷移が重く感じる。
+ */
+const WARM_UP_FRAMES = { intro: 3, revisit: 1 } as const;
+
+/**
+ * 出そろってから部屋を見せるまでの時間（ミリ秒）。
+ *
+ * 出現アニメーションを見せるときは、落ちてくるところと重ねたいので長めに取る。
+ * 二度目以降は Canvas を組み直すぶんどうしても少し間が空くので、そこから直に出すと
+ * ぱっと現れて硬い。継ぎ目を均す程度に短くかける。長くすると待たされた感じになる。
+ */
+const FADE_IN_MS = { intro: 400, revisit: 150 } as const;
+
+/**
+ * 部屋の中身と照明。
  *
  * オブジェクトを包んでいる DropIn は、上位に DropInProvider が無ければ素通しになる。
  * 出現アニメーションを付けるかどうかは RoomSceneWithIntro が決める。
  */
-function RoomScene({
-	rotation,
-	lighting,
-}: { rotation: [number, number, number]; lighting: SceneLighting }) {
+function RoomScene({ tilt, amplitude, lighting }: RoomSceneProps) {
 	return (
 		<>
 			<ambientLight color={lighting.ambientColor} intensity={lighting.ambientIntensity} />
@@ -33,9 +53,9 @@ function RoomScene({
 				color={lighting.pointColor}
 				intensity={lighting.pointIntensity}
 			/>
-			<group rotation={rotation}>
+			<RoomTilt tilt={tilt} amplitude={amplitude}>
 				{/*
-					窓から差し込む日光。グループもライトのターゲットも原点まわりなので、
+					窓から差し込む日光。傾けるグループもライトのターゲットも原点まわりなので、
 					内側に置いておけば部屋を傾けても窓と光の位置関係が変わらない。
 				*/}
 				<directionalLight
@@ -64,7 +84,7 @@ function RoomScene({
 				<DropIn objectKey="wallClock">
 					<WallClock />
 				</DropIn>
-			</group>
+			</RoomTilt>
 		</>
 	);
 }
@@ -78,10 +98,23 @@ function RoomScene({
  */
 let introPlayed = false;
 
-function useIntro(): boolean {
+/**
+ * これから出現アニメーションを見せるか。読むだけで、見せたことは覚えない。
+ *
+ * Canvas の外側（フェードのかけかた）と内側（演出そのもの）の両方で要る。同じ描画の
+ * うちに読むので、どちらも必ず同じ答えになる。
+ */
+function useWillPlayIntro(): boolean {
 	// 判定は描画時に読むだけ。フラグを立てるのは commit 後の effect でやる。
 	// 読み込み待ちで描画が捨てられても、再生し損ねないようにするため
 	const [play] = useState(() => !introPlayed);
+
+	return play;
+}
+
+/** 出現アニメーションを見せるか。見せたことを覚えるのはこちら。 */
+function useIntro(): boolean {
+	const play = useWillPlayIntro();
 
 	useEffect(() => {
 		introPlayed = true;
@@ -90,20 +123,48 @@ function useIntro(): boolean {
 	return play;
 }
 
-type RoomSceneProps = { rotation: [number, number, number]; lighting: SceneLighting };
+type RoomSceneProps = {
+	tilt: RefObject<TiltInput>;
+	amplitude: TiltAmplitude;
+	lighting: SceneLighting;
+};
+
+/**
+ * 絵が出そろったことを知らせる。
+ *
+ * glb を読み終えた直後の数フレームは、ジオメトリを GPU に載せ、マテリアルぶんの
+ * シェーダを組み立て、影を焼き込むのに時間を食う。ここを黙って通り過ぎるまで
+ * Canvas は透明のままにしておき、落下演出も始めない。
+ *
+ * 事前コンパイル（drei の Preload）は使わない。ここで本物のフレームを伏せたまま
+ * 描いているので同じ準備が済むうえ、Preload は環境マップ用に部屋を6面ぶん
+ * 描き足す。使っていない絵のために、遷移のたびに待たされることになる。
+ */
+function WarmUp({ frames, onWarm }: { frames: number; onWarm: () => void }) {
+	const drawn = useRef(0);
+
+	useFrame(() => {
+		if (drawn.current >= frames) return;
+		drawn.current += 1;
+		if (drawn.current === frames) onWarm();
+	});
+
+	return null;
+}
 
 /**
  * 初回表示のときだけ出現アニメーション付きで部屋を出す。
  *
- * DropInProvider は Suspense の内側に置くこと。glb の読み込みで描画が一度捨てられると
- * commit したときの時刻で再生が始まるので、モデルが出そろう前に演出だけ進んでしまう
- * ことがない。外側に置くと、読み込みの間に再生が終わってしまう。
+ * warm になるまでは Provider を置いたまま演出だけ止めておく。絵が出そろってから
+ * 落とし始めたいが、そこで Provider を差し込む形にすると、その位置のコンポーネントの
+ * 型が変わって部屋とアバターがまるごと作り直されてしまう。
  */
-function RoomSceneWithIntro(props: RoomSceneProps) {
-	if (!useIntro()) return <RoomScene {...props} />;
+function RoomSceneWithIntro({ warm, ...props }: RoomSceneProps & { warm: boolean }) {
+	const intro = useIntro();
+	if (!intro) return <RoomScene {...props} />;
 
 	return (
-		<DropInProvider params={DEFAULT_DROP_IN_PARAMS}>
+		<DropInProvider params={DEFAULT_DROP_IN_PARAMS} started={warm}>
 			<RoomScene {...props} />
 		</DropInProvider>
 	);
@@ -111,52 +172,53 @@ function RoomSceneWithIntro(props: RoomSceneProps) {
 
 export function Scene() {
 	const { doePermission, checkDoePermission } = useDoePermission();
-	const orientation = useDeviceOrientation();
-	const mousePos = useMousePos(doePermission !== null && doePermission === "notSupported");
-	const responsive = useResponsiveBreakpoint();
 	const lighting = SCENE_LIGHTING[useTimeOfDay()];
+	// 傾けかたの切り替えだけに使う。DOM には出ないので、初期値との差が画面に響かない
+	const isDesktop = useResponsiveBreakpoint() === "lg";
+	const tiltSource = isDesktop ? "mouse" : "orientation";
+	const tilt = useRoomTilt(tiltSource);
+	const [warm, setWarm] = useState(false);
+	const handleWarm = useCallback(() => setWarm(true), []);
+	const intro = useWillPlayIntro();
 
-	// PC版
-	if (responsive === "lg")
-		return (
-			<div className=" -mx-8 p-16 fixed w-[50vw] h-[50vw] top-1/2 right-0 -translate-y-1/2 -z-10 ">
-				<Canvas shadows orthographic>
-					<Suspense fallback={null}>
-						<MyCamera />
-						<RoomSceneWithIntro
-							lighting={lighting}
-							rotation={[
-								Math.PI * (mousePos.y * 0.1),
-								Math.PI * (mousePos.x * 0.25),
-								Math.PI * (mousePos.y * 0.1),
-							]}
-						/>
-					</Suspense>
-				</Canvas>
-			</div>
-		);
-
-	// モバイル版
 	return (
 		<>
-			<div className="relative w-[100vw] h-[100vw] -mt-24 mb-8 -mx-8 ">
-				<div className=" absolute w-full h-[128%] -top-4 left-0 -z-10 ">
+			{/*
+				置き場所は CSS だけで決める。画面幅を JS で測ってから組み替えると、最初の描画は
+				必ずモバイル版になり、PC では本文が画面1枚ぶん跳ねたうえに Canvas が作り直される。
+				外側はモバイルで部屋のぶんの場所を取るための枠で、PC では場所を取らない。
+			*/}
+			<div className=" relative w-[100vw] h-[100vw] -mt-24 mb-8 -mx-8 lg:w-0 lg:h-0 lg:m-0 ">
+				<div
+					className="
+						absolute w-full h-[128%] -top-4 left-0 -z-10
+						lg:fixed lg:w-[50vw] lg:h-[50vw] lg:top-1/2 lg:left-auto lg:right-0
+						lg:-translate-y-1/2 lg:p-16 lg:-mx-8
+					"
+					// 絵が出そろうまでは伏せておく。組み上がる途中や、カメラが動く前の1枚を見せない
+					style={{
+						opacity: warm ? 1 : 0,
+						transition: `opacity ${intro ? FADE_IN_MS.intro : FADE_IN_MS.revisit}ms ease-out`,
+					}}
+				>
 					<Canvas shadows orthographic>
 						<Suspense fallback={null}>
 							<MyCamera />
 							<RoomSceneWithIntro
+								warm={warm}
+								tilt={tilt}
+								amplitude={TILT_AMPLITUDE[tiltSource]}
 								lighting={lighting}
-								rotation={[
-									Math.PI * (((orientation.beta - 30) / 90) * 0.075),
-									Math.PI * ((orientation.gamma / 90) * 0.25),
-									Math.PI * (((orientation.beta - 30) / 90) * 0.075),
-								]}
+							/>
+							<WarmUp
+								frames={intro ? WARM_UP_FRAMES.intro : WARM_UP_FRAMES.revisit}
+								onWarm={handleWarm}
 							/>
 						</Suspense>
 					</Canvas>
 				</div>
 			</div>
-			{doePermission && doePermission !== "notSupported" && (
+			{!isDesktop && doePermission && doePermission !== "notSupported" && (
 				<button
 					type="button"
 					onClick={() => checkDoePermission()}
