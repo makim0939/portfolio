@@ -24,8 +24,13 @@ import { WallClock } from "./WallClock";
 /** 絵が出そろうまで、見せないまま描いておくフレーム数。 */
 const WARM_UP_FRAMES = 3;
 
-/** 出そろってから部屋を見せるまでの時間（ミリ秒）。落下演出と重なる。 */
-const FADE_IN_MS = 400;
+/**
+ * 出そろってから部屋を見せるまでの時間（ミリ秒）。落下演出と重なる。
+ *
+ * かけるのは出現アニメーションを見せるときだけ。二度目以降は部屋が組み上がった状態で
+ * 出るので隠すものが無く、他のページから戻るたびに毎回かかると待たされた感じになる。
+ */
+const INTRO_FADE_IN_MS = 400;
 
 /**
  * 部屋の中身と照明。
@@ -87,10 +92,23 @@ function RoomScene({ tilt, amplitude, lighting }: RoomSceneProps) {
  */
 let introPlayed = false;
 
-function useIntro(): boolean {
+/**
+ * これから出現アニメーションを見せるか。読むだけで、見せたことは覚えない。
+ *
+ * Canvas の外側（フェードのかけかた）と内側（演出そのもの）の両方で要る。同じ描画の
+ * うちに読むので、どちらも必ず同じ答えになる。
+ */
+function useWillPlayIntro(): boolean {
 	// 判定は描画時に読むだけ。フラグを立てるのは commit 後の effect でやる。
 	// 読み込み待ちで描画が捨てられても、再生し損ねないようにするため
 	const [play] = useState(() => !introPlayed);
+
+	return play;
+}
+
+/** 出現アニメーションを見せるか。見せたことを覚えるのはこちら。 */
+function useIntro(): boolean {
+	const play = useWillPlayIntro();
 
 	useEffect(() => {
 		introPlayed = true;
@@ -151,6 +169,7 @@ export function Scene() {
 	const tilt = useRoomTilt(tiltSource);
 	const [warm, setWarm] = useState(false);
 	const handleWarm = useCallback(() => setWarm(true), []);
+	const intro = useWillPlayIntro();
 
 	return (
 		<>
@@ -167,7 +186,10 @@ export function Scene() {
 						lg:-translate-y-1/2 lg:p-16 lg:-mx-8
 					"
 					// 絵が出そろうまでは伏せておく。組み上がる途中や、カメラが動く前の1枚を見せない
-					style={{ opacity: warm ? 1 : 0, transition: `opacity ${FADE_IN_MS}ms ease-out` }}
+					style={{
+						opacity: warm ? 1 : 0,
+						transition: intro ? `opacity ${INTRO_FADE_IN_MS}ms ease-out` : undefined,
+					}}
 				>
 					<Canvas shadows orthographic>
 						<Suspense fallback={null}>
