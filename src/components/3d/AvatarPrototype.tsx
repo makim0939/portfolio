@@ -16,7 +16,7 @@ import React, { type JSX, useLayoutEffect } from "react";
 import type * as THREE from "three";
 import { type GLTF, SkeletonUtils } from "three/examples/jsm/Addons.js";
 
-type ActionName = "Waving_Mixamo" | "PCWork";
+type ActionName = "Waving_Mixamo" | "PCWork" | "PlayGuitar";
 
 interface GLTFAction extends THREE.AnimationClip {
 	name: ActionName;
