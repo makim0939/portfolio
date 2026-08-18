@@ -6,8 +6,10 @@ import { type RoadmapStatus, filterByStatus, getRoadmapItems } from "@/lib/roadm
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "ロードマップ | まきむらのポートフォリオ",
+	// サイト名はレイアウト側で後ろに付く
+	title: "ロードマップ",
 	description: "このサイトにこれから盛り込みたい機能と、できたことの記録です。",
+	alternates: { canonical: "/roadmap" },
 };
 
 const sections: { status: RoadmapStatus; heading: string; lead: string; empty: string }[] = [

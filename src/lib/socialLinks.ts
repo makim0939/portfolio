@@ -1,6 +1,7 @@
 import { ArtstationLogo } from "@/components/ui/icons/ArtstationLogo";
 import { GithubLogo } from "@/components/ui/icons/GithubLogo";
 import { XLogo } from "@/components/ui/icons/XLogo";
+import { YoutubeLogo } from "@/components/ui/icons/YoutubeLogo";
 import { ZennLogo } from "@/components/ui/icons/ZennLogo";
 import type { JSX } from "react";
 
@@ -30,5 +31,10 @@ export const socialLinks: SocialLinkData[] = [
 		name: "zenn",
 		url: "https://zenn.dev/makimura3329",
 		logo: ZennLogo,
+	},
+	{
+		name: "youtube",
+		url: "https://www.youtube.com/@mkmr3329",
+		logo: YoutubeLogo,
 	},
 ];

@@ -1,6 +1,7 @@
 import { GlobalNav } from "@/components/ui/GlobalNav";
 import { Text } from "@/components/ui/Text";
 import { TimeOfDayTheme } from "@/components/ui/TimeOfDayTheme";
+import { AUTHOR_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import { timeOfDayInitScript } from "@/lib/timeOfDay";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
@@ -9,8 +10,31 @@ import "./globals.css";
 const notoSansJP = Noto_Sans_JP({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "まきむらのポートフォリオ",
-	description: "まきむらのポートフォリオサイトです。",
+	// OGP画像などをページ側で相対パスで書けるようにするため、基準のURLを持たせる
+	metadataBase: new URL(SITE_URL),
+	title: {
+		// ページ側で題名を書かなかったときはこれが出る
+		default: SITE_NAME,
+		// ページ側の題名の後ろにサイト名を添える。検索結果は前から読まれるので、題名を先に置く
+		template: `%s | ${SITE_NAME}`,
+	},
+	description: SITE_DESCRIPTION,
+	authors: [{ name: AUTHOR_NAME, url: SITE_URL }],
+	creator: AUTHOR_NAME,
+	alternates: { canonical: "/" },
+	openGraph: {
+		type: "website",
+		locale: "ja_JP",
+		siteName: SITE_NAME,
+		url: SITE_URL,
+		title: SITE_NAME,
+		description: SITE_DESCRIPTION,
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: SITE_NAME,
+		description: SITE_DESCRIPTION,
+	},
 };
 
 export default function RootLayout({
