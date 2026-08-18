@@ -30,12 +30,13 @@ import { WallClock } from "./WallClock";
 const WARM_UP_FRAMES = { intro: 3, revisit: 1 } as const;
 
 /**
- * 出そろってから部屋を見せるまでの時間（ミリ秒）。落下演出と重なる。
+ * 出そろってから部屋を見せるまでの時間（ミリ秒）。
  *
- * かけるのは出現アニメーションを見せるときだけ。二度目以降は部屋が組み上がった状態で
- * 出るので隠すものが無く、他のページから戻るたびに毎回かかると待たされた感じになる。
+ * 出現アニメーションを見せるときは、落ちてくるところと重ねたいので長めに取る。
+ * 二度目以降は Canvas を組み直すぶんどうしても少し間が空くので、そこから直に出すと
+ * ぱっと現れて硬い。継ぎ目を均す程度に短くかける。長くすると待たされた感じになる。
  */
-const INTRO_FADE_IN_MS = 400;
+const FADE_IN_MS = { intro: 400, revisit: 150 } as const;
 
 /**
  * 部屋の中身と照明。
@@ -197,7 +198,7 @@ export function Scene() {
 					// 絵が出そろうまでは伏せておく。組み上がる途中や、カメラが動く前の1枚を見せない
 					style={{
 						opacity: warm ? 1 : 0,
-						transition: intro ? `opacity ${INTRO_FADE_IN_MS}ms ease-out` : undefined,
+						transition: `opacity ${intro ? FADE_IN_MS.intro : FADE_IN_MS.revisit}ms ease-out`,
 					}}
 				>
 					<Canvas shadows orthographic>
