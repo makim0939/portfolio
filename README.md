@@ -27,3 +27,4 @@ src/
 | 文書 | 内容 |
 | --- | --- |
 | [docs/authoring.md](docs/authoring.md) | 制作物・ブログ記事の追加方法 |
+| [docs/contact.md](docs/contact.md) | コンタクトフォームの設定 |

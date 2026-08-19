@@ -9,7 +9,7 @@ export function ArtstationLogo({ fill, ...props }: SocialLogoProps) {
 			fill={fill}
 			xmlns="http://www.w3.org/2000/svg"
 			role="img"
-			aria-label="X logo"
+			aria-label="ArtStation logo"
 			{...props}
 		>
 			<path
