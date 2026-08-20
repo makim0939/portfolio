@@ -44,3 +44,16 @@
 
 - 返信の目安や上限文字数は [`src/lib/contact.ts`](../src/lib/contact.ts) にまとめてあります
 - メールの文面は [`src/lib/contactMail.ts`](../src/lib/contactMail.ts) です
+
+## ポストの3Dモデル
+
+送信すると封筒が投函される演出（[Issue #75](https://github.com/makim0939/portfolio/issues/75)）で使っています。
+
+- マスターは 3DCG リポジトリの `Objects/Post/Post.blend`、生成スクリプトは `Scripts/Objects/Post.py`
+- 書き出しは `blender -b -P Scripts/Objects/Post.py -- Out/post.glb Objects/Post/Post.blend`。
+  `Out/post.glb` を `public/` へコピーします
+- 寸法を変えたら [`src/lib/contactPost.ts`](../src/lib/contactPost.ts) の投函口の座標も直します。
+  部屋の glb と `Room.tsx` が対になっているのと同じ関係です
+- ふたは投函口の上辺に原点を置いてあるので、React 側は X 軸まわりに回すだけで開きます
+
+演出はフォームの飾りとして切り離してあります。3Dが読み込めなくても送信はできます。
