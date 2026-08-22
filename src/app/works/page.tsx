@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
 	title: "制作物",
 	description:
-		"これまでに作ったWebサイト・3DCG作品・演奏をまとめています。ソフトウェア・CG・音楽から絞り込めます。",
+		"これまでに作ったWebサイト・3DCG作品・イラスト・楽曲・弾いてみたをまとめています。カテゴリごとに絞り込めます。",
 	alternates: { canonical: "/works" },
 };
 

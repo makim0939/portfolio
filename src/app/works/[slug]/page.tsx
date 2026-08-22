@@ -84,6 +84,8 @@ function workJsonLd(work: Work) {
 /** 題名・日付・カテゴリ・タグ。画像の上に重ねるときは白抜きにする */
 function WorkHeading({ work, onImage }: { work: Work; onImage: boolean }) {
 	const textColor = onImage ? " text-neutral-50 " : "";
+	// 「3DCG」のようにカテゴリと同じ名前のタグを書いていることがあるので、重ねて出さない
+	const labels = [...new Set([WORK_CATEGORIES[work.category], ...(work.tags ?? [])])];
 	return (
 		<div className=" space-y-2 3xl:space-y-4 ">
 			<Text variant="h1" className={textColor}>
@@ -95,7 +97,7 @@ function WorkHeading({ work, onImage }: { work: Work; onImage: boolean }) {
 					<time dateTime={work.date}>{work.date}</time>
 				</Text>
 				<ul className="flex gap-1 flex-wrap">
-					{[WORK_CATEGORIES[work.category], ...(work.tags ?? [])].map((label) => (
+					{labels.map((label) => (
 						<li
 							key={label}
 							className={` px-2 py-0.5 rounded-full border ${onImage ? " bg-black/10 " : ""} `}
