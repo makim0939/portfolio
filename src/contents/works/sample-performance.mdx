@@ -1,8 +1,8 @@
 ---
 title: "サンプル演奏"
-description: "音楽カテゴリのfrontmatterの見本です。"
+description: "弾いてみたカテゴリのfrontmatterの見本です。"
 slug: sample-performance
-category: music
+category: cover
 date: "2026-08-14"
 videoUrl: "https://www.youtube.com/watch?v=aqz-KE-bpKQ"
 tags: ["ピアノ"]
@@ -16,3 +16,6 @@ published: false
 `videoUrl` にYouTubeのURLを書くと、上部の画像の代わりに動画が主役になり、
 サムネイルもYouTubeのものを使います。
 `maxresdefault` が無い動画では、`thumbnail` に画像を指定します。
+
+一覧の先頭に出したい作品は、frontmatter に `pinned: true` と書きます。
+カテゴリや日付に関わらず先頭に来て、カードにピン留めの印が付きます。

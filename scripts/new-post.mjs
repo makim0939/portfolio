@@ -15,8 +15,10 @@ const BLOG_CATEGORIES = {
 
 const WORK_CATEGORIES = {
 	software: "ソフトウェア",
-	cg: "CG",
-	music: "音楽",
+	cg: "3DCG",
+	illustration: "イラスト",
+	music: "楽曲",
+	cover: "弾いてみた",
 };
 
 const KINDS = {
@@ -161,8 +163,8 @@ async function main() {
 		} else {
 			const category = await askChoice(ask, "カテゴリ", WORK_CATEGORIES);
 			front.push(["category", category]);
-			// 音楽はYouTubeに置くことが多いので、そのときだけURLを訊く
-			if (category === "music") {
+			// 楽曲・弾いてみたはYouTubeに置くことが多いので、そのときだけURLを訊く
+			if (category === "music" || category === "cover") {
 				const videoUrl = await ask("YouTubeのURL (任意): ");
 				front.push(["videoUrl", videoUrl ? quote(videoUrl) : undefined]);
 			}
