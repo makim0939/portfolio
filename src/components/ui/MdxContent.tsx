@@ -1,3 +1,4 @@
+import { artstationImageProps } from "@/lib/artstation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
@@ -33,8 +34,15 @@ export function MDXContent({ source }: { source: string }) {
 		*/
 		img: ({ src, alt }: { src?: string; alt?: string }) => (
 			<img
-				src={src}
+				// ArtStationに置いた絵は、貼られたURLがどの大きさでも大きい版に揃えたうえで、
+				// 画面の幅に合った大きさに変換して渡す
+				{...(src ? artstationImageProps(src) : {})}
 				alt={alt}
+				// 高さで頭打ちにしているので、横幅は画面か本文の幅までしか要らない
+				sizes="(max-width: 768px) 100vw, 768px"
+				// 本文の下の方の絵まで最初に読み込ませない
+				loading="lazy"
+				decoding="async"
 				className=" block mx-auto max-h-[70vh] w-auto rounded-2xl shadow-lg "
 			/>
 		),
