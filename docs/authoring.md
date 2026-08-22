@@ -38,6 +38,34 @@ pnpm new:post
 演奏などYouTubeに置いた制作物は、`videoUrl` にURLを書きます。上部の大きな画像の代わりに
 プレイヤーが主役になり、サムネイルもYouTubeのものを使います。
 
+## ArtStationの絵を本文に貼る
+
+イラストは原本をこのリポジトリに持ち込まず、ArtStationに置いたまま貼れます。
+
+1. ArtStationで作品のページを開き、絵を右クリックして「画像アドレスをコピー」
+2. 本文にマークダウンの画像として貼る
+
+```markdown
+![ミクの日2023のイラスト](https://cdnb.artstation.com/p/assets/images/images/064/307/209/large/makimura-2023.jpg?1687613435)
+```
+
+コピーしたURLは小さい版（`smaller_square` など）を指していることが多いですが、貼るときは
+どの大きさでも構いません。表示するときに大きい版（`large`）へ揃えたうえで、画面の幅に合わせて
+webpに変換したものを渡します。上の絵は原本1MBに対して、実際に読み込まれるのは60〜180KBです。
+
+作品ページへのリンクも並べて置いておくと、原寸を見たい人がArtStationへ行けます。
+
+```markdown
+[ArtStationで見る→](https://www.artstation.com/artwork/g0Ow9L)
+```
+
+ArtStationの画像は、作品によって大きい版が外から取れないことがあります（`smaller_square`
+だけが返り、他は403）。貼る前に確かめるときは次を実行して、`200` が返るか見ます。
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" "<コピーしたURLの smaller_square を large に置き換えたもの>"
+```
+
 ## アバター入りのサムネイルを作る
 
 キャラクターと写真を並べたサムネイルは、`pnpm dev` を動かした状態で
