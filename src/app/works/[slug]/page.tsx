@@ -1,10 +1,18 @@
+import { AudioPlayer } from "@/components/ui/AudioPlayer";
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { MDXContent } from "@/components/ui/MdxContent";
 import { Text } from "@/components/ui/Text";
 import { VideoEmbed } from "@/components/ui/VideoEmbed";
 import { WorkCover } from "@/components/ui/WorkCover";
 import { AUTHOR_NAME, SITE_URL, canonicalUrl } from "@/lib/site";
-import { WORK_CATEGORIES, type Work, workCoverPath, workThumbnailPath } from "@/lib/workMeta";
+import {
+	WORK_CATEGORIES,
+	type Work,
+	audioMimeType,
+	workAudioPath,
+	workCoverPath,
+	workThumbnailPath,
+} from "@/lib/workMeta";
 import { getAllWorks, getWorkBySlug } from "@/lib/works";
 import { youtubeVideoId } from "@/lib/youtube";
 import { notFound } from "next/navigation";
@@ -21,6 +29,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 	const description = work.description ?? "制作物";
 	const thumbnail = workThumbnailPath(work);
+	// 音源の作品は、SNS側が対応していれば貼り付けたカードからそのまま聴ける
+	const audio = workAudioPath(work);
 
 	return {
 		title: work.title,
@@ -38,6 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 			authors: [AUTHOR_NAME],
 			tags: work.tags,
 			images: thumbnail ? [thumbnail] : undefined,
+			audio: audio ? [{ url: canonicalUrl(audio), type: audioMimeType(audio) }] : undefined,
 		},
 		twitter: {
 			card: "summary_large_image",
@@ -66,13 +77,24 @@ function WorkJsonLd({ work }: { work: Work }) {
 function workJsonLd(work: Work) {
 	const url = canonicalUrl(`/works/${work.slug}`);
 	const thumbnail = workThumbnailPath(work);
+	const audio = workAudioPath(work);
 	return {
 		"@context": "https://schema.org",
-		"@type": "CreativeWork",
+		// 音源を置いた作品は曲そのものなので、ひとまとめの CreativeWork ではなく
+		// 曲として伝える。検索結果に長さや聴ける場所が出ることがある
+		"@type": audio ? "MusicRecording" : "CreativeWork",
 		name: work.title,
 		description: work.description,
 		image: thumbnail ? canonicalUrl(thumbnail) : undefined,
 		datePublished: work.date,
+		audio: audio
+			? {
+					"@type": "AudioObject",
+					name: work.title,
+					contentUrl: canonicalUrl(audio),
+					encodingFormat: audioMimeType(audio),
+				}
+			: undefined,
 		creator: { "@type": "Person", name: AUTHOR_NAME, url: SITE_URL },
 		mainEntityOfPage: { "@type": "WebPage", "@id": url },
 		url,
@@ -130,6 +152,28 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
 					title={work.title}
 					youtubeId={youtubeVideoId(work.videoUrl)}
 					thumbnail={workThumbnailPath(work)}
+				/>
+				<FadeInContainer className=" mt-8 ">
+					<MDXContent source={work.body} />
+				</FadeInContainer>
+			</main>
+		);
+	}
+
+	// MVを作っていない曲は音そのものが成果物なので、動画と同じくプレイヤーを主役に置く
+	const audio = workAudioPath(work);
+	if (audio) {
+		return (
+			<main className=" lg:max-w-6xl lg:m-auto ">
+				<WorkJsonLd work={work} />
+				<header className=" mb-8 ">
+					<WorkHeading work={work} onImage={false} />
+				</header>
+				<AudioPlayer
+					title={work.title}
+					src={audio}
+					type={audioMimeType(audio)}
+					artwork={workCoverPath(work) ?? workThumbnailPath(work)}
 				/>
 				<FadeInContainer className=" mt-8 ">
 					<MDXContent source={work.body} />

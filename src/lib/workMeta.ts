@@ -39,6 +39,12 @@ export type WorkFront = {
 	/** YouTubeのURL。書くと、上部の画像の代わりに動画を出す */
 	videoUrl?: string;
 	/**
+	 * 音源のありか。MVを作っていない曲を音のままあげるときに書くと、上部の画像の
+	 * 代わりにプレイヤーを出す。`public/works` からの相対パスか、外に置いた音源のURL。
+	 * `videoUrl` と両方書いたときは動画を主役にする。
+	 */
+	audioUrl?: string;
+	/**
 	 * 一覧の並び順。小さいほど上に来る。省略時はカテゴリの既定値を使うので、
 	 * 力を入れた作品をカテゴリの既定より上げたいときだけ書く。
 	 */
@@ -75,4 +81,30 @@ export function workThumbnailPath(work: WorkFront): string | undefined {
 
 export function workCoverPath(work: WorkFront): string | undefined {
 	return work.coverImage ? `/works/${work.coverImage}` : undefined;
+}
+
+/** 作品ページで鳴らす音源。外に置いた音源は書かれたURLをそのまま使う */
+export function workAudioPath(work: WorkFront): string | undefined {
+	if (!work.audioUrl) return undefined;
+	return /^https?:\/\//.test(work.audioUrl) ? work.audioUrl : `/works/${work.audioUrl}`;
+}
+
+/**
+ * 音源の種類。ブラウザは拡張子ではなくこの型を見るので、OGPと構造化データに
+ * 添えるために拡張子から引く。知らない拡張子はブラウザに任せて省く。
+ */
+const AUDIO_MIME_TYPES: Record<string, string> = {
+	mp3: "audio/mpeg",
+	wav: "audio/wav",
+	m4a: "audio/mp4",
+	aac: "audio/aac",
+	ogg: "audio/ogg",
+	opus: "audio/ogg",
+	flac: "audio/flac",
+};
+
+export function audioMimeType(src: string): string | undefined {
+	// クエリつきのURLでも拡張子を拾えるように、`?` から後ろは捨てる
+	const extension = src.split("?")[0].split(".").pop()?.toLowerCase();
+	return extension ? AUDIO_MIME_TYPES[extension] : undefined;
 }

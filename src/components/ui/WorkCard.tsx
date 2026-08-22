@@ -1,6 +1,7 @@
 import { type Work, workThumbnailPath } from "@/lib/workMeta";
 import Image from "next/image";
 import Link from "next/link";
+import { AudioBadge } from "./AudioPlayer";
 import { PlayBadge } from "./VideoEmbed";
 import { PinIcon } from "./icons/PinIcon";
 
@@ -18,10 +19,14 @@ export function WorkCard({ work }: { work: Work }) {
 					className=" block relative aspect-video overflow-hidden rounded-md bg-neutral-200 "
 				>
 					{thumbnail && <Image src={thumbnail} alt={work.title} fill className=" object-cover " />}
-					{/* 動画の作品は、開く前から動画だと分かるようにする */}
-					{work.videoUrl && (
+					{/* 動画・音源の作品は、開く前から動画・音だと分かるようにする */}
+					{(work.videoUrl || work.audioUrl) && (
 						<span className=" absolute inset-0 flex items-center justify-center ">
-							<PlayBadge className=" w-12 h-12 " />
+							{work.videoUrl ? (
+								<PlayBadge className=" w-12 h-12 " />
+							) : (
+								<AudioBadge className=" w-12 h-12 " />
+							)}
 						</span>
 					)}
 				</Link>
