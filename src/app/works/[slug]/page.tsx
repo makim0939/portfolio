@@ -1,5 +1,4 @@
 import { AudioPlayer } from "@/components/ui/AudioPlayer";
-import { FadeInContainer } from "@/components/ui/FadeInContainer";
 import { MDXContent } from "@/components/ui/MdxContent";
 import { Text } from "@/components/ui/Text";
 import { VideoEmbed } from "@/components/ui/VideoEmbed";
@@ -153,9 +152,9 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
 					youtubeId={youtubeVideoId(work.videoUrl)}
 					thumbnail={workThumbnailPath(work)}
 				/>
-				<FadeInContainer className=" mt-8 ">
+				<div className=" mt-8 ">
 					<MDXContent source={work.body} />
-				</FadeInContainer>
+				</div>
 			</main>
 		);
 	}
@@ -177,9 +176,9 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
 						artwork: workCoverPath(work) ?? workThumbnailPath(work),
 					}}
 				/>
-				<FadeInContainer className=" mt-8 ">
+				<div className=" mt-8 ">
 					<MDXContent source={work.body} />
-				</FadeInContainer>
+				</div>
 			</main>
 		);
 	}
@@ -203,9 +202,9 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
 					<WorkHeading work={work} onImage={true} />
 				</div>
 			</header>
-			<FadeInContainer className=" lg:max-w-6xl lg:min-h-[100vh] lg:m-auto ">
+			<div className=" lg:max-w-6xl lg:min-h-[100vh] lg:m-auto ">
 				<MDXContent source={work.body} />
-			</FadeInContainer>
+			</div>
 		</main>
 	);
 }
