@@ -164,9 +164,15 @@ async function main() {
 			const category = await askChoice(ask, "カテゴリ", WORK_CATEGORIES);
 			front.push(["category", category]);
 			// 楽曲・弾いてみたはYouTubeに置くことが多いので、そのときだけURLを訊く
+			let videoUrl = "";
 			if (category === "music" || category === "cover") {
-				const videoUrl = await ask("YouTubeのURL (任意): ");
+				videoUrl = await ask("YouTubeのURL (任意): ");
 				front.push(["videoUrl", videoUrl ? quote(videoUrl) : undefined]);
+			}
+			// MVを作っていない曲は音源のままあげられる。動画があるならそちらが主役なので訊かない
+			if (category === "music" && !videoUrl) {
+				const audioUrl = await ask("音源のパス (任意、例: products/曲名.mp3): ");
+				front.push(["audioUrl", audioUrl ? quote(audioUrl) : undefined]);
 			}
 		}
 
@@ -195,8 +201,10 @@ async function main() {
 			stdout.write(`  ${assetPath}/  … 画像はここに置いて、frontmatter には\n`);
 			stdout.write(`      thumbnail: "${slug}/ファイル名.png" のように書きます\n`);
 		} else {
-			stdout.write("\n画像は public/works/thumbnail、動画は public/works/products に置いて、\n");
-			stdout.write("frontmatter に thumbnail・coverImage として書きます。\n");
+			stdout.write(
+				"\n画像は public/works/thumbnail、動画と音源は public/works/products に置いて、\n",
+			);
+			stdout.write("frontmatter に thumbnail・coverImage・audioUrl として書きます。\n");
 		}
 
 		stdout.write("\n書き終えたら published を true にすると公開されます。\n");

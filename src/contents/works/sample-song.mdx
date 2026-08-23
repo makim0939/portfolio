@@ -1,0 +1,25 @@
+---
+title: "サンプル楽曲"
+description: "楽曲カテゴリのfrontmatterの見本です。"
+slug: sample-song
+category: music
+date: "2026-08-23"
+audioUrl: "products/sample-song.mp3"
+tags: ["オリジナル曲"]
+published: false
+---
+
+## 曲について
+
+曲のメモは他の制作物と同じMDXで書きます。
+
+MVを作っていない曲は、`audioUrl` に音源のありかを書きます。上部の画像の代わりに
+プレイヤーが主役になり、押すまで音源を読み込みません。
+音源は `public/works/products` に置いて、`products/ファイル名.mp3` のように書きます。
+`https://` から始まるURLを書けば、外に置いた音源もそのまま使えます。
+
+`thumbnail` か `coverImage` に絵を指定すると、プレイヤーの横に出ます。
+書かなければ音符の印になります。
+
+MVをYouTubeにあげた曲は、`audioUrl` ではなく `videoUrl` にURLを書きます。
+両方書いたときは動画が主役になります。
