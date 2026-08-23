@@ -170,10 +170,12 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
 					<WorkHeading work={work} onImage={false} />
 				</header>
 				<AudioPlayer
-					title={work.title}
-					src={audio}
-					type={audioMimeType(audio)}
-					artwork={workCoverPath(work) ?? workThumbnailPath(work)}
+					track={{
+						slug: work.slug,
+						title: work.title,
+						src: audio,
+						artwork: workCoverPath(work) ?? workThumbnailPath(work),
+					}}
 				/>
 				<FadeInContainer className=" mt-8 ">
 					<MDXContent source={work.body} />

@@ -1,4 +1,6 @@
+import { AudioPlayerProvider } from "@/components/ui/AudioPlayerProvider";
 import { GlobalNav } from "@/components/ui/GlobalNav";
+import { MiniPlayer } from "@/components/ui/MiniPlayer";
 import { Text } from "@/components/ui/Text";
 import { TimeOfDayTheme } from "@/components/ui/TimeOfDayTheme";
 import { AUTHOR_NAME, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -52,15 +54,19 @@ export default function RootLayout({
 			</head>
 			<body className={notoSansJP.className}>
 				<TimeOfDayTheme />
-				<div className=" p-8 pt-16 mb-16 md:pt-24 lg:p-16 lg:pt-28 lg:mb-0  ">
-					<>
-						{children}
-						<Text variant="small" className=" mt-16 text-center text-maki-gray">
-							© 2025 Makimura Soma
-						</Text>
-					</>
-				</div>
-				<GlobalNav />
+				{/* 曲を聴きながらページを移れるように、音を持つのはページではなくここ */}
+				<AudioPlayerProvider>
+					<div className=" p-8 pt-16 mb-16 md:pt-24 lg:p-16 lg:pt-28 lg:mb-0  ">
+						<>
+							{children}
+							<Text variant="small" className=" mt-16 text-center text-maki-gray">
+								© 2025 Makimura Soma
+							</Text>
+						</>
+					</div>
+					<GlobalNav />
+					<MiniPlayer />
+				</AudioPlayerProvider>
 			</body>
 		</html>
 	);
