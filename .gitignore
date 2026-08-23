@@ -45,3 +45,5 @@ next-env.d.ts
 # temporary
 /src/stories
 certificates
+# 音源の原本。配信用に変換したものだけを置く
+/public/works/products/*.wav
