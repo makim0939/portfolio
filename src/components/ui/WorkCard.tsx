@@ -9,7 +9,11 @@ export function WorkCard({ work }: { work: Work }) {
 	const thumbnail = workThumbnailPath(work);
 
 	return (
-		<article className=" relative max-w-96 space-y-2 p-5 bg-[var(--surface)] rounded-2xl border hover:shadow-sm transition shadow-lg ">
+		// 題名や説明文の行数は作品ごとに違うので、縦に伸び縮みする余白をどこかに持たせないと
+		// タグの位置が隣のカードとずれて段差になる。行数ぶんの高さを上で決め打ちすると
+		// 短い作品の題名の下に穴が空くので、余りは下端に寄せる（タグの mt-auto）。
+		// h-full は FadeInContainer が挟む div ぶん。これがないと article が行の高さまで伸びない
+		<article className=" relative flex flex-col h-full max-w-96 space-y-2 p-5 bg-[var(--surface)] rounded-2xl border hover:shadow-sm transition shadow-lg ">
 			<div>
 				{/* サムネイルは作品ごとに元画像の縦横比がまちまちなので、枠を16:9に固定して
 					object-cover で揃える。枠が可変だとカードの高さが作品ごとにばらつき、
@@ -41,7 +45,9 @@ export function WorkCard({ work }: { work: Work }) {
 					<PinIcon aria-label="ピン留め" className=" w-4 h-4 text-amber-500 " />
 				</span>
 			)}
-			<h3 className="text-lg font-semibold">
+			{/* line-clamp は高さを確保するためではなく、長い題名が3行以上に伸びて
+				カードが間延びするのを防ぐ上限。1列で並ぶ幅では切らずに全文を出す */}
+			<h3 className="text-lg font-semibold sm:line-clamp-2">
 				<Link href={`/works/${work.slug}`} className="hover:underline text-blue-600">
 					{work.title}
 				</Link>
@@ -50,10 +56,13 @@ export function WorkCard({ work }: { work: Work }) {
 				<time dateTime={work.date}>{work.date}</time>
 			</p>
 			<div>
-				{work.description && <p className="text-sm text-neutral-600">{work.description}</p>}
+				{work.description && (
+					<p className="text-sm text-neutral-600 sm:line-clamp-2">{work.description}</p>
+				)}
 			</div>
 
-			<ul className="flex gap-1 flex-wrap">
+			{/* 余った高さをここから上に押し上げて、タグをカードの下端に揃える */}
+			<ul className="flex gap-1 flex-wrap mt-auto">
 				{work.tags?.map((s) => (
 					<li key={s} className="px-2 py-0.5 rounded-full border text-[11px] text-neutral-500">
 						{s}
