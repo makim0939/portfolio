@@ -129,7 +129,11 @@ export default async function HomePage() {
 									創作活動の拠点となる場が欲しくて、このサイトを作りました。
 								</Text>
 								<Text>
-									私のこと、このサイトのこと、その他なんでもDM・メールから気軽に話かけてください。
+									私のこと、このサイトのこと、その他なんでも
+									<StyledLink href="/contact">
+										<u>コンタクト</u>
+									</StyledLink>
+									やDMから気軽に話かけてください。
 								</Text>
 								<Text variant="p" className=" text-sm text-maki-gray text-right ">
 									<StyledLink href="/about">
@@ -216,7 +220,16 @@ export default async function HomePage() {
 						<Text variant="h2" className="mt-8 mb-4">
 							コンタクト
 						</Text>
-						<Text className=" my-2 ">メールもしくは各種SNSのDMからご連絡ください。</Text>
+						<Text className=" my-2 ">
+							お仕事のご相談でも、サイトの感想でも、雑談でも。
+							<br />
+							お名前もメールアドレスもなしで送れます。
+						</Text>
+						<Text variant="p" className=" text-sm text-maki-gray text-right ">
+							<StyledLink href="/contact">
+								<u>メッセージを送る</u>→
+							</StyledLink>
+						</Text>
 					</section>
 
 					{/* むすび */}
