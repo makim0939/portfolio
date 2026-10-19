@@ -4,7 +4,7 @@ import {
 	REPLY_LEAD_TIME,
 	validateContactInput,
 } from "@/lib/contact";
-import { sendContactMail } from "@/lib/contactMail";
+import { ContactMailError, sendContactMail } from "@/lib/contactMail";
 import { NextResponse } from "next/server";
 
 /*
@@ -93,9 +93,15 @@ export async function POST(request: Request) {
 	try {
 		await sendContactMail(input);
 	} catch (error) {
-		console.error("[contact] 送信に失敗しました:", error);
+		const reason = error instanceof ContactMailError ? error.reason : "unknown";
+		console.error(`[contact] 送信に失敗しました (${reason}):`, error);
+		// 画面に出るのは message だけ。reason は、ログを開けないときに外から
+		// 原因を切り分けるための印で、秘密は含まない（docs/contact.md）
 		return NextResponse.json(
-			{ message: "送信できませんでした。お手数ですが、SNSのDMからご連絡ください。" },
+			{
+				message: "送信できませんでした。お手数ですが、SNSのDMからご連絡ください。",
+				reason,
+			},
 			{ status: 500 },
 		);
 	}
