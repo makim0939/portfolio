@@ -1,4 +1,5 @@
 import { FadeInContainer } from "@/components/ui/FadeInContainer";
+import { StyledLink } from "@/components/ui/StyledLink";
 import { Text } from "@/components/ui/Text";
 import { AUTHOR_NAME } from "@/lib/site";
 import type { Metadata } from "next";
@@ -30,7 +31,11 @@ export default function AboutPage() {
 				</Text>
 
 				<Text>
-					私のこと、このサイトのこと、その他なんでもDM・メールから気軽に話かけてください。
+					私のこと、このサイトのこと、その他なんでも
+					<StyledLink href="/contact">
+						<u>コンタクト</u>
+					</StyledLink>
+					やDMから気軽に話かけてください。
 				</Text>
 			</FadeInContainer>
 		</main>
