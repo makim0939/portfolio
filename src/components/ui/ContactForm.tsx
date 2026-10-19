@@ -14,6 +14,14 @@ import { useEffect, useId, useRef, useState } from "react";
 	メールアドレスを書けば返信が届き、空欄なら送りっぱなしになる、という形にしている。
 */
 
+/** 本文欄の例。何を送ってよいか迷う人に、書き始めるまで見せておく */
+const BODY_PLACEHOLDER = [
+	"・アプリについての質問・要望",
+	"・お仕事のご相談",
+	"・このサイトの感想",
+	"・雑談",
+].join("\n");
+
 /** 書きかけを預けておく場所。本文だけ。名前とメールは端末に残さない */
 const DRAFT_KEY = "contact-draft";
 
@@ -158,7 +166,8 @@ export function ContactForm() {
 					rows={8}
 					maxLength={MAX_BODY_LENGTH}
 					required
-					// 何を書けるかはページの頭に書いてあるので、ここで繰り返さない
+					// 何を送ってよいかは、書き始めるまで見える例で伝える。ページの頭では繰り返さない
+					placeholder={BODY_PLACEHOLDER}
 					className={`${fieldClass} resize-y leading-8 `}
 				/>
 			</div>

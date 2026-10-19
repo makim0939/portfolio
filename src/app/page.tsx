@@ -221,9 +221,7 @@ export default async function HomePage() {
 							コンタクト
 						</Text>
 						<Text className=" my-2 ">
-							お仕事のご相談でも、サイトの感想でも、雑談でも。
-							<br />
-							お名前もメールアドレスもなしで送れます。
+							コンタクトフォーム、各種DM、メールから気軽にご連絡ください。
 						</Text>
 						<Text variant="p" className=" text-sm text-maki-gray text-right ">
 							<StyledLink href="/contact">
